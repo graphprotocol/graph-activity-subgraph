@@ -1,0 +1,139 @@
+type GraphAccount @entity {
+  "Graph account ID"
+  id: ID!
+
+  # Staking and Curating and Delegating
+  "Curator fields for this GraphAccount. Null if never curated"
+  curator: Curator
+  "Indexer fields for this GraphAccount. Null if never indexed"
+  indexer: Indexer
+  "Delegator fields for this GraphAccount. Null if never delegated"
+  delegator: Delegator
+}
+
+type Subgraph @entity {
+  "Subgraph ID - which is derived from the Organization/Individual graph accountID"
+  id: ID!
+  "Graph account that owns this subgraph"
+  owner: GraphAccount!
+  "Current version. Null if the subgraph is deprecated"
+  currentVersion: SubgraphVersion
+  "List of all the subgraph versions included the current one"
+  versions: [SubgraphVersion!]! @derivedFrom(field: "subgraph")
+  "Version counter"
+  versionCount: BigInt!
+
+  "Curators of this subgraph deployment"
+  nameSignals: [NameSignal!]! @derivedFrom(field: "subgraph")
+  "Total amount of NameSignal entities"
+  nameSignalCount: Int!
+}
+
+type SubgraphVersion @entity {
+  "Concatenation of subgraph, subgraph deployment, and version ID"
+  id: ID!
+  "Subgraph of this version"
+  subgraph: Subgraph!
+  "Subgraph deployment of this version"
+  subgraphDeployment: SubgraphDeployment!
+  "Version number"
+  version: Int!
+}
+
+type SubgraphDeployment @entity {
+  "Subgraph Deployment ID. The IPFS hash with Qm removed to fit into 32 bytes"
+  id: ID!
+  "IPFS hash of the subgraph manifest"
+  ipfsHash: String!
+  "The versions this subgraph deployment relates to"
+  versions: [SubgraphVersion!]! @derivedFrom(field: "subgraphDeployment")
+
+  "Curators of this subgraph deployment"
+  curatorSignals: [Signal!]! @derivedFrom(field: "subgraphDeployment")
+}
+
+type Indexer @entity {
+  "Eth address of Indexer"
+  id: ID!
+  "Graph account of this indexer"
+  account: GraphAccount!
+
+  "Active allocations of stake for this Indexer"
+  allocations: [Allocation!]! @derivedFrom(field: "activeForIndexer")
+  "All allocations of stake for this Indexer (i.e. closed and active)"
+  totalAllocations: [Allocation!]! @derivedFrom(field: "indexer")
+
+  "Delegators to this Indexer"
+  delegators: [DelegatedStake!]! @derivedFrom(field: "indexer")
+}
+
+type Allocation @entity {
+  "Channel Address"
+  id: ID!
+  "Indexer of this allocation"
+  indexer: Indexer!
+  "Creator of the allocation - can be the operator or the indexer"
+  creator: Bytes!
+  "If the Allocation is active it shows the indexer. If closed equals null"
+  activeForIndexer: Indexer
+  "Subgraph deployment that is being allocated to"
+  subgraphDeployment: SubgraphDeployment!
+}
+
+type Delegator @entity {
+  "Delegator address"
+  id: ID!
+  "Graph account of the delegator"
+  account: GraphAccount!
+  "Stakes of this delegator"
+  stakes: [DelegatedStake!]! @derivedFrom(field: "delegator")
+}
+
+type DelegatedStake @entity {
+  "Concatenation of Delegator address and Indexer address"
+  id: ID!
+  "Index the stake is delegated to"
+  indexer: Indexer!
+  "Delegator"
+  delegator: Delegator!
+}
+
+type Curator @entity {
+  "Eth address of the Curator"
+  id: ID!
+  "Graph account of this curator"
+  account: GraphAccount!
+  "Subgraphs the curator is curating"
+  signals: [Signal!]! @derivedFrom(field: "curator")
+  "Subgraphs the curator is curating"
+  nameSignals: [NameSignal!]! @derivedFrom(field: "curator")
+}
+
+type Signal @entity {
+  "Eth address + subgraph deployment ID"
+  id: ID!
+  "Eth address of the curator"
+  curator: Curator!
+  "Subgraph being signalled"
+  subgraphDeployment: SubgraphDeployment!
+}
+
+type NameSignal @entity {
+  "Eth address + subgraph ID"
+  id: ID!
+  "Eth address of the curator"
+  curator: Curator!
+  "Subgraph being signalled"
+  subgraph: Subgraph!
+}
+
+type Dispute @entity {
+  "Dispute ID"
+  id: ID!
+  "Subgraph deployment being disputed"
+  subgraphDeployment: SubgraphDeployment!
+  "Fisherman address"
+  fisherman: GraphAccount!
+  "Indexer disputed"
+  indexer: GraphAccount!
+}
