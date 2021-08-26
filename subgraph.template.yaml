@@ -162,59 +162,59 @@ dataSources:
         #   handler: handleParameterUpdated
         # - event: ImplementationUpdated(address,address)
         #   handler: handleImplementationUpdated
-  - kind: ethereum/contract
-    name: GraphToken
-    network: {{network}}
-    source:
-      address: '{{graphToken}}'
-      abi: GraphToken
-      startBlock: {{blockNumber}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/graphToken.ts
-      entities:
-        - GraphAccount
-        - GraphNetwork
-      abis:
-        - name: GraphToken
-          file: ./node_modules/@graphprotocol/contracts/dist/abis/GraphToken.json
-      eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleApproval
   # - kind: ethereum/contract
-  #   name: RewardsManager
+  #   name: GraphToken
   #   network: {{network}}
   #   source:
-  #     address: '{{rewardsManager}}'
-  #     abi: RewardsManager
+  #     address: '{{graphToken}}'
+  #     abi: GraphToken
   #     startBlock: {{blockNumber}}
   #   mapping:
   #     kind: ethereum/events
   #     apiVersion: 0.0.4
   #     language: wasm/assemblyscript
-  #     file: ./src/mappings/rewardsManager.ts
+  #     file: ./src/mappings/graphToken.ts
   #     entities:
-  #       - Indexer
-  #       - Allocation
+  #       - GraphAccount
   #       - GraphNetwork
-  #       - Epoch
-  #       - SubgraphDeployment
   #     abis:
-  #       - name: RewardsManager
-  #         file: ./node_modules/@graphprotocol/contracts/dist/abis/RewardsManager.json
+  #       - name: GraphToken
+  #         file: ./node_modules/@graphprotocol/contracts/dist/abis/GraphToken.json
   #     eventHandlers:
-  #       - event: RewardsAssigned(indexed address,indexed address,uint256,uint256)
-  #         handler: handleRewardsAssigned
-  #       - event: RewardsDenylistUpdated(indexed bytes32,uint256)
-  #         handler: handleRewardsDenyListUpdated
-  #       # - event: ImplementationUpdated(address,address)
-  #       #   handler: handleImplementationUpdated
-  #       - event: ParameterUpdated(string)
-  #         handler: handleParameterUpdated
+  #       - event: Transfer(indexed address,indexed address,uint256)
+  #         handler: handleTransfer
+  #       - event: Approval(indexed address,indexed address,uint256)
+  #         handler: handleApproval
+  - kind: ethereum/contract
+    name: RewardsManager
+    network: {{network}}
+    source:
+      address: '{{rewardsManager}}'
+      abi: RewardsManager
+      startBlock: {{blockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/rewardsManager.ts
+      entities:
+        - Indexer
+        - Allocation
+        - GraphNetwork
+        - Epoch
+        - SubgraphDeployment
+      abis:
+        - name: RewardsManager
+          file: ./node_modules/@graphprotocol/contracts/dist/abis/RewardsManager.json
+      eventHandlers:
+        - event: RewardsAssigned(indexed address,indexed address,uint256,uint256)
+          handler: handleRewardsAssigned
+        - event: RewardsDenylistUpdated(indexed bytes32,uint256)
+          handler: handleRewardsDenyListUpdated
+        # - event: ImplementationUpdated(address,address)
+        #   handler: handleImplementationUpdated
+        # - event: ParameterUpdated(string)
+        #   handler: handleParameterUpdated
   - kind: ethereum/contract
     name: DisputeManager
     network: {{network}}
