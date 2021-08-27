@@ -37,11 +37,6 @@ export function createOrLoadIndexer(id: string): Indexer {
   if (indexer == null) {
     indexer = new Indexer(id)
     indexer.account = id
-
-    let graphAccount = GraphAccount.load(id)
-    graphAccount.indexer = id
-    graphAccount.save()
-
     indexer.save()
   }
   return indexer as Indexer
@@ -53,10 +48,6 @@ export function createOrLoadDelegator(id: string): Delegator {
     delegator = new Delegator(id)
     delegator.account = id
     delegator.save()
-
-    let graphAccount = GraphAccount.load(id)
-    graphAccount.delegator = id
-    graphAccount.save()
   }
   return delegator as Delegator
 }
@@ -83,10 +74,6 @@ export function createOrLoadCurator(id: string): Curator {
     curator.account = id
 
     curator.save()
-
-    let graphAccount = GraphAccount.load(id)
-    graphAccount.curator = id
-    graphAccount.save()
   }
   return curator as Curator
 }
