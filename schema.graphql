@@ -160,7 +160,7 @@ type SubgraphPublishedEvent implements SubgraphEvent @entity {
   account: GraphAccount!
 }
 
-type SubgraphMetadataUpdatedEvent implements Event @entity {
+type SubgraphMetadataUpdatedEvent implements SubgraphEvent @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -178,7 +178,7 @@ type SubgraphMetadataUpdatedEvent implements Event @entity {
   ipfsFileHash: String!
 }
 
-type SubgraphDeprecatedEvent implements Event @entity {
+type SubgraphDeprecatedEvent implements SubgraphEvent @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -194,7 +194,7 @@ type SubgraphDeprecatedEvent implements Event @entity {
   account: GraphAccount!
 }
 
-type SubgraphNameSignalEnabledEvent implements Event @entity {
+type SubgraphNameSignalEnabledEvent implements SubgraphEvent @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -210,7 +210,7 @@ type SubgraphNameSignalEnabledEvent implements Event @entity {
   account: GraphAccount!
 }
 
-type NSignalMintedEvent implements Event @entity {
+type NSignalMintedEvent implements SubgraphEvent @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -239,7 +239,7 @@ type NSignalMintedEvent implements Event @entity {
   tokens: BigInt!
 }
 
-type NSignalBurnedEvent implements Event @entity {
+type NSignalBurnedEvent implements SubgraphEvent @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
