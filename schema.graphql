@@ -22,6 +22,8 @@ type Subgraph @entity {
   versions: [SubgraphVersion!]! @derivedFrom(field: "subgraph")
   "Version counter"
   versionCount: BigInt!
+
+  events: [SubgraphEvent!]! @derivedFrom(field:"subgraph")
 }
 
 type SubgraphVersion @entity {
@@ -110,7 +112,7 @@ type Dispute @entity {
 
 # Actions
 
-interface Event @entity {
+interface Event {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -123,7 +125,22 @@ interface Event @entity {
   #epoch: Epoch #Probably re-add epoch later
 }
 
-type SubgraphPublishedEvent implements Event @entity {
+interface SubgraphEvent {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  #epoch: Epoch #Probably re-add epoch later
+
+  subgraph: Subgraph!
+}
+
+type SubgraphPublishedEvent implements SubgraphEvent @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
