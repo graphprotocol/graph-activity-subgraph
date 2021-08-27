@@ -4,11 +4,11 @@ type GraphAccount @entity {
 
   # Staking and Curating and Delegating
   "Curator fields for this GraphAccount. Null if never curated"
-  curator: Curator
+  curator: Curator @derivedFrom(field:"account")
   "Indexer fields for this GraphAccount. Null if never indexed"
-  indexer: Indexer
+  indexer: Indexer @derivedFrom(field:"account")
   "Delegator fields for this GraphAccount. Null if never delegated"
-  delegator: Delegator
+  delegator: Delegator @derivedFrom(field:"account")
 }
 
 type Subgraph @entity {
@@ -22,11 +22,6 @@ type Subgraph @entity {
   versions: [SubgraphVersion!]! @derivedFrom(field: "subgraph")
   "Version counter"
   versionCount: BigInt!
-
-  "Curators of this subgraph deployment"
-  nameSignals: [NameSignal!]! @derivedFrom(field: "subgraph")
-  "Total amount of NameSignal entities"
-  nameSignalCount: Int!
 }
 
 type SubgraphVersion @entity {
@@ -47,9 +42,6 @@ type SubgraphDeployment @entity {
   ipfsHash: String!
   "The versions this subgraph deployment relates to"
   versions: [SubgraphVersion!]! @derivedFrom(field: "subgraphDeployment")
-
-  "Curators of this subgraph deployment"
-  curatorSignals: [Signal!]! @derivedFrom(field: "subgraphDeployment")
 }
 
 type Indexer @entity {
@@ -103,28 +95,6 @@ type Curator @entity {
   id: ID!
   "Graph account of this curator"
   account: GraphAccount!
-  "Subgraphs the curator is curating"
-  signals: [Signal!]! @derivedFrom(field: "curator")
-  "Subgraphs the curator is curating"
-  nameSignals: [NameSignal!]! @derivedFrom(field: "curator")
-}
-
-type Signal @entity {
-  "Eth address + subgraph deployment ID"
-  id: ID!
-  "Eth address of the curator"
-  curator: Curator!
-  "Subgraph being signalled"
-  subgraphDeployment: SubgraphDeployment!
-}
-
-type NameSignal @entity {
-  "Eth address + subgraph ID"
-  id: ID!
-  "Eth address of the curator"
-  curator: Curator!
-  "Subgraph being signalled"
-  subgraph: Subgraph!
 }
 
 type Dispute @entity {
@@ -136,4 +106,148 @@ type Dispute @entity {
   fisherman: GraphAccount!
   "Indexer disputed"
   indexer: GraphAccount!
+}
+
+# Actions
+
+interface Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  #epoch: Epoch #Probably re-add epoch later
+}
+
+type SubgraphPublishedEvent implements Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  subgraph: Subgraph!
+
+  version: SubgraphVersion!
+
+  deployment: SubgraphDeployment!
+
+  "User that triggered the Event"
+  account: GraphAccount!
+}
+
+type SubgraphMetadataUpdatedEvent implements Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  subgraph: Subgraph!
+
+  "User that triggered the Event"
+  account: GraphAccount!
+
+  ipfsFileHash: String!
+}
+
+type SubgraphDeprecatedEvent implements Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  subgraph: Subgraph!
+
+  "User that triggered the Event"
+  account: GraphAccount!
+}
+
+type SubgraphNameSignalEnabledEvent implements Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  subgraph: Subgraph!
+
+  "User that triggered the Event"
+  account: GraphAccount!
+}
+
+type NSignalMintedEvent implements Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  subgraph: Subgraph!
+
+  "GraphAccount of the subgraph owner"
+  subgraphOwner: GraphAccount!
+
+  curator: Curator!
+
+  curatorAccount: GraphAccount!
+
+  "ID of the corresponding NameSignal entity on the core subgraph"
+  nameSignalId: String!
+
+  nameSignal: BigInt!
+
+  versionSignal: BigInt!
+
+  tokens: BigInt!
+}
+
+type NSignalBurnedEvent implements Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  subgraph: Subgraph!
+
+  "GraphAccount of the subgraph owner"
+  subgraphOwner: GraphAccount!
+
+  curator: Curator!
+
+  curatorAccount: GraphAccount!
+
+  "ID of the corresponding NameSignal entity on the core subgraph"
+  nameSignalId: String!
+
+  nameSignal: BigInt!
+
+  versionSignal: BigInt!
+
+  "Tokens received after burning the NameSignal"
+  tokens: BigInt!
 }

@@ -3,11 +3,9 @@ import {
   SubgraphDeployment,
   Indexer,
   Curator,
-  Signal,
   SubgraphVersion,
   Subgraph,
   GraphAccount,
-  NameSignal,
   Delegator,
   DelegatedStake,
 } from '../types/schema'
@@ -18,24 +16,17 @@ export function createOrLoadSubgraph(subgraphID: string, owner: Address): Subgra
     subgraph = new Subgraph(subgraphID)
     subgraph.owner = owner.toHexString()
     subgraph.versionCount = BigInt.fromI32(0)
-    subgraph.nameSignalCount = 0
-
     subgraph.save()
   }
   return subgraph as Subgraph
 }
 
 export function createOrLoadSubgraphDeployment(subgraphID: string): SubgraphDeployment {
-  let graphNetwork = GraphNetwork.load('1')
   let deployment = SubgraphDeployment.load(subgraphID)
   if (deployment == null) {
     let prefix = '1220'
     deployment = new SubgraphDeployment(subgraphID)
     deployment.ipfsHash = Bytes.fromHexString(prefix.concat(subgraphID.slice(2))).toBase58()
-    deployment = fetchSubgraphDeploymentManifest(
-      deployment as SubgraphDeployment,
-      deployment.ipfsHash,
-    )
     deployment.save()
   }
   return deployment as SubgraphDeployment
@@ -99,36 +90,36 @@ export function createOrLoadCurator(id: string): Curator {
   }
   return curator as Curator
 }
-
-export function createOrLoadSignal(
-  curator: string,
-  subgraphDeploymentID: string,
-): Signal {
-  let signalID = joinID([curator, subgraphDeploymentID])
-  let signal = Signal.load(signalID)
-  if (signal == null) {
-    signal = new Signal(signalID)
-    signal.curator = curator
-    signal.subgraphDeployment = subgraphDeploymentID
-    signal.save()
-  }
-  return signal as Signal
-}
-
-export function createOrLoadNameSignal(
-  curator: string,
-  subgraphID: string,
-): NameSignal {
-  let nameSignalID = joinID([curator, subgraphID])
-  let nameSignal = NameSignal.load(nameSignalID)
-  if (nameSignal == null) {
-    nameSignal = new NameSignal(nameSignalID)
-    nameSignal.curator = curator
-    nameSignal.subgraph = subgraphID
-    nameSignal.save()
-  }
-  return nameSignal as NameSignal
-}
+//
+// export function createOrLoadSignal(
+//   curator: string,
+//   subgraphDeploymentID: string,
+// ): Signal {
+//   let signalID = joinID([curator, subgraphDeploymentID])
+//   let signal = Signal.load(signalID)
+//   if (signal == null) {
+//     signal = new Signal(signalID)
+//     signal.curator = curator
+//     signal.subgraphDeployment = subgraphDeploymentID
+//     signal.save()
+//   }
+//   return signal as Signal
+// }
+//
+// export function createOrLoadNameSignal(
+//   curator: string,
+//   subgraphID: string,
+// ): NameSignal {
+//   let nameSignalID = joinID([curator, subgraphID])
+//   let nameSignal = NameSignal.load(nameSignalID)
+//   if (nameSignal == null) {
+//     nameSignal = new NameSignal(nameSignalID)
+//     nameSignal.curator = curator
+//     nameSignal.subgraph = subgraphID
+//     nameSignal.save()
+//   }
+//   return nameSignal as NameSignal
+// }
 
 export function createOrLoadGraphAccount(
   id: string,
