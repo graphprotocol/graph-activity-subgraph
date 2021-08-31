@@ -257,7 +257,7 @@ export function handleNSignalMinted(event: NSignalMinted): void {
   eventEntity.subgraph = subgraphID
   eventEntity.subgraphOwner = graphAccount
   eventEntity.curator = curatorID
-  eventEntity.curatorAccount = curatorID
+  eventEntity.account = curatorID
   eventEntity.nameSignalId = nameSignalId
   eventEntity.nameSignal = event.params.nSignalCreated
   eventEntity.versionSignal = event.params.vSignalCreated
@@ -284,7 +284,7 @@ export function handleNSignalBurned(event: NSignalBurned): void {
   eventEntity.subgraph = subgraphID
   eventEntity.subgraphOwner = graphAccount
   eventEntity.curator = curatorID
-  eventEntity.curatorAccount = curatorID
+  eventEntity.account = curatorID
   eventEntity.nameSignalId = nameSignalId
   eventEntity.nameSignal = event.params.nSignalBurnt
   eventEntity.versionSignal = event.params.vSignalBurnt

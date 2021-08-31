@@ -110,7 +110,7 @@ type Dispute @entity {
   indexer: GraphAccount!
 }
 
-# Actions
+# Events
 
 interface Event {
   "Generic ID only for uniqueness purposes."
@@ -124,6 +124,8 @@ interface Event {
 
   #epoch: Epoch #Probably re-add epoch later
 }
+
+# Subgraph related events
 
 interface SubgraphEvent {
   "Generic ID only for uniqueness purposes."
@@ -230,7 +232,93 @@ type SubgraphNameSignalEnabledEvent implements SubgraphEvent & Event @entity {
   account: GraphAccount!
 }
 
-type NSignalMintedEvent implements SubgraphEvent & Event @entity {
+
+# Profile events (includes Indexer, Curator and Delegator events)
+
+interface GraphAccountEvent {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  #epoch: Epoch #Probably re-add epoch later
+
+  account: GraphAccount!
+}
+
+# Indexer events
+
+interface IndexerEvent {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  #epoch: Epoch #Probably re-add epoch later
+
+  indexer: Indexer!
+}
+
+type IndexerServiceRegisteredEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+
+  url: String!
+
+  geoHash: String!
+}
+
+type IndexerServiceUnregisteredEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+}
+
+# Curator events
+
+interface CuratorEvent {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  #epoch: Epoch #Probably re-add epoch later
+
+  curator: Curator!
+}
+
+type NSignalMintedEvent implements CuratorEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -247,7 +335,7 @@ type NSignalMintedEvent implements SubgraphEvent & Event @entity {
 
   curator: Curator!
 
-  curatorAccount: GraphAccount!
+  account: GraphAccount!
 
   "ID of the corresponding NameSignal entity on the core subgraph"
   nameSignalId: String!
@@ -259,7 +347,7 @@ type NSignalMintedEvent implements SubgraphEvent & Event @entity {
   tokens: BigInt!
 }
 
-type NSignalBurnedEvent implements SubgraphEvent & Event @entity {
+type NSignalBurnedEvent implements CuratorEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -276,7 +364,7 @@ type NSignalBurnedEvent implements SubgraphEvent & Event @entity {
 
   curator: Curator!
 
-  curatorAccount: GraphAccount!
+  account: GraphAccount!
 
   "ID of the corresponding NameSignal entity on the core subgraph"
   nameSignalId: String!
@@ -288,3 +376,5 @@ type NSignalBurnedEvent implements SubgraphEvent & Event @entity {
   "Tokens received after burning the NameSignal"
   tokens: BigInt!
 }
+
+# Delegator events
