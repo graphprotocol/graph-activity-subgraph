@@ -140,7 +140,7 @@ interface SubgraphEvent {
   subgraph: Subgraph!
 }
 
-type SubgraphPublishedEvent implements SubgraphEvent @entity {
+type NewSubgraphPublishedEvent implements SubgraphEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -160,7 +160,27 @@ type SubgraphPublishedEvent implements SubgraphEvent @entity {
   account: GraphAccount!
 }
 
-type SubgraphMetadataUpdatedEvent implements SubgraphEvent @entity {
+type NewSubgraphVersionPublishedEvent implements SubgraphEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  subgraph: Subgraph!
+
+  version: SubgraphVersion!
+
+  deployment: SubgraphDeployment!
+
+  "User that triggered the Event"
+  account: GraphAccount!
+}
+
+type SubgraphMetadataUpdatedEvent implements SubgraphEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -178,7 +198,7 @@ type SubgraphMetadataUpdatedEvent implements SubgraphEvent @entity {
   ipfsFileHash: String!
 }
 
-type SubgraphDeprecatedEvent implements SubgraphEvent @entity {
+type SubgraphDeprecatedEvent implements SubgraphEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -194,7 +214,7 @@ type SubgraphDeprecatedEvent implements SubgraphEvent @entity {
   account: GraphAccount!
 }
 
-type SubgraphNameSignalEnabledEvent implements SubgraphEvent @entity {
+type SubgraphNameSignalEnabledEvent implements SubgraphEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -210,7 +230,7 @@ type SubgraphNameSignalEnabledEvent implements SubgraphEvent @entity {
   account: GraphAccount!
 }
 
-type NSignalMintedEvent implements SubgraphEvent @entity {
+type NSignalMintedEvent implements SubgraphEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -239,7 +259,7 @@ type NSignalMintedEvent implements SubgraphEvent @entity {
   tokens: BigInt!
 }
 
-type NSignalBurnedEvent implements SubgraphEvent @entity {
+type NSignalBurnedEvent implements SubgraphEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 

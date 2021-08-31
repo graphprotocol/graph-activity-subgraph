@@ -21,7 +21,8 @@ import {
   Delegator,
   Indexer,
   SubgraphDeployment,
-  SubgraphPublishedEvent,
+  NewSubgraphPublishedEvent,
+  NewSubgraphVersionPublishedEvent,
   SubgraphMetadataUpdatedEvent,
   SubgraphDeprecatedEvent,
   SubgraphNameSignalEnabledEvent,
@@ -187,7 +188,7 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
   subgraphVersion.version = versionNumber as i32
   subgraphVersion.save()
 
-  let eventEntity = new SubgraphPublishedEvent(eventId)
+  let eventEntity = new NewSubgraphPublishedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
@@ -195,7 +196,12 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
   eventEntity.version = subgraphVersion.id
   eventEntity.deployment = deployment.id
   eventEntity.account = graphAccountID
-  eventEntity.save()
+  if (subgraph.versionCount == BigInt.fromI32(1)) {
+    let coercedEntity = eventEntity as NewSubgraphVersionPublishedEvent
+    coercedEntity.save()
+  } else {
+    eventEntity.save()
+  }
 }
 /**
  * @dev handleSubgraphDeprecated
