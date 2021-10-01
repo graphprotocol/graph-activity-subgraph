@@ -134,7 +134,7 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   let subgraphID = joinID([graphAccountID, subgraphNumber])
   let subgraph = createOrLoadSubgraph(subgraphID, event.params.graphAccount)
 
-  let subgraphVersion = SubgraphVersion.load(subgraph.currentVersion)
+  let subgraphVersion = SubgraphVersion.load(subgraph.currentVersion) as SubgraphVersion
   let subgraphDeploymentID = subgraphVersion.subgraphDeployment
 
   let hexHash = addQm(event.params.subgraphMetadata) as Bytes
@@ -197,7 +197,7 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
   eventEntity.deployment = deployment.id
   eventEntity.account = graphAccountID
   if (subgraph.versionCount == BigInt.fromI32(1)) {
-    let coercedEntity = eventEntity as NewSubgraphVersionPublishedEvent
+    let coercedEntity = changetype<NewSubgraphVersionPublishedEvent>(eventEntity)
     coercedEntity.save()
   } else {
     eventEntity.save()

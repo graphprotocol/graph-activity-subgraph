@@ -16,7 +16,6 @@ export function createOrLoadSubgraph(subgraphID: string, owner: Address): Subgra
     subgraph = new Subgraph(subgraphID)
     subgraph.owner = owner.toHexString()
     subgraph.versionCount = BigInt.fromI32(0)
-    subgraph.save()
   }
   return subgraph as Subgraph
 }
