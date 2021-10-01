@@ -125,7 +125,7 @@ export function addQm(a: ByteArray): ByteArray {
   for (let i = 0; i < 32; i++) {
     out[i + 2] = a[i]
   }
-  return out as ByteArray
+  return changetype<ByteArray>(out)
 }
 
 // Helper for concatenating two byte arrays

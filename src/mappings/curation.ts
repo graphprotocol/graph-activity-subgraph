@@ -24,7 +24,7 @@ export function handleSignalled(event: Signalled): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let curatorID = event.params.curator.toHexString()
   let graphAccount = curatorID
-  let deploymentID = event.params.subgraphDeploymentID.toString()
+  let deploymentID = event.params.subgraphDeploymentID.toHexString()
 
   // Update the curator and his account
   createOrLoadGraphAccount(curatorID)
@@ -54,7 +54,7 @@ export function handleBurned(event: Burned): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let curatorID = event.params.curator.toHexString()
   let graphAccount = curatorID
-  let deploymentID = event.params.subgraphDeploymentID.toString()
+  let deploymentID = event.params.subgraphDeploymentID.toHexString()
 
   // Update the curator and his account
   createOrLoadGraphAccount(curatorID)
