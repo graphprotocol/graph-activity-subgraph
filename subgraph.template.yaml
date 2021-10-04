@@ -70,66 +70,66 @@ dataSources:
           handler: handleServiceRegistered
         - event: ServiceUnregistered(indexed address)
           handler: handleServiceUnregistered
-  # - kind: ethereum/contract
-  #   name: Staking
-  #   network: {{network}}
-  #   source:
-  #     address: '{{staking}}'
-  #     abi: Staking
-  #     startBlock: {{blockNumber}}
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.5
-  #     language: wasm/assemblyscript
-  #     file: ./src/mappings/staking.ts
-  #     entities:
-  #       - Indexer
-  #       - Allocation
-  #       - GraphNetwork
-  #       - Pool
-  #       - SubgraphDeployment
-  #       - GraphAccount
-  #       - Delegator
-  #       - DelegatedStake
-  #       - Epoch
-  #     abis:
-  #       - name: Staking
-  #         file: ./node_modules/@graphprotocol/contracts/dist/abis/Staking.json
-  #     eventHandlers:
-  #       - event: DelegationParametersUpdated(indexed address,uint32,uint32,uint32)
-  #         handler: handleDelegationParametersUpdated
-  #       - event: StakeDeposited(indexed address,uint256)
-  #         handler: handleStakeDeposited
-  #       - event: StakeLocked(indexed address,uint256,uint256)
-  #         handler: handleStakeLocked
-  #       - event: StakeWithdrawn(indexed address,uint256)
-  #         handler: handleStakeWithdrawn
-  #       - event: StakeSlashed(indexed address,uint256,uint256,address)
-  #         handler: handleStakeSlashed
-  #       - event: StakeDelegated(indexed address,indexed address,uint256,uint256)
-  #         handler: handleStakeDelegated
-  #       - event: StakeDelegatedLocked(indexed address,indexed address,uint256,uint256,uint256)
-  #         handler: handleStakeDelegatedLocked
-  #       - event: StakeDelegatedWithdrawn(indexed address,indexed address,uint256)
-  #         handler: handleStakeDelegatedWithdrawn
-  #       - event: AllocationCreated(indexed address,indexed bytes32,uint256,uint256,indexed address,bytes32)
-  #         handler: handleAllocationCreated
-  #       - event: AllocationCollected(indexed address,indexed bytes32,uint256,uint256,indexed address,address,uint256,uint256)
-  #         handler: handleAllocationCollected
-  #       - event: AllocationClosed(indexed address,indexed bytes32,uint256,uint256,indexed address,uint256,address,bytes32,bool)
-  #         handler: handleAllocationClosed
-  #       - event: RebateClaimed(indexed address,indexed bytes32,indexed address,uint256,uint256,uint256,uint256,uint256)
-  #         handler: handleRebateClaimed
-  #       # - event: ParameterUpdated(string)
-  #       #   handler: handleParameterUpdated
-  #       - event: SetOperator(indexed address,indexed address,bool)
-  #         handler: handleSetOperator
-  #       # - event: SlasherUpdate(indexed address,indexed address,bool)
-  #       #   handler: handleSlasherUpdate
-  #       # - event: AssetHolderUpdate(indexed address,indexed address,bool)
-  #       #   handler: handleAssetHolderUpdate
-  #       # - event: ImplementationUpdated(address,address)
-  #       #   handler: handleImplementationUpdated
+  - kind: ethereum/contract
+    name: Staking
+    network: {{network}}
+    source:
+      address: '{{staking}}'
+      abi: Staking
+      startBlock: {{blockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/staking.ts
+      entities:
+        - Indexer
+        - Allocation
+        - GraphNetwork
+        - Pool
+        - SubgraphDeployment
+        - GraphAccount
+        - Delegator
+        - DelegatedStake
+        - Epoch
+      abis:
+        - name: Staking
+          file: ./node_modules/@graphprotocol/contracts/dist/abis/Staking.json
+      eventHandlers:
+        - event: DelegationParametersUpdated(indexed address,uint32,uint32,uint32)
+          handler: handleDelegationParametersUpdated
+        - event: StakeDeposited(indexed address,uint256)
+          handler: handleStakeDeposited
+        - event: StakeLocked(indexed address,uint256,uint256)
+          handler: handleStakeLocked
+        - event: StakeWithdrawn(indexed address,uint256)
+          handler: handleStakeWithdrawn
+        - event: StakeSlashed(indexed address,uint256,uint256,address)
+          handler: handleStakeSlashed
+        - event: StakeDelegated(indexed address,indexed address,uint256,uint256)
+          handler: handleStakeDelegated
+        - event: StakeDelegatedLocked(indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleStakeDelegatedLocked
+        - event: StakeDelegatedWithdrawn(indexed address,indexed address,uint256)
+          handler: handleStakeDelegatedWithdrawn
+        - event: AllocationCreated(indexed address,indexed bytes32,uint256,uint256,indexed address,bytes32)
+          handler: handleAllocationCreated
+        - event: AllocationCollected(indexed address,indexed bytes32,uint256,uint256,indexed address,address,uint256,uint256)
+          handler: handleAllocationCollected
+        - event: AllocationClosed(indexed address,indexed bytes32,uint256,uint256,indexed address,uint256,address,bytes32,bool)
+          handler: handleAllocationClosed
+        - event: RebateClaimed(indexed address,indexed bytes32,indexed address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleRebateClaimed
+        # - event: ParameterUpdated(string)
+        #   handler: handleParameterUpdated
+        - event: SetOperator(indexed address,indexed address,bool)
+          handler: handleSetOperator
+        # - event: SlasherUpdate(indexed address,indexed address,bool)
+        #   handler: handleSlasherUpdate
+        # - event: AssetHolderUpdate(indexed address,indexed address,bool)
+        #   handler: handleAssetHolderUpdate
+        # - event: ImplementationUpdated(address,address)
+        #   handler: handleImplementationUpdated
   - kind: ethereum/contract
     name: Curation
     network: {{network}}

@@ -4,11 +4,11 @@ type GraphAccount @entity {
 
   # Staking and Curating and Delegating
   "Curator fields for this GraphAccount. Null if never curated"
-  curator: Curator @derivedFrom(field:"account")
+  curator: Curator @derivedFrom(field: "account")
   "Indexer fields for this GraphAccount. Null if never indexed"
-  indexer: Indexer @derivedFrom(field:"account")
+  indexer: Indexer @derivedFrom(field: "account")
   "Delegator fields for this GraphAccount. Null if never delegated"
-  delegator: Delegator @derivedFrom(field:"account")
+  delegator: Delegator @derivedFrom(field: "account")
 }
 
 type Subgraph @entity {
@@ -23,7 +23,7 @@ type Subgraph @entity {
   "Version counter"
   versionCount: BigInt!
 
-  events: [SubgraphEvent!]! @derivedFrom(field:"subgraph")
+  events: [SubgraphEvent!]! @derivedFrom(field: "subgraph")
 }
 
 type SubgraphVersion @entity {
@@ -232,7 +232,6 @@ type SubgraphNameSignalEnabledEvent implements SubgraphEvent & Event @entity {
   account: GraphAccount!
 }
 
-
 # Profile events (includes Indexer, Curator and Delegator events)
 
 interface GraphAccountEvent {
@@ -299,6 +298,207 @@ type IndexerServiceUnregisteredEvent implements IndexerEvent & GraphAccountEvent
   indexer: Indexer!
 
   account: GraphAccount!
+}
+
+type DelegationParametersUpdatedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+
+  indexingRewardCut: Int!
+
+  queryFeeCut: Int!
+
+  cooldownBlocks: Int!
+}
+
+type SetOperatorEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+
+  operator: Bytes!
+
+  allowed: Boolean!
+}
+
+type IndexerStakeDepositedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+
+  amount: BigInt!
+}
+
+type IndexerStakeLockedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+
+  amount: BigInt!
+
+  lockedUntil: BigInt!
+}
+
+type IndexerStakeWithdrawnEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+
+  amount: BigInt!
+}
+
+type IndexerStakeSlashedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+
+  "Total amount of the indexer stake that was slashed"
+  amountSlashed: BigInt!
+}
+
+type AllocationCreatedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+
+  "ID of the allocation created"
+  allocation: String!
+
+  allocatedAmount: BigInt!
+
+  deployment: SubgraphDeployment!
+}
+
+type AllocationCollectedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+
+  "ID of the allocation created"
+  allocation: String!
+
+  deployment: SubgraphDeployment!
+
+  collectedQueryFees: BigInt!
+
+  curatorQueryFees: BigInt!
+}
+
+type AllocationClosedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+
+  "ID of the allocation created"
+  allocation: String!
+
+  deployment: SubgraphDeployment!
+}
+
+type RebateClaimedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  account: GraphAccount!
+
+  "ID of the allocation created"
+  allocation: String!
+
+  deployment: SubgraphDeployment!
+
+  indexerQueryFeeRebates: BigInt!
+
+  delegatorQueryFeeRebates: BigInt!
 }
 
 # Curator events
@@ -427,3 +627,84 @@ type SignalBurnedEvent implements CuratorEvent & GraphAccountEvent & Event @enti
 }
 
 # Delegator events
+
+interface DelegatorEvent {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  #epoch: Epoch #Probably re-add epoch later
+
+  delegator: Delegator!
+}
+
+type DelegatorStakeDepositedEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event
+  @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  delegator: Delegator!
+
+  account: GraphAccount!
+
+  tokenAmount: BigInt!
+
+  shareAmount: BigInt!
+}
+
+type DelegatorStakeLockedEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event
+  @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  delegator: Delegator!
+
+  account: GraphAccount!
+
+  tokenAmount: BigInt!
+
+  shareAmount: BigInt!
+
+  lockedUntil: BigInt!
+}
+
+type DelegatorStakeWithdrawnEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event
+  @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  delegator: Delegator!
+
+  account: GraphAccount!
+
+  tokenAmount: BigInt!
+}
