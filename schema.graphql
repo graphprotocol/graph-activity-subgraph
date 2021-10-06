@@ -159,7 +159,7 @@ type NewSubgraphPublishedEvent implements SubgraphEvent & Event @entity {
   deployment: SubgraphDeployment!
 
   "User that triggered the Event"
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 }
 
 type NewSubgraphVersionPublishedEvent implements SubgraphEvent & Event @entity {
@@ -179,7 +179,7 @@ type NewSubgraphVersionPublishedEvent implements SubgraphEvent & Event @entity {
   deployment: SubgraphDeployment!
 
   "User that triggered the Event"
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 }
 
 type SubgraphMetadataUpdatedEvent implements SubgraphEvent & Event @entity {
@@ -195,7 +195,7 @@ type SubgraphMetadataUpdatedEvent implements SubgraphEvent & Event @entity {
   subgraph: Subgraph!
 
   "User that triggered the Event"
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   ipfsFileHash: String!
 }
@@ -213,7 +213,7 @@ type SubgraphDeprecatedEvent implements SubgraphEvent & Event @entity {
   subgraph: Subgraph!
 
   "User that triggered the Event"
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 }
 
 type SubgraphNameSignalEnabledEvent implements SubgraphEvent & Event @entity {
@@ -229,7 +229,7 @@ type SubgraphNameSignalEnabledEvent implements SubgraphEvent & Event @entity {
   subgraph: Subgraph!
 
   "User that triggered the Event"
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 }
 
 # Profile events (includes Indexer, Curator and Delegator events)
@@ -246,7 +246,7 @@ interface GraphAccountEvent {
 
   #epoch: Epoch #Probably re-add epoch later
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 }
 
 # Indexer events
@@ -278,7 +278,7 @@ type IndexerServiceRegisteredEvent implements IndexerEvent & GraphAccountEvent &
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   url: String!
 
@@ -297,7 +297,7 @@ type IndexerServiceUnregisteredEvent implements IndexerEvent & GraphAccountEvent
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 }
 
 type DelegationParametersUpdatedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
@@ -312,7 +312,7 @@ type DelegationParametersUpdatedEvent implements IndexerEvent & GraphAccountEven
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   indexingRewardCut: Int!
 
@@ -333,7 +333,7 @@ type SetOperatorEvent implements IndexerEvent & GraphAccountEvent & Event @entit
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   operator: Bytes!
 
@@ -352,7 +352,7 @@ type IndexerStakeDepositedEvent implements IndexerEvent & GraphAccountEvent & Ev
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   amount: BigInt!
 }
@@ -369,7 +369,7 @@ type IndexerStakeLockedEvent implements IndexerEvent & GraphAccountEvent & Event
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   amount: BigInt!
 
@@ -388,7 +388,7 @@ type IndexerStakeWithdrawnEvent implements IndexerEvent & GraphAccountEvent & Ev
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   amount: BigInt!
 }
@@ -405,7 +405,7 @@ type IndexerStakeSlashedEvent implements IndexerEvent & GraphAccountEvent & Even
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   "Total amount of the indexer stake that was slashed"
   amountSlashed: BigInt!
@@ -423,7 +423,7 @@ type AllocationCreatedEvent implements IndexerEvent & GraphAccountEvent & Event 
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   "ID of the allocation created"
   allocation: String!
@@ -445,7 +445,7 @@ type AllocationCollectedEvent implements IndexerEvent & GraphAccountEvent & Even
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   "ID of the allocation created"
   allocation: String!
@@ -469,7 +469,7 @@ type AllocationClosedEvent implements IndexerEvent & GraphAccountEvent & Event @
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   "ID of the allocation created"
   allocation: String!
@@ -489,7 +489,7 @@ type RebateClaimedEvent implements IndexerEvent & GraphAccountEvent & Event @ent
 
   indexer: Indexer!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   "ID of the allocation created"
   allocation: String!
@@ -535,7 +535,7 @@ type NSignalMintedEvent implements CuratorEvent & GraphAccountEvent & Event @ent
 
   curator: Curator!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   "ID of the corresponding NameSignal entity on the core subgraph"
   nameSignalId: String!
@@ -564,7 +564,7 @@ type NSignalBurnedEvent implements CuratorEvent & GraphAccountEvent & Event @ent
 
   curator: Curator!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   "ID of the corresponding NameSignal entity on the core subgraph"
   nameSignalId: String!
@@ -591,7 +591,7 @@ type SignalMintedEvent implements CuratorEvent & GraphAccountEvent & Event @enti
 
   curator: Curator!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   "ID of the corresponding Signal entity on the core subgraph"
   signalId: String!
@@ -615,7 +615,7 @@ type SignalBurnedEvent implements CuratorEvent & GraphAccountEvent & Event @enti
 
   curator: Curator!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   "ID of the corresponding Signal entity on the core subgraph"
   signalId: String!
@@ -658,7 +658,7 @@ type DelegatorStakeDepositedEvent implements DelegatorEvent & IndexerEvent & Gra
 
   delegator: Delegator!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   tokenAmount: BigInt!
 
@@ -680,7 +680,7 @@ type DelegatorStakeLockedEvent implements DelegatorEvent & IndexerEvent & GraphA
 
   delegator: Delegator!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   tokenAmount: BigInt!
 
@@ -704,7 +704,7 @@ type DelegatorStakeWithdrawnEvent implements DelegatorEvent & IndexerEvent & Gra
 
   delegator: Delegator!
 
-  account: GraphAccount!
+  accounts: [GraphAccount!]!
 
   tokenAmount: BigInt!
 }

@@ -52,6 +52,8 @@ import {
 export function handleDelegationParametersUpdated(event: DelegationParametersUpdated): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
 
   // Creates Graph Account, if needed
   createOrLoadGraphAccount(indexerAddress)
@@ -62,7 +64,7 @@ export function handleDelegationParametersUpdated(event: DelegationParametersUpd
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
-  eventEntity.account = indexerAddress
+  eventEntity.accounts = accounts
   eventEntity.indexingRewardCut = event.params.indexingRewardCut.toI32()
   eventEntity.queryFeeCut = event.params.queryFeeCut.toI32()
   eventEntity.cooldownBlocks = event.params.cooldownBlocks.toI32()
@@ -78,6 +80,8 @@ export function handleDelegationParametersUpdated(event: DelegationParametersUpd
 export function handleStakeDeposited(event: StakeDeposited): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
 
   // Creates Graph Account, if needed
   createOrLoadGraphAccount(indexerAddress)
@@ -88,7 +92,7 @@ export function handleStakeDeposited(event: StakeDeposited): void {
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
-  eventEntity.account = indexerAddress
+  eventEntity.accounts = accounts
   eventEntity.amount = event.params.tokens
   eventEntity.save()
 }
@@ -102,13 +106,15 @@ export function handleStakeDeposited(event: StakeDeposited): void {
 export function handleStakeLocked(event: StakeLocked): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
 
   let eventEntity = new IndexerStakeLockedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
-  eventEntity.account = indexerAddress
+  eventEntity.accounts = accounts
   eventEntity.amount = event.params.tokens
   eventEntity.lockedUntil = event.params.until
   eventEntity.save()
@@ -122,13 +128,15 @@ export function handleStakeLocked(event: StakeLocked): void {
 export function handleStakeWithdrawn(event: StakeWithdrawn): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
 
   let eventEntity = new IndexerStakeWithdrawnEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
-  eventEntity.account = indexerAddress
+  eventEntity.accounts = accounts
   eventEntity.amount = event.params.tokens
   eventEntity.save()
 }
@@ -140,13 +148,15 @@ export function handleStakeWithdrawn(event: StakeWithdrawn): void {
 export function handleStakeSlashed(event: StakeSlashed): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
 
   let eventEntity = new IndexerStakeSlashedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
-  eventEntity.account = indexerAddress
+  eventEntity.accounts = accounts
   eventEntity.amountSlashed = event.params.tokens
   eventEntity.save()
 }
@@ -155,6 +165,9 @@ export function handleStakeDelegated(event: StakeDelegated): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
   let delegatorAddress = event.params.delegator.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
+  accounts.push(delegatorAddress)
 
   // Creates Graph Account, if needed
   createOrLoadGraphAccount(delegatorAddress)
@@ -166,7 +179,7 @@ export function handleStakeDelegated(event: StakeDelegated): void {
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
   eventEntity.delegator = delegatorAddress
-  eventEntity.account = delegatorAddress
+  eventEntity.accounts = accounts
   eventEntity.tokenAmount = event.params.tokens
   eventEntity.shareAmount = event.params.shares
   eventEntity.save()
@@ -176,6 +189,9 @@ export function handleStakeDelegatedLocked(event: StakeDelegatedLocked): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
   let delegatorAddress = event.params.delegator.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
+  accounts.push(delegatorAddress)
 
   let eventEntity = new DelegatorStakeLockedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
@@ -183,7 +199,7 @@ export function handleStakeDelegatedLocked(event: StakeDelegatedLocked): void {
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
   eventEntity.delegator = delegatorAddress
-  eventEntity.account = delegatorAddress
+  eventEntity.accounts = accounts
   eventEntity.tokenAmount = event.params.tokens
   eventEntity.shareAmount = event.params.shares
   eventEntity.lockedUntil = event.params.until
@@ -194,6 +210,9 @@ export function handleStakeDelegatedWithdrawn(event: StakeDelegatedWithdrawn): v
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
   let delegatorAddress = event.params.delegator.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
+  accounts.push(delegatorAddress)
 
   let eventEntity = new DelegatorStakeWithdrawnEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
@@ -201,7 +220,7 @@ export function handleStakeDelegatedWithdrawn(event: StakeDelegatedWithdrawn): v
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
   eventEntity.delegator = delegatorAddress
-  eventEntity.account = delegatorAddress
+  eventEntity.accounts = accounts
   eventEntity.tokenAmount = event.params.tokens
   eventEntity.save()
 }
@@ -217,6 +236,8 @@ export function handleStakeDelegatedWithdrawn(event: StakeDelegatedWithdrawn): v
 export function handleAllocationCreated(event: AllocationCreated): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
 
   createOrLoadSubgraphDeployment(event.params.subgraphDeploymentID.toHexString())
 
@@ -225,7 +246,7 @@ export function handleAllocationCreated(event: AllocationCreated): void {
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
-  eventEntity.account = indexerAddress
+  eventEntity.accounts = accounts
   eventEntity.allocation = event.params.allocationID.toHexString()
   eventEntity.allocatedAmount = event.params.tokens
   eventEntity.deployment = event.params.subgraphDeploymentID.toHexString()
@@ -243,13 +264,15 @@ export function handleAllocationCreated(event: AllocationCreated): void {
 export function handleAllocationCollected(event: AllocationCollected): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
 
   let eventEntity = new AllocationCollectedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
-  eventEntity.account = indexerAddress
+  eventEntity.accounts = accounts
   eventEntity.allocation = event.params.allocationID.toHexString()
   eventEntity.deployment = event.params.subgraphDeploymentID.toHexString()
   eventEntity.collectedQueryFees = event.params.rebateFees
@@ -268,13 +291,15 @@ export function handleAllocationCollected(event: AllocationCollected): void {
 export function handleAllocationClosed(event: AllocationClosed): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
 
   let eventEntity = new AllocationClosedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
-  eventEntity.account = indexerAddress
+  eventEntity.accounts = accounts
   eventEntity.allocation = event.params.allocationID.toHexString()
   eventEntity.deployment = event.params.subgraphDeploymentID.toHexString()
   eventEntity.save()
@@ -291,13 +316,15 @@ export function handleAllocationClosed(event: AllocationClosed): void {
 export function handleRebateClaimed(event: RebateClaimed): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
 
   let eventEntity = new RebateClaimedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
-  eventEntity.account = indexerAddress
+  eventEntity.accounts = accounts
   eventEntity.allocation = event.params.allocationID.toHexString()
   eventEntity.deployment = event.params.subgraphDeploymentID.toHexString()
   eventEntity.indexerQueryFeeRebates = event.params.tokens
@@ -347,6 +374,8 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
 export function handleSetOperator(event: SetOperator): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(indexerAddress)
 
   // Creates Graph Account, if needed
   createOrLoadGraphAccount(indexerAddress)
@@ -357,7 +386,7 @@ export function handleSetOperator(event: SetOperator): void {
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.indexer = indexerAddress
-  eventEntity.account = indexerAddress
+  eventEntity.accounts = accounts
   eventEntity.operator = event.params.operator
   eventEntity.allowed = event.params.allowed
   eventEntity.save()

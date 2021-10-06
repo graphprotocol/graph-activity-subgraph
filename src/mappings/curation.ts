@@ -25,6 +25,8 @@ export function handleSignalled(event: Signalled): void {
   let curatorID = event.params.curator.toHexString()
   let graphAccount = curatorID
   let deploymentID = event.params.subgraphDeploymentID.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(graphAccount)
 
   // Update the curator and his account
   createOrLoadGraphAccount(curatorID)
@@ -38,7 +40,7 @@ export function handleSignalled(event: Signalled): void {
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.deployment = deploymentID
   eventEntity.curator = curatorID
-  eventEntity.account = curatorID
+  eventEntity.accounts = accounts
   eventEntity.signalId = signalId
   eventEntity.versionSignal = event.params.signal
   eventEntity.tokens = event.params.tokens
@@ -55,6 +57,8 @@ export function handleBurned(event: Burned): void {
   let curatorID = event.params.curator.toHexString()
   let graphAccount = curatorID
   let deploymentID = event.params.subgraphDeploymentID.toHexString()
+  let accounts = new Array<String>();
+  accounts.push(graphAccount)
 
   // Update the curator and his account
   createOrLoadGraphAccount(curatorID)
@@ -67,7 +71,7 @@ export function handleBurned(event: Burned): void {
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.deployment = deploymentID
   eventEntity.curator = curatorID
-  eventEntity.account = curatorID
+  eventEntity.accounts = accounts
   eventEntity.signalId = signalId
   eventEntity.versionSignal = event.params.signal
   eventEntity.tokens = event.params.tokens

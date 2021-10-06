@@ -133,6 +133,8 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   let subgraphNumber = event.params.subgraphNumber.toString()
   let subgraphID = joinID([graphAccountID, subgraphNumber])
   let subgraph = createOrLoadSubgraph(subgraphID, event.params.graphAccount)
+  let accounts = new Array<String>();
+  accounts.push(graphAccountID)
 
   let subgraphVersion = SubgraphVersion.load(subgraph.currentVersion) as SubgraphVersion
   let subgraphDeploymentID = subgraphVersion.subgraphDeployment
@@ -145,7 +147,7 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.subgraph = subgraph.id
-  eventEntity.account = graphAccountID
+  eventEntity.accounts = accounts
   eventEntity.ipfsFileHash = base58Hash
   eventEntity.save()
 }
@@ -165,6 +167,8 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
   let subgraphID = joinID([graphAccountID, subgraphNumber])
   let versionID: string
   let versionNumber: number
+  let accounts = new Array<String>();
+  accounts.push(graphAccountID)
 
   // Update subgraph
   let subgraph = createOrLoadSubgraph(subgraphID, event.params.graphAccount)
@@ -195,7 +199,7 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
   eventEntity.subgraph = subgraph.id
   eventEntity.version = subgraphVersion.id
   eventEntity.deployment = deployment.id
-  eventEntity.account = graphAccountID
+  eventEntity.accounts = accounts
   if (subgraph.versionCount == BigInt.fromI32(1)) {
     let coercedEntity = changetype<NewSubgraphVersionPublishedEvent>(eventEntity)
     coercedEntity.save()
@@ -213,13 +217,15 @@ export function handleSubgraphDeprecated(event: SubgraphDeprecated): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber.toString()
   let subgraphID = joinID([graphAccount, subgraphNumber])
+  let accounts = new Array<String>();
+  accounts.push(graphAccount)
 
   let eventEntity = new SubgraphDeprecatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.subgraph = subgraphID
-  eventEntity.account = graphAccount
+  eventEntity.accounts = accounts
   eventEntity.save()
 }
 
@@ -228,13 +234,15 @@ export function handleNameSignalEnabled(event: NameSignalEnabled): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber.toString()
   let subgraphID = joinID([graphAccount, subgraphNumber])
+  let accounts = new Array<String>();
+  accounts.push(graphAccount)
 
   let eventEntity = new SubgraphNameSignalEnabledEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.subgraph = subgraphID
-  eventEntity.account = graphAccount
+  eventEntity.accounts = accounts
   eventEntity.save()
 }
 
@@ -244,6 +252,8 @@ export function handleNSignalMinted(event: NSignalMinted): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber.toString()
   let subgraphID = joinID([graphAccount, subgraphNumber])
+  let accounts = new Array<String>();
+  accounts.push(graphAccount)
 
   // Update the curator and his account
   createOrLoadGraphAccount(curatorID)
@@ -257,7 +267,7 @@ export function handleNSignalMinted(event: NSignalMinted): void {
   eventEntity.subgraph = subgraphID
   eventEntity.subgraphOwner = graphAccount
   eventEntity.curator = curatorID
-  eventEntity.account = curatorID
+  eventEntity.accounts = accounts
   eventEntity.nameSignalId = nameSignalId
   eventEntity.nameSignal = event.params.nSignalCreated
   eventEntity.versionSignal = event.params.vSignalCreated
@@ -271,6 +281,8 @@ export function handleNSignalBurned(event: NSignalBurned): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber.toString()
   let subgraphID = joinID([graphAccount, subgraphNumber])
+  let accounts = new Array<String>();
+  accounts.push(graphAccount)
 
   // Update the curator and his account
   createOrLoadGraphAccount(curatorID)
@@ -284,7 +296,7 @@ export function handleNSignalBurned(event: NSignalBurned): void {
   eventEntity.subgraph = subgraphID
   eventEntity.subgraphOwner = graphAccount
   eventEntity.curator = curatorID
-  eventEntity.account = curatorID
+  eventEntity.accounts = accounts
   eventEntity.nameSignalId = nameSignalId
   eventEntity.nameSignal = event.params.nSignalBurnt
   eventEntity.versionSignal = event.params.vSignalBurnt
