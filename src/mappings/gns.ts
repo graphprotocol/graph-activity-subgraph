@@ -28,6 +28,7 @@ import {
   SubgraphNameSignalEnabledEvent,
   NSignalMintedEvent,
   NSignalBurnedEvent,
+  GRTWithdrawnEvent,
 } from '../types/schema'
 
 import { zeroBD } from './utils'
@@ -133,7 +134,7 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   let subgraphNumber = event.params.subgraphNumber.toString()
   let subgraphID = joinID([graphAccountID, subgraphNumber])
   let subgraph = createOrLoadSubgraph(subgraphID, event.params.graphAccount)
-  let accounts = new Array<String>();
+  let accounts = new Array<String>()
   accounts.push(graphAccountID)
 
   let subgraphVersion = SubgraphVersion.load(subgraph.currentVersion) as SubgraphVersion
@@ -167,7 +168,7 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
   let subgraphID = joinID([graphAccountID, subgraphNumber])
   let versionID: string
   let versionNumber: number
-  let accounts = new Array<String>();
+  let accounts = new Array<String>()
   accounts.push(graphAccountID)
 
   // Update subgraph
@@ -217,7 +218,7 @@ export function handleSubgraphDeprecated(event: SubgraphDeprecated): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber.toString()
   let subgraphID = joinID([graphAccount, subgraphNumber])
-  let accounts = new Array<String>();
+  let accounts = new Array<String>()
   accounts.push(graphAccount)
 
   let eventEntity = new SubgraphDeprecatedEvent(eventId)
@@ -234,7 +235,7 @@ export function handleNameSignalEnabled(event: NameSignalEnabled): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber.toString()
   let subgraphID = joinID([graphAccount, subgraphNumber])
-  let accounts = new Array<String>();
+  let accounts = new Array<String>()
   accounts.push(graphAccount)
 
   let eventEntity = new SubgraphNameSignalEnabledEvent(eventId)
@@ -252,8 +253,9 @@ export function handleNSignalMinted(event: NSignalMinted): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber.toString()
   let subgraphID = joinID([graphAccount, subgraphNumber])
-  let accounts = new Array<String>();
+  let accounts = new Array<String>()
   accounts.push(graphAccount)
+  accounts.push(curatorID)
 
   // Update the curator and his account
   createOrLoadGraphAccount(curatorID)
@@ -281,8 +283,9 @@ export function handleNSignalBurned(event: NSignalBurned): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber.toString()
   let subgraphID = joinID([graphAccount, subgraphNumber])
-  let accounts = new Array<String>();
+  let accounts = new Array<String>()
   accounts.push(graphAccount)
+  accounts.push(curatorID)
 
   // Update the curator and his account
   createOrLoadGraphAccount(curatorID)
@@ -378,39 +381,32 @@ export function handleNameSignalDisabled(event: NameSignalDisabled): void {
 }
 
 export function handleGRTWithdrawn(event: GRTWithdrawn): void {
-  // let graphAccount = event.params.graphAccount.toHexString()
-  // let subgraphNumber = event.params.subgraphNumber.toString()
-  // let subgraphID = joinID([graphAccount, subgraphNumber])
-  // let subgraph = Subgraph.load(subgraphID)
-  // subgraph.withdrawableTokens = subgraph.withdrawableTokens.minus(event.params.withdrawnGRT)
-  // subgraph.withdrawnTokens = subgraph.withdrawnTokens.plus(event.params.withdrawnGRT)
-  // subgraph.nameSignalAmount = subgraph.nameSignalAmount.minus(event.params.nSignalBurnt)
-  // subgraph.save()
-  //
-  // let nameSignal = createOrLoadNameSignal(
-  //   event.params.nameCurator.toHexString(),
-  //   subgraphID,
-  //   event.block.timestamp,
-  // )
-  // nameSignal.withdrawnTokens = event.params.withdrawnGRT
-  // nameSignal.nameSignal = nameSignal.nameSignal.minus(event.params.nSignalBurnt)
-  // // Resetting this one since we don't have the value to subtract, but it should be 0 anyways.
-  // nameSignal.signal = BigDecimal.fromString('0')
-  // nameSignal.lastNameSignalChange = event.block.timestamp.toI32()
-  //
-  // // Reset everything to 0 since this empties the signal
-  // nameSignal.averageCostBasis = BigDecimal.fromString('0')
-  // nameSignal.averageCostBasisPerSignal = BigDecimal.fromString('0')
-  // nameSignal.nameSignalAverageCostBasis = BigDecimal.fromString('0')
-  // nameSignal.nameSignalAverageCostBasisPerSignal = BigDecimal.fromString('0')
-  // nameSignal.signalAverageCostBasis = BigDecimal.fromString('0')
-  // nameSignal.signalAverageCostBasisPerSignal = BigDecimal.fromString('0')
-  //
-  // nameSignal.save()
-  //
-  // let curator = Curator.load(event.params.nameCurator.toHexString())
-  // curator.totalWithdrawnTokens = curator.totalWithdrawnTokens.plus(event.params.withdrawnGRT)
-  // curator.save()
+  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
+  let curatorID = event.params.nameCurator.toHexString()
+  let graphAccount = event.params.graphAccount.toHexString()
+  let subgraphNumber = event.params.subgraphNumber.toString()
+  let subgraphID = joinID([graphAccount, subgraphNumber])
+  let accounts = new Array<String>()
+  accounts.push(graphAccount)
+  accounts.push(curatorID)
+
+  // Update the curator and his account
+  createOrLoadGraphAccount(curatorID)
+  createOrLoadCurator(curatorID)
+  let nameSignalId = joinID([curatorID, subgraphID])
+
+  let eventEntity = new GRTWithdrawnEvent(eventId)
+  eventEntity.timestamp = event.block.timestamp
+  eventEntity.blockNumber = event.block.number
+  eventEntity.tx_hash = event.transaction.hash
+  eventEntity.subgraph = subgraphID
+  eventEntity.subgraphOwner = graphAccount
+  eventEntity.curator = curatorID
+  eventEntity.accounts = accounts
+  eventEntity.nameSignalId = nameSignalId
+  eventEntity.nameSignal = event.params.nSignalBurnt
+  eventEntity.tokens = event.params.withdrawnGRT
+  eventEntity.save()
 }
 
 /**

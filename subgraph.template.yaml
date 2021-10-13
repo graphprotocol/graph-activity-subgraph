@@ -44,8 +44,8 @@ dataSources:
           handler: handleNSignalBurned
         # - event: NameSignalDisabled(indexed address,indexed uint256,uint256)
         #   handler: handleNameSignalDisabled
-        # - event: GRTWithdrawn(indexed address,indexed uint256,indexed address,uint256,uint256)
-        #   handler: handleGRTWithdrawn
+        - event: GRTWithdrawn(indexed address,indexed uint256,indexed address,uint256,uint256)
+          handler: handleGRTWithdrawn
         # - event: ParameterUpdated(string)
         #   handler: handleParameterUpdated
   - kind: ethereum/contract
@@ -207,8 +207,8 @@ dataSources:
   #       - name: RewardsManager
   #         file: ./node_modules/@graphprotocol/contracts/dist/abis/RewardsManager.json
   #     eventHandlers:
-  #       - event: RewardsAssigned(indexed address,indexed address,uint256,uint256)
-  #         handler: handleRewardsAssigned
+  #       # - event: RewardsAssigned(indexed address,indexed address,uint256,uint256)
+  #       #   handler: handleRewardsAssigned
   #       - event: RewardsDenylistUpdated(indexed bytes32,uint256)
   #         handler: handleRewardsDenyListUpdated
   #       # - event: ImplementationUpdated(address,address)

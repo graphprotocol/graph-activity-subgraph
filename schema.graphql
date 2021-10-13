@@ -142,7 +142,22 @@ interface SubgraphEvent {
   subgraph: Subgraph!
 }
 
-type NewSubgraphPublishedEvent implements SubgraphEvent & Event @entity {
+interface SubgraphDeploymentEvent {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  #epoch: Epoch #Probably re-add epoch later
+
+  deployment: SubgraphDeployment!
+}
+
+type NewSubgraphPublishedEvent implements SubgraphEvent & SubgraphDeploymentEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -162,7 +177,7 @@ type NewSubgraphPublishedEvent implements SubgraphEvent & Event @entity {
   accounts: [GraphAccount!]!
 }
 
-type NewSubgraphVersionPublishedEvent implements SubgraphEvent & Event @entity {
+type NewSubgraphVersionPublishedEvent implements SubgraphEvent & SubgraphDeploymentEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -411,7 +426,7 @@ type IndexerStakeSlashedEvent implements IndexerEvent & GraphAccountEvent & Even
   amountSlashed: BigInt!
 }
 
-type AllocationCreatedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+type AllocationCreatedEvent implements IndexerEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -433,7 +448,7 @@ type AllocationCreatedEvent implements IndexerEvent & GraphAccountEvent & Event 
   deployment: SubgraphDeployment!
 }
 
-type AllocationCollectedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+type AllocationCollectedEvent implements IndexerEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -457,7 +472,7 @@ type AllocationCollectedEvent implements IndexerEvent & GraphAccountEvent & Even
   curatorQueryFees: BigInt!
 }
 
-type AllocationClosedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+type AllocationClosedEvent implements IndexerEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -477,7 +492,7 @@ type AllocationClosedEvent implements IndexerEvent & GraphAccountEvent & Event @
   deployment: SubgraphDeployment!
 }
 
-type RebateClaimedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+type RebateClaimedEvent implements IndexerEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -518,7 +533,7 @@ interface CuratorEvent {
   curator: Curator!
 }
 
-type NSignalMintedEvent implements CuratorEvent & GraphAccountEvent & Event @entity {
+type NSignalMintedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -547,7 +562,7 @@ type NSignalMintedEvent implements CuratorEvent & GraphAccountEvent & Event @ent
   tokens: BigInt!
 }
 
-type NSignalBurnedEvent implements CuratorEvent & GraphAccountEvent & Event @entity {
+type NSignalBurnedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -577,7 +592,35 @@ type NSignalBurnedEvent implements CuratorEvent & GraphAccountEvent & Event @ent
   tokens: BigInt!
 }
 
-type SignalMintedEvent implements CuratorEvent & GraphAccountEvent & Event @entity {
+type GRTWithdrawnEvent implements SubgraphEvent & CuratorEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  subgraph: Subgraph!
+
+  "GraphAccount of the subgraph owner"
+  subgraphOwner: GraphAccount!
+
+  curator: Curator!
+
+  accounts: [GraphAccount!]!
+
+  "ID of the corresponding NameSignal entity on the core subgraph"
+  nameSignalId: String!
+
+  nameSignal: BigInt!
+
+  "Tokens received after burning the NameSignal"
+  tokens: BigInt!
+}
+
+type SignalMintedEvent implements CuratorEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -601,7 +644,7 @@ type SignalMintedEvent implements CuratorEvent & GraphAccountEvent & Event @enti
   tokens: BigInt!
 }
 
-type SignalBurnedEvent implements CuratorEvent & GraphAccountEvent & Event @entity {
+type SignalBurnedEvent implements CuratorEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
