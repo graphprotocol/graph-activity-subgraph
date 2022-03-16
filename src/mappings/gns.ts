@@ -29,12 +29,15 @@ import {
   NSignalMintedEvent,
   NSignalBurnedEvent,
   GRTWithdrawnEvent,
+  ParameterUpdatedEvent,
+  SetDefaultNameEvent,
 } from '../types/schema'
 
 import { zeroBD } from './utils'
 import {
   createOrLoadSubgraphDeployment,
   createOrLoadGraphAccount,
+  createOrLoadIndexer,
   createOrLoadCurator,
   addQm,
   createOrLoadSubgraph,
@@ -42,89 +45,37 @@ import {
 } from './helpers'
 
 export function handleSetDefaultName(event: SetDefaultName): void {
-  // let graphAccount = createOrLoadGraphAccount(
-  //   event.params.graphAccount.toHexString(),
-  //   event.params.graphAccount,
-  //   event.block.timestamp,
-  // )
-  //
-  // if (graphAccount.defaultName != null) {
-  //   let graphAccountName = GraphAccountName.load(graphAccount.defaultName)
-  //   // If trying to set the same name, do nothing
-  //   if (graphAccountName.name == event.params.name) {
-  //     return
-  //   }
-  //
-  //   // A user is resetting their name. This is done by passing nameIdentifier = bytes32(0)
-  //   // String can be anything, but in front end we should just do a blank string
-  //   if (
-  //     event.params.nameIdentifier.toHex() ==
-  //     '0x0000000000000000000000000000000000000000000000000000000000000000'
-  //   ) {
-  //     graphAccountName.graphAccount = null
-  //     graphAccountName.save()
-  //
-  //     graphAccount.defaultName = null
-  //     graphAccount.defaultDisplayName = null
-  //     graphAccount.save()
-  //
-  //     let indexer = Indexer.load(event.params.graphAccount.toHexString())
-  //     if (indexer != null) {
-  //       indexer.defaultDisplayName = graphAccount.defaultDisplayName
-  //       indexer.save()
-  //     }
-  //
-  //     let curator = Curator.load(event.params.graphAccount.toHexString())
-  //     if (curator != null) {
-  //       curator.defaultDisplayName = graphAccount.defaultDisplayName
-  //       curator.save()
-  //     }
-  //
-  //     let delegator = Delegator.load(event.params.graphAccount.toHexString())
-  //     if (delegator != null) {
-  //       delegator.defaultDisplayName = graphAccount.defaultDisplayName
-  //       delegator.save()
-  //     }
-  //     addDefaultNameTokenLockWallets(graphAccount, graphAccount.defaultDisplayName)
-  //   }
-  // }
-  //
   // let newDefaultName = resolveName(
   //   event.params.graphAccount,
   //   event.params.name,
   //   event.params.nameIdentifier,
   // )
-  //
-  // // Edge case - a user sets a correct ID, and then sets an incorrect ID. It should not overwrite
-  // // the good name with null
-  // if (newDefaultName != null) {
-  //   graphAccount.defaultName = newDefaultName
-  //   graphAccount.defaultDisplayName = event.params.name
-  //
-  //   // And if the GraphAccount changes default name, we should change it on the indexer too.
-  //   // Indexer also has a defaultDisplayName because it helps with filtering.
-  //   let userAddress = event.params.graphAccount.toHexString()
-  //
-  //   let indexer = Indexer.load(userAddress)
-  //   if (indexer != null) {
-  //     indexer.defaultDisplayName = graphAccount.defaultDisplayName
-  //     indexer.save()
-  //   }
-  //
-  //   let curator = Curator.load(userAddress)
-  //   if (curator != null) {
-  //     curator.defaultDisplayName = graphAccount.defaultDisplayName
-  //     curator.save()
-  //   }
-  //
-  //   let delegator = Delegator.load(userAddress)
-  //   if (delegator != null) {
-  //     delegator.defaultDisplayName = graphAccount.defaultDisplayName
-  //     delegator.save()
-  //   }
-  //   addDefaultNameTokenLockWallets(graphAccount, graphAccount.defaultDisplayName)
-  // }
-  // graphAccount.save()
+  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
+  let indexerAddress = event.params.graphAccount.toHexString()
+  let accounts = new Array<String>()
+  accounts.push(indexerAddress)
+
+  // Creates Graph Account, if needed
+  createOrLoadGraphAccount(indexerAddress)
+  createOrLoadIndexer(indexerAddress)
+
+  let eventEntity = new SetDefaultNameEvent(eventId)
+  eventEntity.timestamp = event.block.timestamp
+  eventEntity.blockNumber = event.block.number
+  eventEntity.tx_hash = event.transaction.hash
+  eventEntity.indexer = indexerAddress
+  eventEntity.accounts = accounts
+  if (
+    event.params.nameIdentifier.toHex() ==
+    '0x0000000000000000000000000000000000000000000000000000000000000000'
+  ) {
+    // Removing name
+    eventEntity.newDefaultName = ""
+  } else {
+    // should probably do a resolve name to make sure we have the same checks that in the core subgraph
+    eventEntity.newDefaultName = event.params.name
+  }
+  eventEntity.save()
 }
 
 export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): void {
@@ -415,12 +366,11 @@ export function handleGRTWithdrawn(event: GRTWithdrawn): void {
  *   call the contract directly to get the updated value
  */
 export function handleParameterUpdated(event: ParameterUpdated): void {
-  // let parameter = event.params.param
-  // let graphNetwork = GraphNetwork.load('1')
-  // let gns = GNS.bind(event.address)
-  //
-  // if (parameter == 'ownerTaxPercentage') {
-  //   graphNetwork.ownerTaxPercentage = gns.ownerTaxPercentage().toI32()
-  // }
-  // graphNetwork.save()
+  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
+  let eventEntity = new ParameterUpdatedEvent(eventId)
+  eventEntity.timestamp = event.block.timestamp
+  eventEntity.blockNumber = event.block.number
+  eventEntity.tx_hash = event.transaction.hash
+  eventEntity.parameter = event.params.param
+  eventEntity.save()
 }

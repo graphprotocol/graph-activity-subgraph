@@ -1,5 +1,5 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { Indexer, Allocation, SubgraphDeployment } from '../types/schema'
+import { Indexer, Allocation, SubgraphDeployment, ParameterUpdatedEvent, RewardsDenylistUpdatedEvent } from '../types/schema'
 import {
   RewardsAssigned,
   ParameterUpdated,
@@ -88,16 +88,13 @@ export function handleRewardsAssigned(event: RewardsAssigned): void {
  * - handlers updating all parameters
  */
 export function handleParameterUpdated(event: ParameterUpdated): void {
-  // let parameter = event.params.param
-  // let graphNetwork = GraphNetwork.load('1')
-  // let rewardsManager = RewardsManager.bind(event.address as Address)
-  //
-  // if (parameter == 'issuanceRate') {
-  //   graphNetwork.networkGRTIssuance = rewardsManager.issuanceRate()
-  // } else if (parameter == 'subgraphAvailabilityOracle') {
-  //   graphNetwork.subgraphAvailabilityOracle = rewardsManager.subgraphAvailabilityOracle()
-  // }
-  // graphNetwork.save()
+  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
+  let eventEntity = new ParameterUpdatedEvent(eventId)
+  eventEntity.timestamp = event.block.timestamp
+  eventEntity.blockNumber = event.block.number
+  eventEntity.tx_hash = event.transaction.hash
+  eventEntity.parameter = event.params.param
+  eventEntity.save()
 }
 
 // export function handleImplementationUpdated(event: ImplementationUpdated): void {
@@ -109,11 +106,14 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
 // }
 
 export function handleRewardsDenyListUpdated(event: RewardsDenylistUpdated): void {
-  // let subgraphDeployment = SubgraphDeployment.load(event.params.subgraphDeploymentID.toHexString())
-  // if (event.params.sinceBlock.toI32() == 0) {
-  //   subgraphDeployment.deniedAt = 0
-  // } else {
-  //   subgraphDeployment.deniedAt = event.params.sinceBlock.toI32()
-  // }
-  // subgraphDeployment.save()
+  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
+  let subgraphDeploymentID = event.params.subgraphDeploymentID.toHexString()
+
+  let eventEntity = new RewardsDenylistUpdatedEvent(eventId)
+  eventEntity.timestamp = event.block.timestamp
+  eventEntity.blockNumber = event.block.number
+  eventEntity.tx_hash = event.transaction.hash
+  eventEntity.deployment = subgraphDeploymentID
+  eventEntity.deniedAt = event.params.sinceBlock.toI32()
+  eventEntity.save()
 }

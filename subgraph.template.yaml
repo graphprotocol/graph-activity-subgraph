@@ -30,8 +30,8 @@ dataSources:
           handler: handleSubgraphPublished
         - event: SubgraphDeprecated(indexed address,indexed uint256)
           handler: handleSubgraphDeprecated
-        # - event: SetDefaultName(indexed address,uint256,bytes32,string)
-        #   handler: handleSetDefaultName
+        - event: SetDefaultName(indexed address,uint256,bytes32,string)
+          handler: handleSetDefaultName
         - event: SubgraphMetadataUpdated(indexed address,indexed uint256,bytes32)
           handler: handleSubgraphMetadataUpdated
         - event: NameSignalEnabled(indexed address,indexed uint256,indexed bytes32,uint32)
@@ -46,8 +46,8 @@ dataSources:
         #   handler: handleNameSignalDisabled
         - event: GRTWithdrawn(indexed address,indexed uint256,indexed address,uint256,uint256)
           handler: handleGRTWithdrawn
-        # - event: ParameterUpdated(string)
-        #   handler: handleParameterUpdated
+        - event: ParameterUpdated(string)
+          handler: handleParameterUpdated
   - kind: ethereum/contract
     name: ServiceRegistry
     network: {{network}}
@@ -120,8 +120,8 @@ dataSources:
           handler: handleAllocationClosed
         - event: RebateClaimed(indexed address,indexed bytes32,indexed address,uint256,uint256,uint256,uint256,uint256)
           handler: handleRebateClaimed
-        # - event: ParameterUpdated(string)
-        #   handler: handleParameterUpdated
+        - event: ParameterUpdated(string)
+          handler: handleParameterUpdated
         - event: SetOperator(indexed address,indexed address,bool)
           handler: handleSetOperator
         # - event: SlasherUpdate(indexed address,indexed address,bool)
@@ -158,8 +158,8 @@ dataSources:
           handler: handleBurned
         # - event: Collected(indexed bytes32,uint256) NOT used - all can be handled by handleAllocationCollected
         #   handler: handleCollected
-        # - event: ParameterUpdated(string)
-        #   handler: handleParameterUpdated
+        - event: ParameterUpdated(string)
+          handler: handleParameterUpdated
         # - event: ImplementationUpdated(address,address)
         #   handler: handleImplementationUpdated
   # - kind: ethereum/contract
@@ -185,67 +185,67 @@ dataSources:
   #         handler: handleTransfer
   #       - event: Approval(indexed address,indexed address,uint256)
   #         handler: handleApproval
-  # - kind: ethereum/contract
-  #   name: RewardsManager
-  #   network: {{network}}
-  #   source:
-  #     address: '{{rewardsManager}}'
-  #     abi: RewardsManager
-  #     startBlock: {{blockNumber}}
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.5
-  #     language: wasm/assemblyscript
-  #     file: ./src/mappings/rewardsManager.ts
-  #     entities:
-  #       - Indexer
-  #       - Allocation
-  #       - GraphNetwork
-  #       - Epoch
-  #       - SubgraphDeployment
-  #     abis:
-  #       - name: RewardsManager
-  #         file: ./node_modules/@graphprotocol/contracts/dist/abis/RewardsManager.json
-  #     eventHandlers:
-  #       # - event: RewardsAssigned(indexed address,indexed address,uint256,uint256)
-  #       #   handler: handleRewardsAssigned
-  #       - event: RewardsDenylistUpdated(indexed bytes32,uint256)
-  #         handler: handleRewardsDenyListUpdated
-  #       # - event: ImplementationUpdated(address,address)
-  #       #   handler: handleImplementationUpdated
-  #       # - event: ParameterUpdated(string)
-  #       #   handler: handleParameterUpdated
-  # - kind: ethereum/contract
-  #   name: DisputeManager
-  #   network: {{network}}
-  #   source:
-  #     address: '{{disputeManager}}'
-  #     abi: DisputeManager
-  #     startBlock: {{blockNumber}}
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.5
-  #     language: wasm/assemblyscript
-  #     file: ./src/mappings/disputeManager.ts
-  #     entities:
-  #       - TODO
-  #     abis:
-  #       - name: DisputeManager
-  #         file: ./node_modules/@graphprotocol/contracts/dist/abis/DisputeManager.json
-  #       - name: DisputeManagerStitched
-  #         file: ./abis/DisputeManagerStitched.json
-  #     eventHandlers:
-  #       - event: QueryDisputeCreated(indexed bytes32,indexed address,indexed address,uint256,bytes32,bytes)
-  #         handler: handleQueryDisputeCreated
-  #       - event: IndexingDisputeCreated(indexed bytes32,indexed address,indexed address,uint256,address)
-  #         handler: handleIndexingDisputeCreated
-  #       - event: DisputeAccepted(indexed bytes32,indexed address,indexed address,uint256)
-  #         handler: handleDisputeAccepted
-  #       - event: DisputeRejected(indexed bytes32,indexed address,indexed address,uint256)
-  #         handler: handleDisputeRejected
-  #       - event: DisputeDrawn(indexed bytes32,indexed address,indexed address,uint256)
-  #         handler: handleDisputeDrawn
-  #       - event: DisputeLinked(indexed bytes32,indexed bytes32)
-  #         handler: handleDisputeLinked
-  #       # - event: ParameterUpdated(string)
-  #       #   handler: handleParameterUpdated
+  - kind: ethereum/contract
+    name: RewardsManager
+    network: {{network}}
+    source:
+      address: '{{rewardsManager}}'
+      abi: RewardsManager
+      startBlock: {{blockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/rewardsManager.ts
+      entities:
+        - Indexer
+        - Allocation
+        - GraphNetwork
+        - Epoch
+        - SubgraphDeployment
+      abis:
+        - name: RewardsManager
+          file: ./node_modules/@graphprotocol/contracts/dist/abis/RewardsManager.json
+      eventHandlers:
+        # - event: RewardsAssigned(indexed address,indexed address,uint256,uint256)
+        #   handler: handleRewardsAssigned
+        - event: RewardsDenylistUpdated(indexed bytes32,uint256)
+          handler: handleRewardsDenyListUpdated
+        # - event: ImplementationUpdated(address,address)
+        #   handler: handleImplementationUpdated
+        - event: ParameterUpdated(string)
+          handler: handleParameterUpdated
+  - kind: ethereum/contract
+    name: DisputeManager
+    network: {{network}}
+    source:
+      address: '{{disputeManager}}'
+      abi: DisputeManager
+      startBlock: {{blockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/disputeManager.ts
+      entities:
+        - TODO
+      abis:
+        - name: DisputeManager
+          file: ./node_modules/@graphprotocol/contracts/dist/abis/DisputeManager.json
+        - name: DisputeManagerStitched
+          file: ./abis/DisputeManagerStitched.json
+      eventHandlers:
+        # - event: QueryDisputeCreated(indexed bytes32,indexed address,indexed address,uint256,bytes32,bytes)
+        #   handler: handleQueryDisputeCreated
+        # - event: IndexingDisputeCreated(indexed bytes32,indexed address,indexed address,uint256,address)
+        #   handler: handleIndexingDisputeCreated
+        # - event: DisputeAccepted(indexed bytes32,indexed address,indexed address,uint256)
+        #   handler: handleDisputeAccepted
+        # - event: DisputeRejected(indexed bytes32,indexed address,indexed address,uint256)
+        #   handler: handleDisputeRejected
+        # - event: DisputeDrawn(indexed bytes32,indexed address,indexed address,uint256)
+        #   handler: handleDisputeDrawn
+        # - event: DisputeLinked(indexed bytes32,indexed bytes32)
+        #   handler: handleDisputeLinked
+        - event: ParameterUpdated(string)
+          handler: handleParameterUpdated
