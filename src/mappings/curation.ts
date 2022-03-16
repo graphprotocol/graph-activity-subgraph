@@ -1,11 +1,5 @@
-import {
-  Signalled,
-  Burned
-} from '../types/Curation/Curation'
-import {
-  SignalMintedEvent,
-  SignalBurnedEvent
-} from '../types/schema'
+import { Signalled, Burned, ParameterUpdated } from '../types/Curation/Curation'
+import { SignalMintedEvent, SignalBurnedEvent, ParameterUpdatedEvent } from '../types/schema'
 
 import {
   createOrLoadSubgraphDeployment,
@@ -25,7 +19,7 @@ export function handleSignalled(event: Signalled): void {
   let curatorID = event.params.curator.toHexString()
   let graphAccount = curatorID
   let deploymentID = event.params.subgraphDeploymentID.toHexString()
-  let accounts = new Array<String>();
+  let accounts = new Array<String>()
   accounts.push(graphAccount)
 
   // Update the curator and his account
@@ -57,7 +51,7 @@ export function handleBurned(event: Burned): void {
   let curatorID = event.params.curator.toHexString()
   let graphAccount = curatorID
   let deploymentID = event.params.subgraphDeploymentID.toHexString()
-  let accounts = new Array<String>();
+  let accounts = new Array<String>()
   accounts.push(graphAccount)
 
   // Update the curator and his account
@@ -75,5 +69,20 @@ export function handleBurned(event: Burned): void {
   eventEntity.signalId = signalId
   eventEntity.versionSignal = event.params.signal
   eventEntity.tokens = event.params.tokens
+  eventEntity.save()
+}
+
+/**
+ * @dev handleParamterUpdated
+ * - updates all parameters of Curation, depending on string passed. We then can
+ *   call the contract directly to get the updated value
+ */
+export function handleParameterUpdated(event: ParameterUpdated): void {
+  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
+  let eventEntity = new ParameterUpdatedEvent(eventId)
+  eventEntity.timestamp = event.block.timestamp
+  eventEntity.blockNumber = event.block.number
+  eventEntity.tx_hash = event.transaction.hash
+  eventEntity.parameter = event.params.param
   eventEntity.save()
 }
