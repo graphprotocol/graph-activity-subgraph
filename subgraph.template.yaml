@@ -24,7 +24,7 @@ dataSources:
         - NameSignal
       abis:
         - name: GNS
-          file: ./node_modules/@graphprotocol/contracts/dist/abis/GNS.json
+          file: ./abis/GNSStitched.json
       eventHandlers:
         - event: SubgraphPublished(indexed address,indexed uint256,indexed bytes32,bytes32)
           handler: handleSubgraphPublished
@@ -48,6 +48,25 @@ dataSources:
           handler: handleGRTWithdrawn
         - event: ParameterUpdated(string)
           handler: handleParameterUpdated
+        # v2
+        - event: SubgraphPublished(indexed uint256,indexed bytes32,uint32)
+          handler: handleSubgraphPublishedV2
+        - event: SubgraphDeprecated(indexed uint256,uint256)
+          handler: handleSubgraphDeprecatedV2
+        - event: SubgraphMetadataUpdated(indexed uint256,bytes32)
+          handler: handleSubgraphMetadataUpdatedV2
+        - event: SignalMinted(indexed uint256,indexed address,uint256,uint256,uint256)
+          handler: handleNSignalMintedV2
+        - event: SignalBurned(indexed uint256,indexed address,uint256,uint256,uint256)
+          handler: handleNSignalBurnedV2
+        - event: GRTWithdrawn(indexed uint256,indexed address,uint256,uint256)
+          handler: handleGRTWithdrawnV2
+        - event: SubgraphUpgraded(indexed uint256,uint256,uint256,indexed bytes32)
+          handler: handleSubgraphUpgraded
+        - event: SubgraphVersionUpdated(indexed uint256,indexed bytes32,bytes32)
+          handler: handleSubgraphVersionUpdated
+        # - event: LegacySubgraphClaimed(indexed address,uint256)
+        #   handler: handleLegacySubgraphClaimed
   - kind: ethereum/contract
     name: ServiceRegistry
     network: {{network}}

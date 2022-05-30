@@ -590,9 +590,6 @@ type NSignalMintedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEv
 
   subgraph: Subgraph!
 
-  "GraphAccount of the subgraph owner"
-  subgraphOwner: GraphAccount!
-
   curator: Curator!
 
   accounts: [GraphAccount!]!
@@ -618,9 +615,6 @@ type NSignalBurnedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEv
   tx_hash: Bytes!
 
   subgraph: Subgraph!
-
-  "GraphAccount of the subgraph owner"
-  subgraphOwner: GraphAccount!
 
   curator: Curator!
 
@@ -648,9 +642,6 @@ type GRTWithdrawnEvent implements SubgraphEvent & CuratorEvent & GraphAccountEve
   tx_hash: Bytes!
 
   subgraph: Subgraph!
-
-  "GraphAccount of the subgraph owner"
-  subgraphOwner: GraphAccount!
 
   curator: Curator!
 
