@@ -135,8 +135,6 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
 
   // Update subgraph
   let subgraph = createOrLoadSubgraph(subgraphID, event.params.graphAccount)
-  let oldVersionID = subgraph.currentVersion
-
   versionID = joinID([subgraphID, subgraph.versionCount.toString()])
   subgraph.currentVersion = versionID
   subgraph.versionCount = subgraph.versionCount.plus(BigInt.fromI32(1))
