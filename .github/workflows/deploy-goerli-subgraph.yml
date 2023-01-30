@@ -19,18 +19,16 @@ jobs:
         with:
           node-version: '14'
           registry-url: https://registry.npmjs.org
-      - name: yarn add @graphprotocol/graph-cli
-        run: yarn add @graphprotocol/graph-cli
       - name: yarn add ts-node
         run: yarn add ts-node
       - name: yarn install
-        run: yarn install
+        run: yarn
         env:
           NODE_AUTH_TOKEN: ${{secrets.graphprotocol_npm_token}}
 
       # Run scripts
       - name: Prepare addresses testnet
-        run: ./node_modules/.bin/ts-node config/goerliAddressScript.ts && ./node_modules/.bin/mustache ./config/generatedAddresses.json ./config/addresses.template.ts > ./config/addresses.ts
+        run: ./node_modules/.bin/ts-node ./config/goerliAddressScript.ts && ./node_modules/.bin/mustache ./config/generatedAddresses.json ./config/addresses.template.ts > ./config/addresses.ts
       - name: Prepare testnet
         run: ./node_modules/.bin/mustache ./config/generatedAddresses.json subgraph.template.yaml > subgraph.yaml && ./node_modules/@graphprotocol/graph-cli/bin/graph codegen --output-dir src/types/
       - name: Deploy to testnet
