@@ -4,6 +4,7 @@ import {
   Allocation,
   SubgraphDeployment,
   Dispute,
+  ParameterUpdatedEvent,
 } from '../types/schema'
 import {
   ParameterUpdated,
@@ -151,36 +152,11 @@ export function handleDisputeLinked(event: DisputeLinked): void {
  * - handlers updating all parameters
  */
 export function handleParameterUpdated(event: ParameterUpdated): void {
-  // let parameter = event.params.param
-  // let graphNetwork = GraphNetwork.load('1')
-  // let disputeManager = DisputeManagerStitched.bind(event.address as Address)
-  //
-  // if (parameter == 'arbitrator') {
-  //   graphNetwork.arbitrator = disputeManager.arbitrator()
-  // } else if (parameter == 'minimumDeposit') {
-  //   graphNetwork.minimumDisputeDeposit = disputeManager.minimumDeposit()
-  // } else if (parameter == 'slashingPercentage') {
-  //   let slashingPercentageResponse = disputeManager.try_slashingPercentage()
-  //   if(!slashingPercentageResponse.reverted) {
-  //     graphNetwork.querySlashingPercentage = slashingPercentageResponse.value.toI32()
-  //     graphNetwork.indexingSlashingPercentage = slashingPercentageResponse.value.toI32()
-  //     graphNetwork.slashingPercentage = slashingPercentageResponse.value.toI32()
-  //   } else {
-  //     let qryResponse = disputeManager.try_qrySlashingPercentage()
-  //     let idxResponse = disputeManager.try_idxSlashingPercentage()
-  //     graphNetwork.querySlashingPercentage = qryResponse.reverted ? graphNetwork.querySlashingPercentage : qryResponse.value.toI32()
-  //     graphNetwork.indexingSlashingPercentage = idxResponse.reverted ? graphNetwork.indexingSlashingPercentage : idxResponse.value.toI32()
-  //     graphNetwork.slashingPercentage = idxResponse.reverted ? graphNetwork.slashingPercentage : idxResponse.value.toI32()
-  //   }
-  // } else if (parameter == 'qrySlashingPercentage') {
-  //   let qryResponse = disputeManager.try_qrySlashingPercentage()
-  //   graphNetwork.querySlashingPercentage = qryResponse.reverted ? graphNetwork.querySlashingPercentage : qryResponse.value.toI32()
-  // } else if (parameter == 'idxSlashingPercentage') {
-  //   let idxResponse = disputeManager.try_idxSlashingPercentage()
-  //   graphNetwork.indexingSlashingPercentage = idxResponse.reverted ? graphNetwork.indexingSlashingPercentage : idxResponse.value.toI32()
-  //   graphNetwork.slashingPercentage = idxResponse.reverted ? graphNetwork.slashingPercentage : idxResponse.value.toI32()
-  // } else if (parameter == 'fishermanRewardPercentage') {
-  //   graphNetwork.fishermanRewardPercentage = disputeManager.fishermanRewardPercentage().toI32()
-  // }
-  // graphNetwork.save()
+  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
+  let eventEntity = new ParameterUpdatedEvent(eventId)
+  eventEntity.timestamp = event.block.timestamp
+  eventEntity.blockNumber = event.block.number
+  eventEntity.tx_hash = event.transaction.hash
+  eventEntity.parameter = event.params.param
+  eventEntity.save()
 }

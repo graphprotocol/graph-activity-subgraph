@@ -38,6 +38,7 @@ import {
   AllocationClosedEvent,
   RebateClaimedEvent,
   SetOperatorEvent,
+  ParameterUpdatedEvent,
 } from '../types/schema'
 
 import {
@@ -338,37 +339,13 @@ export function handleRebateClaimed(event: RebateClaimed): void {
  *   call the contract directly to get the updated value
  */
 export function handleParameterUpdated(event: ParameterUpdated): void {
-  // let parameter = event.params.param
-  // let graphNetwork = GraphNetwork.load('1')
-  // let staking = Staking.bind(event.address)
-  //
-  // if (parameter == 'minimumIndexerStake') {
-  //   graphNetwork.minimumIndexerStake = staking.minimumIndexerStake()
-  // } else if (parameter == 'thawingPeriod') {
-  //   graphNetwork.thawingPeriod = staking.thawingPeriod().toI32()
-  // } else if (parameter == 'curationPercentage') {
-  //   graphNetwork.curationPercentage = staking.curationPercentage().toI32()
-  // } else if (parameter == 'protocolPercentage') {
-  //   graphNetwork.protocolFeePercentage = staking.protocolPercentage().toI32()
-  // } else if (parameter == 'channelDisputeEpochs') {
-  //   graphNetwork.channelDisputeEpochs = staking.channelDisputeEpochs().toI32()
-  // } else if (parameter == 'maxAllocationEpochs') {
-  //   graphNetwork.maxAllocationEpochs = staking.maxAllocationEpochs().toI32()
-  // } else if (parameter == 'rebateRatio') {
-  //   graphNetwork.rebateRatio = staking
-  //     .alphaNumerator()
-  //     .toBigDecimal()
-  //     .div(staking.alphaDenominator().toBigDecimal()) // alphaDemoninator != 0, no div() protection needed
-  // } else if (parameter == 'delegationRatio') {
-  //   graphNetwork.delegationRatio = staking.delegationRatio().toI32()
-  // } else if (parameter == 'delegationParametersCooldown') {
-  //   graphNetwork.delegationParametersCooldown = staking.delegationParametersCooldown().toI32()
-  // } else if (parameter == 'delegationUnbondingPeriod') {
-  //   graphNetwork.delegationUnbondingPeriod = staking.delegationUnbondingPeriod().toI32()
-  // } else if (parameter == 'delegationTaxPercentage') {
-  //   graphNetwork.delegationTaxPercentage = staking.delegationTaxPercentage().toI32()
-  // }
-  // graphNetwork.save()
+  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
+  let eventEntity = new ParameterUpdatedEvent(eventId)
+  eventEntity.timestamp = event.block.timestamp
+  eventEntity.blockNumber = event.block.number
+  eventEntity.tx_hash = event.transaction.hash
+  eventEntity.parameter = event.params.param
+  eventEntity.save()
 }
 
 export function handleSetOperator(event: SetOperator): void {

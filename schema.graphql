@@ -125,6 +125,19 @@ interface Event {
   #epoch: Epoch #Probably re-add epoch later
 }
 
+type ParameterUpdatedEvent implements Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  parameter: String!
+}
+
 # Subgraph related events
 
 interface SubgraphEvent {
@@ -155,6 +168,21 @@ interface SubgraphDeploymentEvent {
   #epoch: Epoch #Probably re-add epoch later
 
   deployment: SubgraphDeployment!
+}
+
+type RewardsDenylistUpdatedEvent implements SubgraphDeploymentEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  deployment: SubgraphDeployment!
+
+  deniedAt: Int!
 }
 
 type NewSubgraphPublishedEvent implements SubgraphEvent & SubgraphDeploymentEvent & Event @entity {
@@ -313,6 +341,23 @@ type IndexerServiceUnregisteredEvent implements IndexerEvent & GraphAccountEvent
   indexer: Indexer!
 
   accounts: [GraphAccount!]!
+}
+
+type SetDefaultNameEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  indexer: Indexer!
+
+  accounts: [GraphAccount!]!
+
+  newDefaultName: String!
 }
 
 type DelegationParametersUpdatedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
@@ -545,9 +590,6 @@ type NSignalMintedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEv
 
   subgraph: Subgraph!
 
-  "GraphAccount of the subgraph owner"
-  subgraphOwner: GraphAccount!
-
   curator: Curator!
 
   accounts: [GraphAccount!]!
@@ -573,9 +615,6 @@ type NSignalBurnedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEv
   tx_hash: Bytes!
 
   subgraph: Subgraph!
-
-  "GraphAccount of the subgraph owner"
-  subgraphOwner: GraphAccount!
 
   curator: Curator!
 
@@ -603,9 +642,6 @@ type GRTWithdrawnEvent implements SubgraphEvent & CuratorEvent & GraphAccountEve
   tx_hash: Bytes!
 
   subgraph: Subgraph!
-
-  "GraphAccount of the subgraph owner"
-  subgraphOwner: GraphAccount!
 
   curator: Curator!
 

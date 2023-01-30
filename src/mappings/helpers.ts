@@ -51,10 +51,7 @@ export function createOrLoadDelegator(id: string): Delegator {
   return delegator as Delegator
 }
 
-export function createOrLoadDelegatedStake(
-  delegator: string,
-  indexer: string,
-): DelegatedStake {
+export function createOrLoadDelegatedStake(delegator: string, indexer: string): DelegatedStake {
   let id = joinID([delegator, indexer])
   let delegatedStake = DelegatedStake.load(id)
   if (delegatedStake == null) {
@@ -107,9 +104,7 @@ export function createOrLoadCurator(id: string): Curator {
 //   return nameSignal as NameSignal
 // }
 
-export function createOrLoadGraphAccount(
-  id: string,
-): GraphAccount {
+export function createOrLoadGraphAccount(id: string): GraphAccount {
   let graphAccount = GraphAccount.load(id)
   if (graphAccount == null) {
     graphAccount = new GraphAccount(id)
@@ -167,4 +162,28 @@ function min(a: BigDecimal, b: BigDecimal): BigDecimal {
 
 function max(a: BigDecimal, b: BigDecimal): BigDecimal {
   return a > b ? a : b
+}
+
+export function convertBigIntSubgraphIDToBase58(bigIntRepresentation: BigInt): String {
+  // Might need to unpad the BigInt since `fromUnsignedBytes` pads one byte with a zero.
+  // Although for the events where the uint256 is provided, we probably don't need to unpad.
+  let hexString = bigIntRepresentation.toHexString()
+  if (hexString.length % 2 != 0) {
+    log.error('Hex string not even, hex: {}, original: {}. Padding it to even length', [
+      hexString,
+      bigIntRepresentation.toString(),
+    ])
+    hexString = '0x0' + hexString.slice(2)
+  }
+  let bytes = ByteArray.fromHexString(hexString)
+  return bytes.toBase58()
+}
+
+export function getSubgraphID(graphAccountStr: String, subgraphNumber: BigInt): BigInt {
+  let subgraphNumberStr = subgraphNumber.toHexString().slice(2)
+  let number = subgraphNumberStr.padStart(64, '0')
+  let unhashedSubgraphID = graphAccountStr.concat(number)
+  let hashedId = Bytes.fromByteArray(crypto.keccak256(ByteArray.fromHexString(unhashedSubgraphID)))
+  let bigIntRepresentation = BigInt.fromUnsignedBytes(changetype<Bytes>(hashedId.reverse()))
+  return bigIntRepresentation
 }
