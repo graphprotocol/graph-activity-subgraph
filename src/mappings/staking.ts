@@ -64,6 +64,7 @@ export function handleDelegationParametersUpdated(event: DelegationParametersUpd
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "DelegationParametersUpdatedEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.indexingRewardCut = event.params.indexingRewardCut.toI32()
@@ -92,6 +93,7 @@ export function handleStakeDeposited(event: StakeDeposited): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "IndexerStakeDepositedEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.amount = event.params.tokens
@@ -114,6 +116,7 @@ export function handleStakeLocked(event: StakeLocked): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "IndexerStakeLockedEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.amount = event.params.tokens
@@ -136,6 +139,7 @@ export function handleStakeWithdrawn(event: StakeWithdrawn): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "IndexerStakeWithdrawnEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.amount = event.params.tokens
@@ -156,6 +160,7 @@ export function handleStakeSlashed(event: StakeSlashed): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "IndexerStakeSlashedEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.amountSlashed = event.params.tokens
@@ -178,6 +183,7 @@ export function handleStakeDelegated(event: StakeDelegated): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "DelegatorStakeDepositedEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.delegator = delegatorAddress
   eventEntity.accounts = accounts
@@ -198,6 +204,7 @@ export function handleStakeDelegatedLocked(event: StakeDelegatedLocked): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "DelegatorStakeLockedEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.delegator = delegatorAddress
   eventEntity.accounts = accounts
@@ -219,6 +226,7 @@ export function handleStakeDelegatedWithdrawn(event: StakeDelegatedWithdrawn): v
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "DelegatorStakeWithdrawnEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.delegator = delegatorAddress
   eventEntity.accounts = accounts
@@ -246,6 +254,7 @@ export function handleAllocationCreated(event: AllocationCreated): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "AllocationCreatedEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.allocation = event.params.allocationID.toHexString()
@@ -272,6 +281,7 @@ export function handleAllocationCollected(event: AllocationCollected): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "AllocationCollectedEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.allocation = event.params.allocationID.toHexString()
@@ -299,6 +309,7 @@ export function handleAllocationClosed(event: AllocationClosed): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "AllocationClosedEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.allocation = event.params.allocationID.toHexString()
@@ -324,6 +335,7 @@ export function handleRebateClaimed(event: RebateClaimed): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "RebateClaimedEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.allocation = event.params.allocationID.toHexString()
@@ -344,6 +356,7 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "ParameterUpdatedEvent"
   eventEntity.parameter = event.params.param
   eventEntity.save()
 }
@@ -362,6 +375,7 @@ export function handleSetOperator(event: SetOperator): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "SetOperatorEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.operator = event.params.operator

@@ -20,6 +20,7 @@ export function handleServiceRegistered(event: ServiceRegistered): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "IndexerServiceRegisteredEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.url = event.params.url
@@ -37,10 +38,11 @@ export function handleServiceUnregistered(event: ServiceUnregistered): void {
   let accounts = new Array<String>();
   accounts.push(indexerAddress)
 
-  let eventEntity = new IndexerServiceRegisteredEvent(eventId)
+  let eventEntity = new IndexerServiceUnregisteredEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "IndexerServiceUnregisteredEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.save()

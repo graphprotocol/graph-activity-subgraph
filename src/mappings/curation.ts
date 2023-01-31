@@ -32,6 +32,7 @@ export function handleSignalled(event: Signalled): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "SignalMintedEvent"
   eventEntity.deployment = deploymentID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -63,6 +64,7 @@ export function handleBurned(event: Burned): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "SignalBurnedEvent"
   eventEntity.deployment = deploymentID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -83,6 +85,7 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "ParameterUpdatedEvent"
   eventEntity.parameter = event.params.param
   eventEntity.save()
 }

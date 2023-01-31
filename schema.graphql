@@ -122,6 +122,8 @@ interface Event {
 
   tx_hash: Bytes!
 
+  typename: String!
+
   #epoch: Epoch #Probably re-add epoch later
 }
 
@@ -134,6 +136,8 @@ type ParameterUpdatedEvent implements Event @entity {
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   parameter: String!
 }
@@ -150,6 +154,8 @@ interface SubgraphEvent {
 
   tx_hash: Bytes!
 
+  typename: String!
+
   #epoch: Epoch #Probably re-add epoch later
 
   subgraph: Subgraph!
@@ -164,6 +170,8 @@ interface SubgraphDeploymentEvent {
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   #epoch: Epoch #Probably re-add epoch later
 
@@ -180,6 +188,8 @@ type RewardsDenylistUpdatedEvent implements SubgraphDeploymentEvent & Event @ent
 
   tx_hash: Bytes!
 
+  typename: String!
+
   deployment: SubgraphDeployment!
 
   deniedAt: Int!
@@ -194,6 +204,8 @@ type NewSubgraphPublishedEvent implements SubgraphEvent & SubgraphDeploymentEven
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   subgraph: Subgraph!
 
@@ -215,6 +227,8 @@ type NewSubgraphVersionPublishedEvent implements SubgraphEvent & SubgraphDeploym
 
   tx_hash: Bytes!
 
+  typename: String!
+
   subgraph: Subgraph!
 
   version: SubgraphVersion!
@@ -235,6 +249,8 @@ type SubgraphMetadataUpdatedEvent implements SubgraphEvent & Event @entity {
 
   tx_hash: Bytes!
 
+  typename: String!
+
   subgraph: Subgraph!
 
   "User that triggered the Event"
@@ -253,6 +269,8 @@ type SubgraphDeprecatedEvent implements SubgraphEvent & Event @entity {
 
   tx_hash: Bytes!
 
+  typename: String!
+
   subgraph: Subgraph!
 
   "User that triggered the Event"
@@ -268,6 +286,8 @@ type SubgraphNameSignalEnabledEvent implements SubgraphEvent & Event @entity {
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   subgraph: Subgraph!
 
@@ -287,6 +307,8 @@ interface GraphAccountEvent {
 
   tx_hash: Bytes!
 
+  typename: String!
+
   #epoch: Epoch #Probably re-add epoch later
 
   accounts: [GraphAccount!]!
@@ -304,6 +326,8 @@ interface IndexerEvent {
 
   tx_hash: Bytes!
 
+  typename: String!
+
   #epoch: Epoch #Probably re-add epoch later
 
   indexer: Indexer!
@@ -318,6 +342,8 @@ type IndexerServiceRegisteredEvent implements IndexerEvent & GraphAccountEvent &
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   indexer: Indexer!
 
@@ -338,6 +364,8 @@ type IndexerServiceUnregisteredEvent implements IndexerEvent & GraphAccountEvent
 
   tx_hash: Bytes!
 
+  typename: String!
+
   indexer: Indexer!
 
   accounts: [GraphAccount!]!
@@ -352,6 +380,8 @@ type SetDefaultNameEvent implements IndexerEvent & GraphAccountEvent & Event @en
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   indexer: Indexer!
 
@@ -369,6 +399,8 @@ type DelegationParametersUpdatedEvent implements IndexerEvent & GraphAccountEven
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   indexer: Indexer!
 
@@ -391,6 +423,8 @@ type SetOperatorEvent implements IndexerEvent & GraphAccountEvent & Event @entit
 
   tx_hash: Bytes!
 
+  typename: String!
+
   indexer: Indexer!
 
   accounts: [GraphAccount!]!
@@ -410,6 +444,8 @@ type IndexerStakeDepositedEvent implements IndexerEvent & GraphAccountEvent & Ev
 
   tx_hash: Bytes!
 
+  typename: String!
+
   indexer: Indexer!
 
   accounts: [GraphAccount!]!
@@ -426,6 +462,8 @@ type IndexerStakeLockedEvent implements IndexerEvent & GraphAccountEvent & Event
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   indexer: Indexer!
 
@@ -446,6 +484,8 @@ type IndexerStakeWithdrawnEvent implements IndexerEvent & GraphAccountEvent & Ev
 
   tx_hash: Bytes!
 
+  typename: String!
+
   indexer: Indexer!
 
   accounts: [GraphAccount!]!
@@ -462,6 +502,8 @@ type IndexerStakeSlashedEvent implements IndexerEvent & GraphAccountEvent & Even
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   indexer: Indexer!
 
@@ -480,6 +522,8 @@ type AllocationCreatedEvent implements IndexerEvent & SubgraphDeploymentEvent & 
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   indexer: Indexer!
 
@@ -502,6 +546,8 @@ type AllocationCollectedEvent implements IndexerEvent & SubgraphDeploymentEvent 
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   indexer: Indexer!
 
@@ -527,6 +573,8 @@ type AllocationClosedEvent implements IndexerEvent & SubgraphDeploymentEvent & G
 
   tx_hash: Bytes!
 
+  typename: String!
+
   indexer: Indexer!
 
   accounts: [GraphAccount!]!
@@ -546,6 +594,8 @@ type RebateClaimedEvent implements IndexerEvent & SubgraphDeploymentEvent & Grap
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   indexer: Indexer!
 
@@ -573,6 +623,8 @@ interface CuratorEvent {
 
   tx_hash: Bytes!
 
+  typename: String!
+
   #epoch: Epoch #Probably re-add epoch later
 
   curator: Curator!
@@ -587,6 +639,8 @@ type NSignalMintedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEv
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   subgraph: Subgraph!
 
@@ -613,6 +667,8 @@ type NSignalBurnedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEv
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   subgraph: Subgraph!
 
@@ -641,6 +697,8 @@ type GRTWithdrawnEvent implements SubgraphEvent & CuratorEvent & GraphAccountEve
 
   tx_hash: Bytes!
 
+  typename: String!
+
   subgraph: Subgraph!
 
   curator: Curator!
@@ -666,6 +724,8 @@ type SignalMintedEvent implements CuratorEvent & SubgraphDeploymentEvent & Graph
 
   tx_hash: Bytes!
 
+  typename: String!
+
   deployment: SubgraphDeployment!
 
   curator: Curator!
@@ -689,6 +749,8 @@ type SignalBurnedEvent implements CuratorEvent & SubgraphDeploymentEvent & Graph
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   deployment: SubgraphDeployment!
 
@@ -717,13 +779,14 @@ interface DelegatorEvent {
 
   tx_hash: Bytes!
 
+  typename: String!
+
   #epoch: Epoch #Probably re-add epoch later
 
   delegator: Delegator!
 }
 
-type DelegatorStakeDepositedEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event
-  @entity {
+type DelegatorStakeDepositedEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -732,6 +795,8 @@ type DelegatorStakeDepositedEvent implements DelegatorEvent & IndexerEvent & Gra
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   indexer: Indexer!
 
@@ -744,8 +809,7 @@ type DelegatorStakeDepositedEvent implements DelegatorEvent & IndexerEvent & Gra
   shareAmount: BigInt!
 }
 
-type DelegatorStakeLockedEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event
-  @entity {
+type DelegatorStakeLockedEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -754,6 +818,8 @@ type DelegatorStakeLockedEvent implements DelegatorEvent & IndexerEvent & GraphA
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   indexer: Indexer!
 
@@ -768,8 +834,7 @@ type DelegatorStakeLockedEvent implements DelegatorEvent & IndexerEvent & GraphA
   lockedUntil: BigInt!
 }
 
-type DelegatorStakeWithdrawnEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event
-  @entity {
+type DelegatorStakeWithdrawnEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event @entity {
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -778,6 +843,8 @@ type DelegatorStakeWithdrawnEvent implements DelegatorEvent & IndexerEvent & Gra
   blockNumber: BigInt!
 
   tx_hash: Bytes!
+
+  typename: String!
 
   indexer: Indexer!
 

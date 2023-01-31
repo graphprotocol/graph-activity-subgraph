@@ -74,6 +74,7 @@ export function handleSetDefaultName(event: SetDefaultName): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "SetDefaultNameEvent"
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   if (
@@ -109,6 +110,7 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "SubgraphMetadataUpdatedEvent"
   eventEntity.subgraph = subgraph.id
   eventEntity.accounts = accounts
   eventEntity.ipfsFileHash = base58Hash
@@ -157,6 +159,7 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "NewSubgraphPublishedEvent"
   eventEntity.subgraph = subgraph.id
   eventEntity.version = subgraphVersion.id
   eventEntity.deployment = deployment.id
@@ -185,6 +188,7 @@ export function handleSubgraphDeprecated(event: SubgraphDeprecated): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "SubgraphDeprecatedEvent"
   eventEntity.subgraph = subgraphID
   eventEntity.accounts = accounts
   eventEntity.save()
@@ -202,6 +206,7 @@ export function handleNameSignalEnabled(event: NameSignalEnabled): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "SubgraphNameSignalEnabledEvent"
   eventEntity.subgraph = subgraphID
   eventEntity.accounts = accounts
   eventEntity.save()
@@ -226,6 +231,7 @@ export function handleNSignalMinted(event: NSignalMinted): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "NSignalMintedEvent"
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -255,6 +261,7 @@ export function handleNSignalBurned(event: NSignalBurned): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "NSignalBurnedEvent"
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -357,6 +364,7 @@ export function handleGRTWithdrawn(event: GRTWithdrawn): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "GRTWithdrawnEvent"
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -377,6 +385,7 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "ParameterUpdatedEvent"
   eventEntity.parameter = event.params.param
   eventEntity.save()
 }
@@ -418,6 +427,7 @@ export function handleSubgraphPublishedV2(event: SubgraphPublished1): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "NewSubgraphPublishedEvent"
   eventEntity.subgraph = subgraph.id
   eventEntity.version = subgraphVersion.id
   eventEntity.deployment = deployment.id
@@ -440,6 +450,7 @@ export function handleSubgraphDeprecatedV2(event: SubgraphDeprecated1): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "SubgraphDeprecatedEvent"
   eventEntity.subgraph = subgraphID
   eventEntity.accounts = accounts
   eventEntity.save()
@@ -467,6 +478,7 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "SubgraphMetadataUpdatedEvent"
   eventEntity.subgraph = subgraph.id
   eventEntity.accounts = accounts
   eventEntity.ipfsFileHash = base58Hash
@@ -493,6 +505,7 @@ export function handleNSignalMintedV2(event: SignalMinted): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "NSignalMintedEvent"
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -523,6 +536,7 @@ export function handleNSignalBurnedV2(event: SignalBurned): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "NSignalBurnedEvent"
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -553,6 +567,7 @@ export function handleGRTWithdrawnV2(event: GRTWithdrawn1): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "GRTWithdrawnEvent"
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -616,6 +631,7 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "NewSubgraphVersionPublishedEvent"
   eventEntity.subgraph = subgraph.id
   eventEntity.version = subgraphVersion.id
   eventEntity.deployment = deployment.id
