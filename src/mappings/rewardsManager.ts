@@ -93,6 +93,7 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "ParameterUpdatedEvent"
   eventEntity.parameter = event.params.param
   eventEntity.save()
 }
@@ -113,6 +114,7 @@ export function handleRewardsDenyListUpdated(event: RewardsDenylistUpdated): voi
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "RewardsDenylistUpdatedEvent"
   eventEntity.deployment = subgraphDeploymentID
   eventEntity.deniedAt = event.params.sinceBlock.toI32()
   eventEntity.save()

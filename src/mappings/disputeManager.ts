@@ -157,6 +157,7 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = "ParameterUpdatedEvent"
   eventEntity.parameter = event.params.param
   eventEntity.save()
 }
