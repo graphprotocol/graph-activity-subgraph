@@ -17,6 +17,11 @@ import {
   DisputeManager,
 } from '../types/DisputeManager/DisputeManager'
 import { DisputeManagerStitched } from '../types/DisputeManager/DisputeManagerStitched'
+import {
+  getCounter,
+  BIGINT_ZERO,
+  BIGINT_ONE,
+} from './helpers'
 
 // This handles  Single query and Conflicting disputes
 export function handleQueryDisputeCreated(event: QueryDisputeCreated): void {
@@ -160,4 +165,9 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
   eventEntity.typename = "ParameterUpdatedEvent"
   eventEntity.parameter = event.params.param
   eventEntity.save()
+  
+  let counter = getCounter()
+  counter.parameterUpdatedEventCount = counter.parameterUpdatedEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.save()
 }

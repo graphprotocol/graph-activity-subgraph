@@ -1,6 +1,6 @@
 import { IndexerServiceRegisteredEvent, IndexerServiceUnregisteredEvent } from '../types/schema'
 import { ServiceRegistered, ServiceUnregistered } from '../types/ServiceRegistry/ServiceRegistry'
-import { createOrLoadIndexer, createOrLoadGraphAccount } from './helpers'
+import { createOrLoadIndexer, createOrLoadGraphAccount, getCounter, BIGINT_ONE } from './helpers'
 
 /**
  * @dev handleServiceRegistered
@@ -9,7 +9,7 @@ import { createOrLoadIndexer, createOrLoadGraphAccount } from './helpers'
 export function handleServiceRegistered(event: ServiceRegistered): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
-  let accounts = new Array<String>();
+  let accounts = new Array<String>()
   accounts.push(indexerAddress)
 
   // Creates Graph Account, if needed
@@ -20,12 +20,20 @@ export function handleServiceRegistered(event: ServiceRegistered): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "IndexerServiceRegisteredEvent"
+  eventEntity.typename = 'IndexerServiceRegisteredEvent'
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.url = event.params.url
   eventEntity.geoHash = event.params.geohash
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.indexerServiceRegisteredEventCount =
+    counter.indexerServiceRegisteredEventCount.plus(BIGINT_ONE)
+  counter.indexerEventCount = counter.indexerEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 /**
@@ -35,15 +43,23 @@ export function handleServiceRegistered(event: ServiceRegistered): void {
 export function handleServiceUnregistered(event: ServiceUnregistered): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
-  let accounts = new Array<String>();
+  let accounts = new Array<String>()
   accounts.push(indexerAddress)
 
   let eventEntity = new IndexerServiceUnregisteredEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "IndexerServiceUnregisteredEvent"
+  eventEntity.typename = 'IndexerServiceUnregisteredEvent'
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.indexerServiceUnregisteredEventCount =
+    counter.indexerServiceUnregisteredEventCount.plus(BIGINT_ONE)
+  counter.indexerEventCount = counter.indexerEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.save()
 }

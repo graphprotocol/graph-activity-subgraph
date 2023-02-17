@@ -40,6 +40,7 @@ import {
   GRTWithdrawnEvent,
   ParameterUpdatedEvent,
   SetDefaultNameEvent,
+  SubgraphVersionMetadataUpdatedEvent,
 } from '../types/schema'
 
 import { zeroBD } from './utils'
@@ -53,6 +54,11 @@ import {
   joinID,
   convertBigIntSubgraphIDToBase58,
   getSubgraphID,
+  fetchSubgraphMetadata,
+  fetchSubgraphVersionMetadata,
+  getCounter,
+  BIGINT_ZERO,
+  BIGINT_ONE,
 } from './helpers'
 
 export function handleSetDefaultName(event: SetDefaultName): void {
@@ -74,7 +80,7 @@ export function handleSetDefaultName(event: SetDefaultName): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "SetDefaultNameEvent"
+  eventEntity.typename = 'SetDefaultNameEvent'
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
   if (
@@ -88,6 +94,13 @@ export function handleSetDefaultName(event: SetDefaultName): void {
     eventEntity.newDefaultName = event.params.name
   }
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.indexerEventCount = counter.indexerEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.setDefaultNameEventCount = counter.setDefaultNameEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): void {
@@ -110,11 +123,19 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "SubgraphMetadataUpdatedEvent"
+  eventEntity.typename = 'SubgraphMetadataUpdatedEvent'
   eventEntity.subgraph = subgraph.id
   eventEntity.accounts = accounts
   eventEntity.ipfsFileHash = base58Hash
+  eventEntity = fetchSubgraphMetadata(eventEntity, base58Hash)
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphMetadataUpdatedEventCount = counter.subgraphMetadataUpdatedEventCount.plus(BIGINT_ONE)
+  counter.indexerEventCount = counter.indexerEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 /**
@@ -159,17 +180,27 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "NewSubgraphPublishedEvent"
+  eventEntity.typename = 'NewSubgraphPublishedEvent'
   eventEntity.subgraph = subgraph.id
   eventEntity.version = subgraphVersion.id
   eventEntity.deployment = deployment.id
   eventEntity.accounts = accounts
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+
   if (subgraph.versionCount == BigInt.fromI32(1)) {
     let coercedEntity = changetype<NewSubgraphVersionPublishedEvent>(eventEntity)
     coercedEntity.save()
+    counter.newSubgraphVersionPublishedEventCount = counter.newSubgraphVersionPublishedEventCount.plus(BIGINT_ONE)
   } else {
+    counter.newSubgraphPublishedEventCount = counter.newSubgraphPublishedEventCount.plus(BIGINT_ONE)
     eventEntity.save()
   }
+
+  counter.save()
 }
 /**
  * @dev handleSubgraphDeprecated
@@ -188,10 +219,16 @@ export function handleSubgraphDeprecated(event: SubgraphDeprecated): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "SubgraphDeprecatedEvent"
+  eventEntity.typename = 'SubgraphDeprecatedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.accounts = accounts
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.subgraphDeprecatedEventCount = counter.subgraphDeprecatedEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 export function handleNameSignalEnabled(event: NameSignalEnabled): void {
@@ -206,10 +243,16 @@ export function handleNameSignalEnabled(event: NameSignalEnabled): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "SubgraphNameSignalEnabledEvent"
+  eventEntity.typename = 'SubgraphNameSignalEnabledEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.accounts = accounts
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.subgraphNameSignalEnabledEventCount = counter.subgraphNameSignalEnabledEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 export function handleNSignalMinted(event: NSignalMinted): void {
@@ -231,7 +274,7 @@ export function handleNSignalMinted(event: NSignalMinted): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "NSignalMintedEvent"
+  eventEntity.typename = 'NSignalMintedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -240,6 +283,14 @@ export function handleNSignalMinted(event: NSignalMinted): void {
   eventEntity.versionSignal = event.params.vSignalCreated
   eventEntity.tokens = event.params.tokensDeposited
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.nSignalMintedEventCount = counter.nSignalMintedEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 export function handleNSignalBurned(event: NSignalBurned): void {
@@ -261,7 +312,7 @@ export function handleNSignalBurned(event: NSignalBurned): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "NSignalBurnedEvent"
+  eventEntity.typename = 'NSignalBurnedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -270,6 +321,14 @@ export function handleNSignalBurned(event: NSignalBurned): void {
   eventEntity.versionSignal = event.params.vSignalBurnt
   eventEntity.tokens = event.params.tokensReceived
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.nSignalBurnedEventCount = counter.nSignalBurnedEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 export function handleNameSignalUpgrade(event: NameSignalUpgrade): void {
@@ -364,7 +423,7 @@ export function handleGRTWithdrawn(event: GRTWithdrawn): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "GRTWithdrawnEvent"
+  eventEntity.typename = 'GRTWithdrawnEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -372,6 +431,14 @@ export function handleGRTWithdrawn(event: GRTWithdrawn): void {
   eventEntity.nameSignal = event.params.nSignalBurnt
   eventEntity.tokens = event.params.withdrawnGRT
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.grtWithdrawnEventCount = counter.grtWithdrawnEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 /**
@@ -385,9 +452,14 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "ParameterUpdatedEvent"
+  eventEntity.typename = 'ParameterUpdatedEvent'
   eventEntity.parameter = event.params.param
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.parameterUpdatedEventCount = counter.parameterUpdatedEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 // - event: SubgraphPublished(indexed uint256,indexed bytes32,uint32)
@@ -408,6 +480,7 @@ export function handleSubgraphPublishedV2(event: SubgraphPublished1): void {
 
   versionID = joinID([subgraphID, subgraph.versionCount.toString()])
   subgraph.currentVersion = versionID
+  subgraph.initializing = true
   subgraph.save()
 
   // Creates Graph Account, if needed
@@ -427,12 +500,19 @@ export function handleSubgraphPublishedV2(event: SubgraphPublished1): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "NewSubgraphPublishedEvent"
+  eventEntity.typename = 'NewSubgraphPublishedEvent'
   eventEntity.subgraph = subgraph.id
   eventEntity.version = subgraphVersion.id
   eventEntity.deployment = deployment.id
   eventEntity.accounts = accounts
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.newSubgraphPublishedEventCount = counter.newSubgraphPublishedEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 // - event: SubgraphDeprecated(indexed uint256,uint256)
@@ -450,10 +530,16 @@ export function handleSubgraphDeprecatedV2(event: SubgraphDeprecated1): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "SubgraphDeprecatedEvent"
+  eventEntity.typename = 'SubgraphDeprecatedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.accounts = accounts
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.subgraphDeprecatedEventCount = counter.subgraphDeprecatedEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 // - event: SubgraphMetadataUpdated(indexed uint256,bytes32)
@@ -478,11 +564,18 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "SubgraphMetadataUpdatedEvent"
+  eventEntity.typename = 'SubgraphMetadataUpdatedEvent'
   eventEntity.subgraph = subgraph.id
   eventEntity.accounts = accounts
   eventEntity.ipfsFileHash = base58Hash
+  eventEntity = fetchSubgraphMetadata(eventEntity, base58Hash)
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.subgraphMetadataUpdatedEventCount = counter.subgraphMetadataUpdatedEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 // - event: SignalMinted(indexed uint256,indexed address,uint256,uint256,uint256)
@@ -505,7 +598,7 @@ export function handleNSignalMintedV2(event: SignalMinted): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "NSignalMintedEvent"
+  eventEntity.typename = 'NSignalMintedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -514,6 +607,14 @@ export function handleNSignalMintedV2(event: SignalMinted): void {
   eventEntity.versionSignal = event.params.vSignalCreated
   eventEntity.tokens = event.params.tokensDeposited
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.nSignalMintedEventCount = counter.nSignalMintedEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 // - event: SignalBurned(indexed uint256,indexed address,uint256,uint256,uint256)
@@ -536,7 +637,7 @@ export function handleNSignalBurnedV2(event: SignalBurned): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "NSignalBurnedEvent"
+  eventEntity.typename = 'NSignalBurnedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -545,6 +646,14 @@ export function handleNSignalBurnedV2(event: SignalBurned): void {
   eventEntity.versionSignal = event.params.vSignalBurnt
   eventEntity.tokens = event.params.tokensReceived
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.nSignalBurnedEventCount = counter.nSignalBurnedEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 // - event: GRTWithdrawn(indexed uint256,indexed address,uint256,uint256)
@@ -567,7 +676,7 @@ export function handleGRTWithdrawnV2(event: GRTWithdrawn1): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "GRTWithdrawnEvent"
+  eventEntity.typename = 'GRTWithdrawnEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
   eventEntity.accounts = accounts
@@ -575,6 +684,14 @@ export function handleGRTWithdrawnV2(event: GRTWithdrawn1): void {
   eventEntity.nameSignal = event.params.nSignalBurnt
   eventEntity.tokens = event.params.withdrawnGRT
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.grtWithdrawnEventCount = counter.grtWithdrawnEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 // - event: SubgraphUpgraded(indexed uint256,uint256,uint256,indexed bytes32)
@@ -606,37 +723,69 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
   // Update subgraph
   let subgraph = createOrLoadSubgraph(subgraphID, event.transaction.from)
 
-  versionID = joinID([subgraphID, subgraph.versionCount.toString()])
-  subgraph.currentVersion = versionID
-  subgraph.versionCount = subgraph.versionCount.plus(BigInt.fromI32(1))
-  subgraph.save()
-
-  // Creates Graph Account, if needed
-  createOrLoadGraphAccount(graphAccountID)
-
   // Create subgraph deployment, if needed. Can happen if the deployment has never been staked on
   let deployment = createOrLoadSubgraphDeployment(event.params.subgraphDeploymentID.toHexString())
 
-  // Create/load subgraph version
-  let subgraphVersion = SubgraphVersion.load(versionID)
-  if(subgraphVersion == null) {
-    subgraphVersion = new SubgraphVersion(versionID)
-  }
-  subgraphVersion.subgraph = subgraphID
-  subgraphVersion.subgraphDeployment = deployment.id
-  subgraphVersion.version = versionNumber as i32
-  subgraphVersion.save()
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.subgraphVersionMetadataUpdatedEventCount = counter.subgraphVersionMetadataUpdatedEventCount.plus(BIGINT_ONE)
 
-  let eventEntity = new NewSubgraphVersionPublishedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "NewSubgraphVersionPublishedEvent"
-  eventEntity.subgraph = subgraph.id
-  eventEntity.version = subgraphVersion.id
-  eventEntity.deployment = deployment.id
-  eventEntity.accounts = accounts
-  eventEntity.save()
+  if (subgraph.initializing) {
+    subgraph.initializing = false
+    subgraph.save()
+
+    // attach
+  } else {
+    versionID = joinID([subgraphID, subgraph.versionCount.toString()])
+    subgraph.currentVersion = versionID
+    subgraph.versionCount = subgraph.versionCount.plus(BigInt.fromI32(1))
+    subgraph.save()
+
+    // Creates Graph Account, if needed
+    createOrLoadGraphAccount(graphAccountID)
+
+
+    // Create/load subgraph version
+    let subgraphVersion = SubgraphVersion.load(versionID)
+    if (subgraphVersion == null) {
+      subgraphVersion = new SubgraphVersion(versionID)
+    }
+    subgraphVersion.subgraph = subgraphID
+    subgraphVersion.subgraphDeployment = deployment.id
+    subgraphVersion.version = versionNumber as i32
+    subgraphVersion.save()
+
+    let eventEntity = new NewSubgraphVersionPublishedEvent(eventId.concat('1'))
+    eventEntity.timestamp = event.block.timestamp
+    eventEntity.blockNumber = event.block.number
+    eventEntity.tx_hash = event.transaction.hash
+    eventEntity.typename = 'NewSubgraphVersionPublishedEvent'
+    eventEntity.subgraph = subgraph.id
+    eventEntity.version = subgraphVersion.id
+    eventEntity.deployment = deployment.id
+    eventEntity.accounts = accounts
+    eventEntity.save()
+    counter.newSubgraphVersionPublishedEventCount = counter.newSubgraphVersionPublishedEventCount.plus(BIGINT_ONE)
+  }
+
+  let hexHash = changetype<Bytes>(addQm(event.params.versionMetadata))
+  let base58Hash = hexHash.toBase58()
+
+  let otherEventEntity = new SubgraphVersionMetadataUpdatedEvent(eventId.concat('0'))
+  otherEventEntity.timestamp = event.block.timestamp
+  otherEventEntity.blockNumber = event.block.number
+  otherEventEntity.tx_hash = event.transaction.hash
+  otherEventEntity.typename = 'SubgraphVersionMetadataUpdatedEvent'
+  otherEventEntity.subgraph = subgraph.id
+  otherEventEntity.deployment = deployment.id
+  otherEventEntity.accounts = accounts
+  otherEventEntity.ipfsFileHash = base58Hash
+  otherEventEntity = fetchSubgraphVersionMetadata(otherEventEntity, base58Hash)
+  otherEventEntity.save()
+
+  counter.save()
 }
 
 // - event: LegacySubgraphClaimed(indexed address,uint256)
