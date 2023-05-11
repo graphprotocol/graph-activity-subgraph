@@ -1,4 +1,15 @@
-import { BigInt, ByteArray, Address, Bytes, crypto, log, BigDecimal } from '@graphprotocol/graph-ts'
+import {
+  BigInt,
+  ByteArray,
+  Address,
+  Bytes,
+  crypto,
+  log,
+  BigDecimal,
+  ipfs,
+  json,
+  JSONValueKind
+} from '@graphprotocol/graph-ts'
 import {
   SubgraphDeployment,
   Indexer,
@@ -8,7 +19,61 @@ import {
   GraphAccount,
   Delegator,
   DelegatedStake,
+  SubgraphVersionMetadataUpdatedEvent,
+  SubgraphMetadataUpdatedEvent,
+  CounterEntity,
 } from '../types/schema'
+import { jsonToString } from './utils'
+
+export let BIGINT_ZERO = BigInt.fromI32(0)
+export let BIGINT_ONE = BigInt.fromI32(1)
+
+export function getCounter(): CounterEntity {
+  let counter = CounterEntity.load('0')
+  if (counter == null) {
+    counter = new CounterEntity('0')
+    // Specific counters
+    counter.parameterUpdatedEventCount = BIGINT_ZERO
+    counter.rewardsDenylistUpdatedEventCount = BIGINT_ZERO
+    counter.newSubgraphPublishedEventCount = BIGINT_ZERO
+    counter.newSubgraphVersionPublishedEventCount = BIGINT_ZERO
+    counter.subgraphMetadataUpdatedEventCount = BIGINT_ZERO
+    counter.subgraphVersionMetadataUpdatedEventCount = BIGINT_ZERO
+    counter.subgraphDeprecatedEventCount = BIGINT_ZERO
+    counter.subgraphNameSignalEnabledEventCount = BIGINT_ZERO
+    counter.indexerServiceRegisteredEventCount = BIGINT_ZERO
+    counter.indexerServiceUnregisteredEventCount = BIGINT_ZERO
+    counter.setDefaultNameEventCount = BIGINT_ZERO
+    counter.delegationParametersUpdatedEventCount = BIGINT_ZERO
+    counter.setOperatorEventCount = BIGINT_ZERO
+    counter.indexerStakeDepositedEventCount = BIGINT_ZERO
+    counter.indexerStakeLockedEventCount = BIGINT_ZERO
+    counter.indexerStakeWithdrawnEventCount = BIGINT_ZERO
+    counter.indexerStakeSlashedEventCount = BIGINT_ZERO
+    counter.allocationCreatedEventCount = BIGINT_ZERO
+    counter.allocationCollectedEventCount = BIGINT_ZERO
+    counter.allocationClosedEventCount = BIGINT_ZERO
+    counter.rebateClaimedEventCount = BIGINT_ZERO
+    counter.nSignalMintedEventCount = BIGINT_ZERO
+    counter.nSignalBurnedEventCount = BIGINT_ZERO
+    counter.grtWithdrawnEventCount = BIGINT_ZERO
+    counter.signalMintedEventCount = BIGINT_ZERO
+    counter.signalBurnedEventCount = BIGINT_ZERO
+    counter.delegatorStakeDepositedEventCount = BIGINT_ZERO
+    counter.delegatorStakeLockedEventCount = BIGINT_ZERO
+    counter.delegatorStakeWithdrawnEventCount = BIGINT_ZERO
+    // Interface counters
+    counter.eventCount = BIGINT_ZERO
+    counter.subgraphEventCount = BIGINT_ZERO
+    counter.subgraphDeploymentEventCount = BIGINT_ZERO
+    counter.graphAccountEventCount = BIGINT_ZERO
+    counter.indexerEventCount = BIGINT_ZERO
+    counter.curatorEventCount = BIGINT_ZERO
+    counter.delegatorEventCount = BIGINT_ZERO
+    counter.save()
+  }
+  return counter as CounterEntity
+}
 
 export function createOrLoadSubgraph(subgraphID: string, owner: Address): Subgraph {
   let subgraph = Subgraph.load(subgraphID)
@@ -16,6 +81,7 @@ export function createOrLoadSubgraph(subgraphID: string, owner: Address): Subgra
     subgraph = new Subgraph(subgraphID)
     subgraph.owner = owner.toHexString()
     subgraph.versionCount = BigInt.fromI32(0)
+    subgraph.initializing = false
   }
   return subgraph as Subgraph
 }
@@ -186,4 +252,71 @@ export function getSubgraphID(graphAccountStr: String, subgraphNumber: BigInt): 
   let hashedId = Bytes.fromByteArray(crypto.keccak256(ByteArray.fromHexString(unhashedSubgraphID)))
   let bigIntRepresentation = BigInt.fromUnsignedBytes(changetype<Bytes>(hashedId.reverse()))
   return bigIntRepresentation
+}
+
+export function fetchSubgraphVersionMetadata(
+  updateEvent: SubgraphVersionMetadataUpdatedEvent,
+  ipfsHash: string,
+): SubgraphVersionMetadataUpdatedEvent {
+  let getVersionDataFromIPFS = ipfs.cat(ipfsHash)
+  if (getVersionDataFromIPFS !== null) {
+    let tryData = json.try_fromBytes(getVersionDataFromIPFS as Bytes)
+    if (tryData.isOk) {
+      let data = tryData.value.toObject()
+      updateEvent.description = jsonToString(data.get('description'))
+      updateEvent.label = jsonToString(data.get('label'))
+    } else {
+      updateEvent.description = ''
+      updateEvent.label = ''
+    }
+  }
+  return updateEvent
+}
+
+export function fetchSubgraphMetadata(
+  updateEvent: SubgraphMetadataUpdatedEvent,
+  ipfsHash: string,
+): SubgraphMetadataUpdatedEvent {
+  let metadata = ipfs.cat(ipfsHash)
+  if (metadata !== null) {
+    let tryData = json.try_fromBytes(metadata as Bytes)
+    if (tryData.isOk) {
+      let data = tryData.value.toObject()
+      updateEvent.description = jsonToString(data.get('description'))
+      updateEvent.displayName = jsonToString(data.get('displayName'))
+      updateEvent.codeRepository = jsonToString(data.get('codeRepository'))
+      updateEvent.website = jsonToString(data.get('website'))
+      // let categories = data.get('categories')
+      //
+      // if(categories != null && !categories.isNull()) {
+      //   let categoriesArray = categories.toArray()
+      //
+      //   for(let i = 0; i < categoriesArray.length; i++) {
+      //     let categoryId = jsonToString(categoriesArray[i])
+      //     createOrLoadSubgraphCategory(categoryId)
+      //     createOrLoadSubgraphCategoryRelation(categoryId, updateEvent.id)
+      //     if(updateEvent.linkedEntity != null) {
+      //       createOrLoadSubgraphCategoryRelation(categoryId, updateEvent.linkedEntity!)
+      //     }
+      //   }
+      // }
+      let image = jsonToString(data.get('image'))
+      let updateEventImage = data.get('updateEventImage')
+      if (updateEventImage != null && updateEventImage.kind === JSONValueKind.STRING) {
+        updateEvent.nftImage = image
+        updateEvent.image = jsonToString(updateEventImage)
+      } else {
+        updateEvent.nftImage = ''
+        updateEvent.image = image
+      }
+    } else {
+      updateEvent.description = ''
+      updateEvent.displayName = ''
+      updateEvent.codeRepository = ''
+      updateEvent.website = ''
+      updateEvent.nftImage = ''
+      updateEvent.image = ''
+    }
+  }
+  return updateEvent
 }

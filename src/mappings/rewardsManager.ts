@@ -1,14 +1,18 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { Indexer, Allocation, SubgraphDeployment, ParameterUpdatedEvent, RewardsDenylistUpdatedEvent } from '../types/schema'
+import {
+  Indexer,
+  Allocation,
+  SubgraphDeployment,
+  ParameterUpdatedEvent,
+  RewardsDenylistUpdatedEvent,
+} from '../types/schema'
 import {
   RewardsAssigned,
   ParameterUpdated,
   RewardsManager,
   RewardsDenylistUpdated,
 } from '../types/RewardsManager/RewardsManager'
-import {
-  createOrLoadSubgraphDeployment,
-} from './helpers'
+import { createOrLoadSubgraphDeployment, getCounter, BIGINT_ONE } from './helpers'
 
 export function handleRewardsAssigned(event: RewardsAssigned): void {
   // let indexerID = event.params.indexer.toHexString()
@@ -93,9 +97,14 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "ParameterUpdatedEvent"
+  eventEntity.typename = 'ParameterUpdatedEvent'
   eventEntity.parameter = event.params.param
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.parameterUpdatedEventCount = counter.parameterUpdatedEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
 // export function handleImplementationUpdated(event: ImplementationUpdated): void {
@@ -114,8 +123,15 @@ export function handleRewardsDenyListUpdated(event: RewardsDenylistUpdated): voi
   eventEntity.timestamp = event.block.timestamp
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "RewardsDenylistUpdatedEvent"
+  eventEntity.typename = 'RewardsDenylistUpdatedEvent'
   eventEntity.deployment = subgraphDeploymentID
   eventEntity.deniedAt = event.params.sinceBlock.toI32()
   eventEntity.save()
+
+  let counter = getCounter()
+  counter.rewardsDenylistUpdatedEventCount =
+    counter.rewardsDenylistUpdatedEventCount.plus(BIGINT_ONE)
+  counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.save()
 }
