@@ -64,6 +64,10 @@ export function handleDelegationParametersUpdated(event: DelegationParametersUpd
 
   let eventEntity = new DelegationParametersUpdatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'DelegationParametersUpdatedEvent'
@@ -101,6 +105,10 @@ export function handleStakeDeposited(event: StakeDeposited): void {
 
   let eventEntity = new IndexerStakeDepositedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'IndexerStakeDepositedEvent'
@@ -131,6 +139,10 @@ export function handleStakeLocked(event: StakeLocked): void {
 
   let eventEntity = new IndexerStakeLockedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'IndexerStakeLockedEvent'
@@ -161,6 +173,10 @@ export function handleStakeWithdrawn(event: StakeWithdrawn): void {
 
   let eventEntity = new IndexerStakeWithdrawnEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'IndexerStakeWithdrawnEvent'
@@ -189,6 +205,10 @@ export function handleStakeSlashed(event: StakeSlashed): void {
 
   let eventEntity = new IndexerStakeSlashedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'IndexerStakeSlashedEvent'
@@ -219,6 +239,10 @@ export function handleStakeDelegated(event: StakeDelegated): void {
 
   let eventEntity = new DelegatorStakeDepositedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'DelegatorStakeDepositedEvent'
@@ -249,6 +273,10 @@ export function handleStakeDelegatedLocked(event: StakeDelegatedLocked): void {
 
   let eventEntity = new DelegatorStakeLockedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'DelegatorStakeLockedEvent'
@@ -279,6 +307,10 @@ export function handleStakeDelegatedWithdrawn(event: StakeDelegatedWithdrawn): v
 
   let eventEntity = new DelegatorStakeWithdrawnEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'DelegatorStakeWithdrawnEvent'
@@ -316,6 +348,10 @@ export function handleAllocationCreated(event: AllocationCreated): void {
 
   let eventEntity = new AllocationCreatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'AllocationCreatedEvent'
@@ -351,6 +387,10 @@ export function handleAllocationCollected(event: AllocationCollected): void {
 
   let eventEntity = new AllocationCollectedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'AllocationCollectedEvent'
@@ -387,6 +427,10 @@ export function handleAllocationClosed(event: AllocationClosed): void {
 
   let eventEntity = new AllocationClosedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'AllocationClosedEvent'
@@ -421,6 +465,10 @@ export function handleRebateClaimed(event: RebateClaimed): void {
 
   let eventEntity = new RebateClaimedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'RebateClaimedEvent'
@@ -450,6 +498,10 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let eventEntity = new ParameterUpdatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'ParameterUpdatedEvent'
@@ -474,6 +526,10 @@ export function handleSetOperator(event: SetOperator): void {
 
   let eventEntity = new SetOperatorEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'SetOperatorEvent'

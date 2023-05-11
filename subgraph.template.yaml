@@ -1,4 +1,4 @@
-specVersion: 0.0.2
+specVersion: 0.0.5
 description: The Graph Network Smart Contracts on Ethereum
 repository: https://github.com/graphprotocol/contracts/graph-network-subgraph
 schema:
@@ -15,7 +15,7 @@ dataSources:
       startBlock: {{blockNumber}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/gns.ts
       entities:
@@ -30,43 +30,60 @@ dataSources:
       eventHandlers:
         - event: SubgraphPublished(indexed address,indexed uint256,indexed bytes32,bytes32)
           handler: handleSubgraphPublished
+          receipt: true
         - event: SubgraphDeprecated(indexed address,indexed uint256)
           handler: handleSubgraphDeprecated
+          receipt: true
         - event: SetDefaultName(indexed address,uint256,bytes32,string)
           handler: handleSetDefaultName
+          receipt: true
         - event: SubgraphMetadataUpdated(indexed address,indexed uint256,bytes32)
           handler: handleSubgraphMetadataUpdated
+          receipt: true
         - event: NameSignalEnabled(indexed address,indexed uint256,indexed bytes32,uint32)
           handler: handleNameSignalEnabled
+          receipt: true
         # - event: NameSignalUpgrade(indexed address,indexed uint256,uint256,uint256,indexed bytes32)
         #   handler: handleNameSignalUpgrade
         - event: NSignalMinted(indexed address,indexed uint256,indexed address,uint256,uint256,uint256)
           handler: handleNSignalMinted
+          receipt: true
         - event: NSignalBurned(indexed address,indexed uint256,indexed address,uint256,uint256,uint256)
           handler: handleNSignalBurned
+          receipt: true
         # - event: NameSignalDisabled(indexed address,indexed uint256,uint256)
         #   handler: handleNameSignalDisabled
         - event: GRTWithdrawn(indexed address,indexed uint256,indexed address,uint256,uint256)
           handler: handleGRTWithdrawn
+          receipt: true
         - event: ParameterUpdated(string)
           handler: handleParameterUpdated
+          receipt: true
         # v2
         - event: SubgraphPublished(indexed uint256,indexed bytes32,uint32)
           handler: handleSubgraphPublishedV2
+          receipt: true
         - event: SubgraphDeprecated(indexed uint256,uint256)
           handler: handleSubgraphDeprecatedV2
+          receipt: true
         - event: SubgraphMetadataUpdated(indexed uint256,bytes32)
           handler: handleSubgraphMetadataUpdatedV2
+          receipt: true
         - event: SignalMinted(indexed uint256,indexed address,uint256,uint256,uint256)
           handler: handleNSignalMintedV2
+          receipt: true
         - event: SignalBurned(indexed uint256,indexed address,uint256,uint256,uint256)
           handler: handleNSignalBurnedV2
+          receipt: true
         - event: GRTWithdrawn(indexed uint256,indexed address,uint256,uint256)
           handler: handleGRTWithdrawnV2
+          receipt: true
         - event: SubgraphUpgraded(indexed uint256,uint256,uint256,indexed bytes32)
           handler: handleSubgraphUpgraded
+          receipt: true
         - event: SubgraphVersionUpdated(indexed uint256,indexed bytes32,bytes32)
           handler: handleSubgraphVersionUpdated
+          receipt: true
         # - event: LegacySubgraphClaimed(indexed address,uint256)
         #   handler: handleLegacySubgraphClaimed
   - kind: ethereum/contract
@@ -78,7 +95,7 @@ dataSources:
       startBlock: {{blockNumber}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/serviceRegistry.ts
       entities:
@@ -89,8 +106,10 @@ dataSources:
       eventHandlers:
         - event: ServiceRegistered(indexed address,string,string)
           handler: handleServiceRegistered
+          receipt: true
         - event: ServiceUnregistered(indexed address)
           handler: handleServiceUnregistered
+          receipt: true
   - kind: ethereum/contract
     name: Staking
     network: {{network}}
@@ -100,7 +119,7 @@ dataSources:
       startBlock: {{blockNumber}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/staking.ts
       entities:
@@ -119,32 +138,46 @@ dataSources:
       eventHandlers:
         - event: DelegationParametersUpdated(indexed address,uint32,uint32,uint32)
           handler: handleDelegationParametersUpdated
+          receipt: true
         - event: StakeDeposited(indexed address,uint256)
           handler: handleStakeDeposited
+          receipt: true
         - event: StakeLocked(indexed address,uint256,uint256)
           handler: handleStakeLocked
+          receipt: true
         - event: StakeWithdrawn(indexed address,uint256)
           handler: handleStakeWithdrawn
+          receipt: true
         - event: StakeSlashed(indexed address,uint256,uint256,address)
           handler: handleStakeSlashed
+          receipt: true
         - event: StakeDelegated(indexed address,indexed address,uint256,uint256)
           handler: handleStakeDelegated
+          receipt: true
         - event: StakeDelegatedLocked(indexed address,indexed address,uint256,uint256,uint256)
           handler: handleStakeDelegatedLocked
+          receipt: true
         - event: StakeDelegatedWithdrawn(indexed address,indexed address,uint256)
           handler: handleStakeDelegatedWithdrawn
+          receipt: true
         - event: AllocationCreated(indexed address,indexed bytes32,uint256,uint256,indexed address,bytes32)
           handler: handleAllocationCreated
+          receipt: true
         - event: AllocationCollected(indexed address,indexed bytes32,uint256,uint256,indexed address,address,uint256,uint256)
           handler: handleAllocationCollected
+          receipt: true
         - event: AllocationClosed(indexed address,indexed bytes32,uint256,uint256,indexed address,uint256,address,bytes32,bool)
           handler: handleAllocationClosed
+          receipt: true
         - event: RebateClaimed(indexed address,indexed bytes32,indexed address,uint256,uint256,uint256,uint256,uint256)
           handler: handleRebateClaimed
+          receipt: true
         - event: ParameterUpdated(string)
           handler: handleParameterUpdated
+          receipt: true
         - event: SetOperator(indexed address,indexed address,bool)
           handler: handleSetOperator
+          receipt: true
         # - event: SlasherUpdate(indexed address,indexed address,bool)
         #   handler: handleSlasherUpdate
         # - event: AssetHolderUpdate(indexed address,indexed address,bool)
@@ -160,7 +193,7 @@ dataSources:
       startBlock: {{blockNumber}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/curation.ts
       entities:
@@ -175,12 +208,15 @@ dataSources:
       eventHandlers:
         - event: Signalled(indexed address,indexed bytes32,uint256,uint256,uint256)
           handler: handleSignalled
+          receipt: true
         - event: Burned(indexed address,indexed bytes32,uint256,uint256)
           handler: handleBurned
+          receipt: true
         # - event: Collected(indexed bytes32,uint256) NOT used - all can be handled by handleAllocationCollected
         #   handler: handleCollected
         - event: ParameterUpdated(string)
           handler: handleParameterUpdated
+          receipt: true
         # - event: ImplementationUpdated(address,address)
         #   handler: handleImplementationUpdated
   # - kind: ethereum/contract
@@ -192,7 +228,7 @@ dataSources:
   #     startBlock: {{blockNumber}}
   #   mapping:
   #     kind: ethereum/events
-  #     apiVersion: 0.0.5
+  #     apiVersion: 0.0.7
   #     language: wasm/assemblyscript
   #     file: ./src/mappings/graphToken.ts
   #     entities:
@@ -215,7 +251,7 @@ dataSources:
       startBlock: {{blockNumber}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/rewardsManager.ts
       entities:
@@ -232,10 +268,12 @@ dataSources:
         #   handler: handleRewardsAssigned
         - event: RewardsDenylistUpdated(indexed bytes32,uint256)
           handler: handleRewardsDenyListUpdated
+          receipt: true
         # - event: ImplementationUpdated(address,address)
         #   handler: handleImplementationUpdated
         - event: ParameterUpdated(string)
           handler: handleParameterUpdated
+          receipt: true
   - kind: ethereum/contract
     name: DisputeManager
     network: {{network}}
@@ -245,7 +283,7 @@ dataSources:
       startBlock: {{blockNumber}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/disputeManager.ts
       entities:
@@ -270,3 +308,4 @@ dataSources:
         #   handler: handleDisputeLinked
         - event: ParameterUpdated(string)
           handler: handleParameterUpdated
+          receipt: true

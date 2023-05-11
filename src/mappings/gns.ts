@@ -78,6 +78,10 @@ export function handleSetDefaultName(event: SetDefaultName): void {
 
   let eventEntity = new SetDefaultNameEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'SetDefaultNameEvent'
@@ -121,6 +125,10 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
 
   let eventEntity = new SubgraphMetadataUpdatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'SubgraphMetadataUpdatedEvent'
@@ -131,7 +139,8 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   eventEntity.save()
 
   let counter = getCounter()
-  counter.subgraphMetadataUpdatedEventCount = counter.subgraphMetadataUpdatedEventCount.plus(BIGINT_ONE)
+  counter.subgraphMetadataUpdatedEventCount =
+    counter.subgraphMetadataUpdatedEventCount.plus(BIGINT_ONE)
   counter.indexerEventCount = counter.indexerEventCount.plus(BIGINT_ONE)
   counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
@@ -178,6 +187,10 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
 
   let eventEntity = new NewSubgraphPublishedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'NewSubgraphPublishedEvent'
@@ -194,7 +207,8 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
   if (subgraph.versionCount == BigInt.fromI32(1)) {
     let coercedEntity = changetype<NewSubgraphVersionPublishedEvent>(eventEntity)
     coercedEntity.save()
-    counter.newSubgraphVersionPublishedEventCount = counter.newSubgraphVersionPublishedEventCount.plus(BIGINT_ONE)
+    counter.newSubgraphVersionPublishedEventCount =
+      counter.newSubgraphVersionPublishedEventCount.plus(BIGINT_ONE)
   } else {
     counter.newSubgraphPublishedEventCount = counter.newSubgraphPublishedEventCount.plus(BIGINT_ONE)
     eventEntity.save()
@@ -217,6 +231,10 @@ export function handleSubgraphDeprecated(event: SubgraphDeprecated): void {
 
   let eventEntity = new SubgraphDeprecatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'SubgraphDeprecatedEvent'
@@ -241,6 +259,10 @@ export function handleNameSignalEnabled(event: NameSignalEnabled): void {
 
   let eventEntity = new SubgraphNameSignalEnabledEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'SubgraphNameSignalEnabledEvent'
@@ -251,7 +273,8 @@ export function handleNameSignalEnabled(event: NameSignalEnabled): void {
   let counter = getCounter()
   counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.subgraphNameSignalEnabledEventCount = counter.subgraphNameSignalEnabledEventCount.plus(BIGINT_ONE)
+  counter.subgraphNameSignalEnabledEventCount =
+    counter.subgraphNameSignalEnabledEventCount.plus(BIGINT_ONE)
   counter.save()
 }
 
@@ -272,6 +295,10 @@ export function handleNSignalMinted(event: NSignalMinted): void {
 
   let eventEntity = new NSignalMintedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'NSignalMintedEvent'
@@ -310,6 +337,10 @@ export function handleNSignalBurned(event: NSignalBurned): void {
 
   let eventEntity = new NSignalBurnedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'NSignalBurnedEvent'
@@ -421,6 +452,10 @@ export function handleGRTWithdrawn(event: GRTWithdrawn): void {
 
   let eventEntity = new GRTWithdrawnEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'GRTWithdrawnEvent'
@@ -450,6 +485,10 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let eventEntity = new ParameterUpdatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'ParameterUpdatedEvent'
@@ -498,6 +537,10 @@ export function handleSubgraphPublishedV2(event: SubgraphPublished1): void {
 
   let eventEntity = new NewSubgraphPublishedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'NewSubgraphPublishedEvent'
@@ -528,6 +571,10 @@ export function handleSubgraphDeprecatedV2(event: SubgraphDeprecated1): void {
 
   let eventEntity = new SubgraphDeprecatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'SubgraphDeprecatedEvent'
@@ -562,6 +609,10 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
 
   let eventEntity = new SubgraphMetadataUpdatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'SubgraphMetadataUpdatedEvent'
@@ -574,7 +625,8 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
   let counter = getCounter()
   counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.subgraphMetadataUpdatedEventCount = counter.subgraphMetadataUpdatedEventCount.plus(BIGINT_ONE)
+  counter.subgraphMetadataUpdatedEventCount =
+    counter.subgraphMetadataUpdatedEventCount.plus(BIGINT_ONE)
   counter.save()
 }
 
@@ -596,6 +648,10 @@ export function handleNSignalMintedV2(event: SignalMinted): void {
 
   let eventEntity = new NSignalMintedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'NSignalMintedEvent'
@@ -635,6 +691,10 @@ export function handleNSignalBurnedV2(event: SignalBurned): void {
 
   let eventEntity = new NSignalBurnedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'NSignalBurnedEvent'
@@ -674,6 +734,10 @@ export function handleGRTWithdrawnV2(event: GRTWithdrawn1): void {
 
   let eventEntity = new GRTWithdrawnEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'GRTWithdrawnEvent'
@@ -730,7 +794,8 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
   counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
   counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.subgraphVersionMetadataUpdatedEventCount = counter.subgraphVersionMetadataUpdatedEventCount.plus(BIGINT_ONE)
+  counter.subgraphVersionMetadataUpdatedEventCount =
+    counter.subgraphVersionMetadataUpdatedEventCount.plus(BIGINT_ONE)
 
   if (subgraph.initializing) {
     subgraph.initializing = false
@@ -746,7 +811,6 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
     // Creates Graph Account, if needed
     createOrLoadGraphAccount(graphAccountID)
 
-
     // Create/load subgraph version
     let subgraphVersion = SubgraphVersion.load(versionID)
     if (subgraphVersion == null) {
@@ -759,6 +823,10 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
 
     let eventEntity = new NewSubgraphVersionPublishedEvent(eventId.concat('1'))
     eventEntity.timestamp = event.block.timestamp
+    eventEntity.tx_gasLimit = event.transaction.gasLimit
+    eventEntity.tx_gasPrice = event.transaction.gasPrice
+    eventEntity.tx_gasUsed = event.receipt!.gasUsed
+    eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
     eventEntity.blockNumber = event.block.number
     eventEntity.tx_hash = event.transaction.hash
     eventEntity.typename = 'NewSubgraphVersionPublishedEvent'
@@ -767,7 +835,8 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
     eventEntity.deployment = deployment.id
     eventEntity.accounts = accounts
     eventEntity.save()
-    counter.newSubgraphVersionPublishedEventCount = counter.newSubgraphVersionPublishedEventCount.plus(BIGINT_ONE)
+    counter.newSubgraphVersionPublishedEventCount =
+      counter.newSubgraphVersionPublishedEventCount.plus(BIGINT_ONE)
   }
 
   let hexHash = changetype<Bytes>(addQm(event.params.versionMetadata))
@@ -775,6 +844,10 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
 
   let otherEventEntity = new SubgraphVersionMetadataUpdatedEvent(eventId.concat('0'))
   otherEventEntity.timestamp = event.block.timestamp
+  otherEventEntity.tx_gasLimit = event.transaction.gasLimit
+  otherEventEntity.tx_gasPrice = event.transaction.gasPrice
+  otherEventEntity.tx_gasUsed = event.receipt!.gasUsed
+  otherEventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   otherEventEntity.blockNumber = event.block.number
   otherEventEntity.tx_hash = event.transaction.hash
   otherEventEntity.typename = 'SubgraphVersionMetadataUpdatedEvent'

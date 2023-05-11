@@ -18,6 +18,10 @@ export function handleServiceRegistered(event: ServiceRegistered): void {
 
   let eventEntity = new IndexerServiceRegisteredEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'IndexerServiceRegisteredEvent'
@@ -48,6 +52,10 @@ export function handleServiceUnregistered(event: ServiceUnregistered): void {
 
   let eventEntity = new IndexerServiceUnregisteredEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'IndexerServiceUnregisteredEvent'
