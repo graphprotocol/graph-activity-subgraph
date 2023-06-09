@@ -33,6 +33,10 @@ export function handleSignalled(event: Signalled): void {
 
   let eventEntity = new SignalMintedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'SignalMintedEvent'
@@ -73,6 +77,10 @@ export function handleBurned(event: Burned): void {
 
   let eventEntity = new SignalBurnedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'SignalBurnedEvent'
@@ -102,6 +110,10 @@ export function handleParameterUpdated(event: ParameterUpdated): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let eventEntity = new ParameterUpdatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   eventEntity.blockNumber = event.block.number
   eventEntity.tx_hash = event.transaction.hash
   eventEntity.typename = 'ParameterUpdatedEvent'

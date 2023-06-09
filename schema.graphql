@@ -168,6 +168,14 @@ interface Event {
 
   typename: String!
 
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
+
   #epoch: Epoch #Probably re-add epoch later
 }
 
@@ -184,6 +192,14 @@ type ParameterUpdatedEvent implements Event @entity {
   typename: String!
 
   parameter: String!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 # Subgraph related events
@@ -203,6 +219,14 @@ interface SubgraphEvent {
   #epoch: Epoch #Probably re-add epoch later
 
   subgraph: Subgraph!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 interface SubgraphDeploymentEvent {
@@ -220,6 +244,14 @@ interface SubgraphDeploymentEvent {
   #epoch: Epoch #Probably re-add epoch later
 
   deployment: SubgraphDeployment!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type RewardsDenylistUpdatedEvent implements SubgraphDeploymentEvent & Event @entity {
@@ -237,6 +269,14 @@ type RewardsDenylistUpdatedEvent implements SubgraphDeploymentEvent & Event @ent
   deployment: SubgraphDeployment!
 
   deniedAt: Int!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type NewSubgraphPublishedEvent implements SubgraphEvent & SubgraphDeploymentEvent & Event @entity {
@@ -259,6 +299,14 @@ type NewSubgraphPublishedEvent implements SubgraphEvent & SubgraphDeploymentEven
 
   "User that triggered the Event"
   accounts: [GraphAccount!]!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type NewSubgraphVersionPublishedEvent implements SubgraphEvent & SubgraphDeploymentEvent & Event
@@ -282,6 +330,14 @@ type NewSubgraphVersionPublishedEvent implements SubgraphEvent & SubgraphDeploym
 
   "User that triggered the Event"
   accounts: [GraphAccount!]!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type SubgraphMetadataUpdatedEvent implements SubgraphEvent & Event @entity {
@@ -314,6 +370,14 @@ type SubgraphMetadataUpdatedEvent implements SubgraphEvent & Event @entity {
   nftImage: String!
 
   image: String!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type SubgraphVersionMetadataUpdatedEvent implements SubgraphEvent & SubgraphDeploymentEvent & Event
@@ -341,6 +405,14 @@ type SubgraphVersionMetadataUpdatedEvent implements SubgraphEvent & SubgraphDepl
   description: String!
 
   label: String!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type SubgraphDeprecatedEvent implements SubgraphEvent & Event @entity {
@@ -359,6 +431,14 @@ type SubgraphDeprecatedEvent implements SubgraphEvent & Event @entity {
 
   "User that triggered the Event"
   accounts: [GraphAccount!]!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type SubgraphNameSignalEnabledEvent implements SubgraphEvent & Event @entity {
@@ -377,6 +457,14 @@ type SubgraphNameSignalEnabledEvent implements SubgraphEvent & Event @entity {
 
   "User that triggered the Event"
   accounts: [GraphAccount!]!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 # Profile events (includes Indexer, Curator and Delegator events)
@@ -396,6 +484,14 @@ interface GraphAccountEvent {
   #epoch: Epoch #Probably re-add epoch later
 
   accounts: [GraphAccount!]!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 # Indexer events
@@ -415,6 +511,14 @@ interface IndexerEvent {
   #epoch: Epoch #Probably re-add epoch later
 
   indexer: Indexer!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type IndexerServiceRegisteredEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
@@ -436,6 +540,14 @@ type IndexerServiceRegisteredEvent implements IndexerEvent & GraphAccountEvent &
   url: String!
 
   geoHash: String!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type IndexerServiceUnregisteredEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
@@ -453,6 +565,14 @@ type IndexerServiceUnregisteredEvent implements IndexerEvent & GraphAccountEvent
   indexer: Indexer!
 
   accounts: [GraphAccount!]!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type SetDefaultNameEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
@@ -472,6 +592,14 @@ type SetDefaultNameEvent implements IndexerEvent & GraphAccountEvent & Event @en
   accounts: [GraphAccount!]!
 
   newDefaultName: String!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type DelegationParametersUpdatedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
@@ -495,6 +623,14 @@ type DelegationParametersUpdatedEvent implements IndexerEvent & GraphAccountEven
   queryFeeCut: Int!
 
   cooldownBlocks: Int!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type SetOperatorEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
@@ -516,6 +652,14 @@ type SetOperatorEvent implements IndexerEvent & GraphAccountEvent & Event @entit
   operator: Bytes!
 
   allowed: Boolean!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type IndexerStakeDepositedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
@@ -535,6 +679,14 @@ type IndexerStakeDepositedEvent implements IndexerEvent & GraphAccountEvent & Ev
   accounts: [GraphAccount!]!
 
   amount: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type IndexerStakeLockedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
@@ -556,6 +708,14 @@ type IndexerStakeLockedEvent implements IndexerEvent & GraphAccountEvent & Event
   amount: BigInt!
 
   lockedUntil: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type IndexerStakeWithdrawnEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
@@ -575,6 +735,14 @@ type IndexerStakeWithdrawnEvent implements IndexerEvent & GraphAccountEvent & Ev
   accounts: [GraphAccount!]!
 
   amount: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type IndexerStakeSlashedEvent implements IndexerEvent & GraphAccountEvent & Event @entity {
@@ -595,6 +763,14 @@ type IndexerStakeSlashedEvent implements IndexerEvent & GraphAccountEvent & Even
 
   "Total amount of the indexer stake that was slashed"
   amountSlashed: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type AllocationCreatedEvent implements IndexerEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event
@@ -620,6 +796,14 @@ type AllocationCreatedEvent implements IndexerEvent & SubgraphDeploymentEvent & 
   allocatedAmount: BigInt!
 
   deployment: SubgraphDeployment!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type AllocationCollectedEvent implements IndexerEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event
@@ -647,6 +831,14 @@ type AllocationCollectedEvent implements IndexerEvent & SubgraphDeploymentEvent 
   collectedQueryFees: BigInt!
 
   curatorQueryFees: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type AllocationClosedEvent implements IndexerEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event
@@ -670,6 +862,14 @@ type AllocationClosedEvent implements IndexerEvent & SubgraphDeploymentEvent & G
   allocation: String!
 
   deployment: SubgraphDeployment!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type RebateClaimedEvent implements IndexerEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event
@@ -697,6 +897,14 @@ type RebateClaimedEvent implements IndexerEvent & SubgraphDeploymentEvent & Grap
   indexerQueryFeeRebates: BigInt!
 
   delegatorQueryFeeRebates: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 # Curator events
@@ -716,6 +924,14 @@ interface CuratorEvent {
   #epoch: Epoch #Probably re-add epoch later
 
   curator: Curator!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type NSignalMintedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEvent & Event
@@ -745,6 +961,14 @@ type NSignalMintedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEv
   versionSignal: BigInt!
 
   tokens: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type NSignalBurnedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEvent & Event
@@ -775,6 +999,14 @@ type NSignalBurnedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEv
 
   "Tokens received after burning the NameSignal"
   tokens: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type GRTWithdrawnEvent implements SubgraphEvent & CuratorEvent & GraphAccountEvent & Event @entity {
@@ -802,6 +1034,14 @@ type GRTWithdrawnEvent implements SubgraphEvent & CuratorEvent & GraphAccountEve
 
   "Tokens received after burning the NameSignal"
   tokens: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type SignalMintedEvent implements CuratorEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event
@@ -829,6 +1069,14 @@ type SignalMintedEvent implements CuratorEvent & SubgraphDeploymentEvent & Graph
   versionSignal: BigInt!
 
   tokens: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type SignalBurnedEvent implements CuratorEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event
@@ -857,6 +1105,14 @@ type SignalBurnedEvent implements CuratorEvent & SubgraphDeploymentEvent & Graph
 
   "Tokens received after burning the NameSignal"
   tokens: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 # Delegator events
@@ -876,6 +1132,14 @@ interface DelegatorEvent {
   #epoch: Epoch #Probably re-add epoch later
 
   delegator: Delegator!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type DelegatorStakeDepositedEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event
@@ -900,6 +1164,14 @@ type DelegatorStakeDepositedEvent implements DelegatorEvent & IndexerEvent & Gra
   tokenAmount: BigInt!
 
   shareAmount: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type DelegatorStakeLockedEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event
@@ -926,6 +1198,14 @@ type DelegatorStakeLockedEvent implements DelegatorEvent & IndexerEvent & GraphA
   shareAmount: BigInt!
 
   lockedUntil: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
 
 type DelegatorStakeWithdrawnEvent implements DelegatorEvent & IndexerEvent & GraphAccountEvent & Event
@@ -948,4 +1228,12 @@ type DelegatorStakeWithdrawnEvent implements DelegatorEvent & IndexerEvent & Gra
   accounts: [GraphAccount!]!
 
   tokenAmount: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
 }
