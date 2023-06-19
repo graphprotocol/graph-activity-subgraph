@@ -359,17 +359,7 @@ type SubgraphMetadataUpdatedEvent implements SubgraphEvent & Event @entity {
 
   ipfsFileHash: String!
 
-  description: String!
-
-  displayName: String!
-
-  codeRepository: String!
-
-  website: String!
-
-  nftImage: String!
-
-  image: String!
+  metadata: SubgraphMetadata
 
   tx_gasLimit: BigInt!
 
@@ -378,6 +368,27 @@ type SubgraphMetadataUpdatedEvent implements SubgraphEvent & Event @entity {
   tx_gasUsed: BigInt!
 
   tx_cumulativeGasUsed: BigInt!
+}
+
+type SubgraphMetadata @entity(immutable:true) {
+  "Subgraph metadata ipfs hash"
+  id: ID!
+  "Subgraph entity"
+  subgraph: SubgraphMetadataUpdatedEvent @derivedFrom(field:"metadata")
+  "Short description of the subgraph"
+  description: String
+  "Image in string format"
+  image: String
+  "NFT Image representation"
+  nftImage: String
+  "Location of the code for this project"
+  codeRepository: String
+  "Projects website"
+  website: String
+  "Display name"
+  displayName: String
+  "Categories that the subgraph belongs to."
+  categories: [String!]
 }
 
 type SubgraphVersionMetadataUpdatedEvent implements SubgraphEvent & SubgraphDeploymentEvent & Event
@@ -402,9 +413,7 @@ type SubgraphVersionMetadataUpdatedEvent implements SubgraphEvent & SubgraphDepl
 
   ipfsFileHash: String!
 
-  description: String!
-
-  label: String!
+  metadata: SubgraphVersionMetadata
 
   tx_gasLimit: BigInt!
 
@@ -413,6 +422,17 @@ type SubgraphVersionMetadataUpdatedEvent implements SubgraphEvent & SubgraphDepl
   tx_gasUsed: BigInt!
 
   tx_cumulativeGasUsed: BigInt!
+}
+
+type SubgraphVersionMetadata @entity(immutable:true) {
+  "Subgraph version metadata ipfs hash"
+  id: ID!
+  "Subgraph version entity"
+  subgraphVersion: SubgraphVersionMetadataUpdatedEvent @derivedFrom(field:"metadata")
+  "Short description of the version"
+  description: String
+  "Semantic versioning label"
+  label: String
 }
 
 type SubgraphDeprecatedEvent implements SubgraphEvent & Event @entity {

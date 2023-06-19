@@ -43,7 +43,11 @@ import {
   SubgraphVersionMetadataUpdatedEvent,
 } from '../types/schema'
 
-import { zeroBD } from './utils'
+import { 
+  SubgraphVersionMetadata as SubgraphVersionMetadataTemplate,
+  SubgraphMetadata as SubgraphMetadataTemplate 
+} from '../types/templates'
+
 import {
   createOrLoadSubgraphDeployment,
   createOrLoadGraphAccount,
@@ -54,10 +58,7 @@ import {
   joinID,
   convertBigIntSubgraphIDToBase58,
   getSubgraphID,
-  fetchSubgraphMetadata,
-  fetchSubgraphVersionMetadata,
   getCounter,
-  BIGINT_ZERO,
   BIGINT_ONE,
 } from './helpers'
 
@@ -132,7 +133,7 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   eventEntity.subgraph = subgraph.id
   eventEntity.accounts = accounts
   eventEntity.ipfsFileHash = base58Hash
-  eventEntity = fetchSubgraphMetadata(eventEntity, base58Hash)
+  eventEntity.metadata = base58Hash
   eventEntity.save()
 
   let counter = getCounter()
@@ -142,6 +143,8 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
   counter.save()
+
+  SubgraphMetadataTemplate.create(base58Hash)
 }
 
 /**
@@ -613,7 +616,7 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
   eventEntity.subgraph = subgraph.id
   eventEntity.accounts = accounts
   eventEntity.ipfsFileHash = base58Hash
-  eventEntity = fetchSubgraphMetadata(eventEntity, base58Hash)
+  eventEntity.metadata = base58Hash
   eventEntity.save()
 
   let counter = getCounter()
@@ -622,6 +625,8 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
   counter.subgraphMetadataUpdatedEventCount =
     counter.subgraphMetadataUpdatedEventCount.plus(BIGINT_ONE)
   counter.save()
+
+  SubgraphMetadataTemplate.create(base58Hash)
 }
 
 // - event: SignalMinted(indexed uint256,indexed address,uint256,uint256,uint256)
@@ -849,10 +854,11 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
   otherEventEntity.deployment = deployment.id
   otherEventEntity.accounts = accounts
   otherEventEntity.ipfsFileHash = base58Hash
-  otherEventEntity = fetchSubgraphVersionMetadata(otherEventEntity, base58Hash)
+  otherEventEntity.metadata = base58Hash
   otherEventEntity.save()
-
   counter.save()
+
+  SubgraphVersionMetadataTemplate.create(base58Hash)
 }
 
 // - event: LegacySubgraphClaimed(indexed address,uint256)
