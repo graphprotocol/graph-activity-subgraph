@@ -117,9 +117,6 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   let accounts = new Array<String>()
   accounts.push(graphAccountID)
 
-  let subgraphVersion = SubgraphVersion.load(subgraph.currentVersion) as SubgraphVersion
-  let subgraphDeploymentID = subgraphVersion.subgraphDeployment
-
   let hexHash = changetype<Bytes>(addQm(event.params.subgraphMetadata))
   let base58Hash = hexHash.toBase58()
 
@@ -600,9 +597,6 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
   let subgraph = createOrLoadSubgraph(subgraphID, event.transaction.from)
   let accounts = new Array<String>()
   accounts.push(graphAccountID)
-
-  let subgraphVersion = SubgraphVersion.load(subgraph.currentVersion) as SubgraphVersion
-  let subgraphDeploymentID = subgraphVersion.subgraphDeployment
 
   let hexHash = changetype<Bytes>(addQm(event.params.subgraphMetadata))
   let base58Hash = hexHash.toBase58()
