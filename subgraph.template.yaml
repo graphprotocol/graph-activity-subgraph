@@ -134,7 +134,7 @@ dataSources:
         - Epoch
       abis:
         - name: Staking
-          file: ./node_modules/@graphprotocol/contracts/dist/abis/Staking.json
+          file: ./abis/IStakingStitched.json
       eventHandlers:
         - event: DelegationParametersUpdated(indexed address,uint32,uint32,uint32)
           handler: handleDelegationParametersUpdated
@@ -172,9 +172,6 @@ dataSources:
         - event: RebateClaimed(indexed address,indexed bytes32,indexed address,uint256,uint256,uint256,uint256,uint256)
           handler: handleRebateClaimed
           receipt: true
-        - event: ParameterUpdated(string)
-          handler: handleParameterUpdated
-          receipt: true
         - event: SetOperator(indexed address,indexed address,bool)
           handler: handleSetOperator
           receipt: true
@@ -184,6 +181,35 @@ dataSources:
         #   handler: handleAssetHolderUpdate
         # - event: ImplementationUpdated(address,address)
         #   handler: handleImplementationUpdated
+  - kind: ethereum/contract
+    name: StakingExtension
+    network: {{network}}
+    source:
+      address: '{{staking}}'
+      abi: StakingExtension
+      startBlock: {{blockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/staking.ts
+      entities:
+        - Indexer
+        - Allocation
+        - GraphNetwork
+        - Pool
+        - SubgraphDeployment
+        - GraphAccount
+        - Delegator
+        - DelegatedStake
+        - Epoch
+      abis:
+        - name: StakingExtension
+          file: ./node_modules/@graphprotocol/contracts/dist/abis/StakingExtension.json
+      eventHandlers:
+        - event: ParameterUpdated(string)
+          handler: handleParameterUpdated
+          receipt: true
   - kind: ethereum/contract
     name: Curation
     network: {{network}}

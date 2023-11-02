@@ -7,7 +7,6 @@ import {
   AllocationCreated,
   AllocationClosed,
   RebateClaimed,
-  ParameterUpdated,
   Staking,
   SetOperator,
   StakeDelegated,
@@ -18,6 +17,9 @@ import {
   SlasherUpdate,
   AssetHolderUpdate,
 } from '../types/Staking/Staking'
+import {
+  ParameterUpdated
+} from '../types/StakingExtension/StakingExtension'
 import {
   Indexer,
   Allocation,
