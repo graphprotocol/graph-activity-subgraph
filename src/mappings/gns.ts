@@ -1,4 +1,4 @@
-import { BigInt, BigDecimal, Bytes, json } from '@graphprotocol/graph-ts'
+import { BigInt, BigDecimal, Bytes, json, DataSourceContext } from '@graphprotocol/graph-ts'
 import {
   SubgraphPublished,
   SubgraphDeprecated,
@@ -120,6 +120,7 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
 
   let hexHash = changetype<Bytes>(addQm(event.params.subgraphMetadata))
   let base58Hash = hexHash.toBase58()
+  let metadataId = subgraph.id.concat('-').concat(base58Hash)
 
   let eventEntity = new SubgraphMetadataUpdatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
@@ -133,7 +134,7 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   eventEntity.subgraph = subgraph.id
   eventEntity.accounts = accounts
   eventEntity.ipfsFileHash = base58Hash
-  eventEntity.metadata = base58Hash
+  eventEntity.metadata = metadataId
   eventEntity.save()
 
   let counter = getCounter()
@@ -144,7 +145,9 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
   counter.save()
 
-  SubgraphMetadataTemplate.create(base58Hash)
+  let context = new DataSourceContext()
+  context.setString('id', metadataId)
+  SubgraphMetadataTemplate.createWithContext(base58Hash, context)
 }
 
 /**
@@ -603,6 +606,7 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
 
   let hexHash = changetype<Bytes>(addQm(event.params.subgraphMetadata))
   let base58Hash = hexHash.toBase58()
+  let metadataId = subgraph.id.concat('-').concat(base58Hash)
 
   let eventEntity = new SubgraphMetadataUpdatedEvent(eventId)
   eventEntity.timestamp = event.block.timestamp
@@ -616,7 +620,7 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
   eventEntity.subgraph = subgraph.id
   eventEntity.accounts = accounts
   eventEntity.ipfsFileHash = base58Hash
-  eventEntity.metadata = base58Hash
+  eventEntity.metadata = metadataId
   eventEntity.save()
 
   let counter = getCounter()
@@ -626,7 +630,9 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
     counter.subgraphMetadataUpdatedEventCount.plus(BIGINT_ONE)
   counter.save()
 
-  SubgraphMetadataTemplate.create(base58Hash)
+  let context = new DataSourceContext()
+  context.setString('id', metadataId)
+  SubgraphMetadataTemplate.createWithContext(base58Hash, context)
 }
 
 // - event: SignalMinted(indexed uint256,indexed address,uint256,uint256,uint256)
@@ -796,13 +802,14 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
   counter.subgraphVersionMetadataUpdatedEventCount =
     counter.subgraphVersionMetadataUpdatedEventCount.plus(BIGINT_ONE)
 
+  versionID = joinID([subgraphID, subgraph.versionCount.toString()])
+
   if (subgraph.initializing) {
     subgraph.initializing = false
     subgraph.save()
 
     // attach
   } else {
-    versionID = joinID([subgraphID, subgraph.versionCount.toString()])
     subgraph.currentVersion = versionID
     subgraph.versionCount = subgraph.versionCount.plus(BigInt.fromI32(1))
     subgraph.save()
@@ -840,6 +847,7 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
 
   let hexHash = changetype<Bytes>(addQm(event.params.versionMetadata))
   let base58Hash = hexHash.toBase58()
+  let metadataId = versionID.concat('-').concat(base58Hash)
 
   let otherEventEntity = new SubgraphVersionMetadataUpdatedEvent(eventId.concat('0'))
   otherEventEntity.timestamp = event.block.timestamp
@@ -854,11 +862,13 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
   otherEventEntity.deployment = deployment.id
   otherEventEntity.accounts = accounts
   otherEventEntity.ipfsFileHash = base58Hash
-  otherEventEntity.metadata = base58Hash
+  otherEventEntity.metadata = metadataId
   otherEventEntity.save()
   counter.save()
 
-  SubgraphVersionMetadataTemplate.create(base58Hash)
+  let context = new DataSourceContext()
+  context.setString('id', metadataId)
+  SubgraphVersionMetadataTemplate.createWithContext(base58Hash, context)
 }
 
 // - event: LegacySubgraphClaimed(indexed address,uint256)

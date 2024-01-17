@@ -373,8 +373,10 @@ type SubgraphMetadataUpdatedEvent implements SubgraphEvent & Event @entity {
 type SubgraphMetadata @entity(immutable:true) {
   "Subgraph metadata ipfs hash"
   id: ID!
-  "Subgraph entity"
-  subgraph: SubgraphMetadataUpdatedEvent @derivedFrom(field:"metadata")
+  "Subgraph that reference this metadata. For compatibility purposes. For the full list use subgraphs"
+  subgraph: Subgraph @derivedFrom(field:"metadata")
+  "Subgraphs that reference this metadata"
+  subgraphs: [Subgraph!]! @derivedFrom(field:"metadata")
   "Short description of the subgraph"
   description: String
   "Image in string format"
@@ -427,8 +429,10 @@ type SubgraphVersionMetadataUpdatedEvent implements SubgraphEvent & SubgraphDepl
 type SubgraphVersionMetadata @entity(immutable:true) {
   "Subgraph version metadata ipfs hash"
   id: ID!
-  "Subgraph version entity"
-  subgraphVersion: SubgraphVersionMetadataUpdatedEvent @derivedFrom(field:"metadata")
+  "SubgraphVersion entity that references this metadata. For compatibility purposes. For the full list use subgraphVersions"
+  subgraphVersion: SubgraphVersion @derivedFrom(field:"metadata")
+  "SubgraphVersion entities that reference this metadata"
+  subgraphVersions: [SubgraphVersion!]! @derivedFrom(field:"metadata")
   "Short description of the version"
   description: String
   "Semantic versioning label"

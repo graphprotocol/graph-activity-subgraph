@@ -6,7 +6,8 @@ import {
 import { jsonToString } from './utils'
 
 export function handleSubgraphMetadata(content: Bytes): void {
-  let subgraphMetadata = new SubgraphMetadata(dataSource.stringParam())
+  let id = dataSource.context().getString("id")
+  let subgraphMetadata = new SubgraphMetadata(id)
   let tryData = json.try_fromBytes(content)
   if (tryData.isOk) {
     let data = tryData.value.toObject()
@@ -33,7 +34,8 @@ export function handleSubgraphMetadata(content: Bytes): void {
 }
 
 export function handleSubgraphVersionMetadata(content: Bytes): void {
-  let subgraphVersionMetadata = new SubgraphVersionMetadata(dataSource.stringParam())
+  let id = dataSource.context().getString("id")
+  let subgraphVersionMetadata = new SubgraphVersionMetadata(id)
   let tryData = json.try_fromBytes(content)
   if (tryData.isOk) {
     let data = tryData.value.toObject()
