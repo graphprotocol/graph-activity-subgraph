@@ -3,8 +3,6 @@ description: The Graph Network Smart Contracts on Ethereum
 repository: https://github.com/graphprotocol/contracts/graph-network-subgraph
 schema:
   file: ./schema.graphql
-features:
-  - ipfsOnEthereumContracts
 dataSources:
   - kind: ethereum/contract
     name: GNS
@@ -335,3 +333,28 @@ dataSources:
         - event: ParameterUpdated(string)
           handler: handleParameterUpdated
           receipt: true
+templates:
+  - name: SubgraphMetadata
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/ipfs.ts
+      handler: handleSubgraphMetadata
+      entities:
+        - SubgraphMetadata
+      abis:
+        - name: EpochManager
+          file: ./node_modules/@graphprotocol/contracts/dist/abis/EpochManager.json
+  - name: SubgraphVersionMetadata
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/ipfs.ts
+      handler: handleSubgraphVersionMetadata
+      entities:
+        - SubgraphVersionMetadata
+      abis:
+        - name: EpochManager
+          file: ./node_modules/@graphprotocol/contracts/dist/abis/EpochManager.json
