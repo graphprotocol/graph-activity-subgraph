@@ -28,7 +28,7 @@ jobs:
 
       # Run scripts
       - name: Prepare addresses testnet
-        run: ./node_modules/.bin/ts-node ./config/sepoliaddressScript.ts && ./node_modules/.bin/mustache ./config/generatedAddresses.json ./config/addresses.template.ts > ./config/addresses.ts
+        run: ./node_modules/.bin/ts-node ./config/sepoliaAddressScript.ts && ./node_modules/.bin/mustache ./config/generatedAddresses.json ./config/addresses.template.ts > ./config/addresses.ts
       - name: Prepare testnet
         run: ./node_modules/.bin/mustache ./config/generatedAddresses.json subgraph.template.yaml > subgraph.yaml && ./node_modules/@graphprotocol/graph-cli/bin/run codegen --output-dir src/types/
       - name: Deploy to testnet
