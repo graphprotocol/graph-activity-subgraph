@@ -453,14 +453,14 @@ export function handleAllocationClosed(event: AllocationClosed): void {
 }
 
 /**
- * @dev handleAllocationClosedCobbsDouglas
+ * @dev handleAllocationClosedCobbDouglas
  * - update the indexers stake
  * - update the subgraph total stake
  * - update the named subgraph aggregate stake
  * - update the specific allocation
  * - update and close the channel
  */
-export function handleAllocationClosedCobbsDouglas(event: AllocationClosed1): void {
+export function handleAllocationClosedCobbDouglas(event: AllocationClosed1): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
   let accounts = new Array<String>()
