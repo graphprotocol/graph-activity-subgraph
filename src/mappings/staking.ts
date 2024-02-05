@@ -6,6 +6,7 @@ import {
   StakeSlashed,
   AllocationCreated,
   AllocationClosed,
+  AllocationClosed1,
   RebateClaimed,
   Staking,
   SetOperator,
@@ -422,6 +423,44 @@ export function handleAllocationCollected(event: AllocationCollected): void {
  * - update and close the channel
  */
 export function handleAllocationClosed(event: AllocationClosed): void {
+  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
+  let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>()
+  accounts.push(indexerAddress)
+
+  let eventEntity = new AllocationClosedEvent(eventId)
+  eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
+  eventEntity.blockNumber = event.block.number
+  eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = 'AllocationClosedEvent'
+  eventEntity.indexer = indexerAddress
+  eventEntity.accounts = accounts
+  eventEntity.allocation = event.params.allocationID.toHexString()
+  eventEntity.deployment = event.params.subgraphDeploymentID.toHexString()
+  eventEntity.save()
+
+  let counter = getCounter()
+  counter.allocationClosedEventCount = counter.allocationClosedEventCount.plus(BIGINT_ONE)
+  counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
+  counter.indexerEventCount = counter.indexerEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.save()
+}
+
+/**
+ * @dev handleAllocationClosedCobbDouglas
+ * - update the indexers stake
+ * - update the subgraph total stake
+ * - update the named subgraph aggregate stake
+ * - update the specific allocation
+ * - update and close the channel
+ */
+export function handleAllocationClosedCobbDouglas(event: AllocationClosed1): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.indexer.toHexString()
   let accounts = new Array<String>()

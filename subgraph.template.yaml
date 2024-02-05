@@ -165,6 +165,9 @@ dataSources:
           handler: handleAllocationCollected
           receipt: true
         - event: AllocationClosed(indexed address,indexed bytes32,uint256,uint256,indexed address,uint256,address,bytes32,bool)
+          handler: handleAllocationClosedCobbDouglas
+          receipt: true
+        - event: AllocationClosed(indexed address,indexed bytes32,uint256,uint256,indexed address,address,bytes32,bool)
           handler: handleAllocationClosed
           receipt: true
         - event: RebateClaimed(indexed address,indexed bytes32,indexed address,uint256,uint256,uint256,uint256,uint256)
