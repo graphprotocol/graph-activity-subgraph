@@ -8,15 +8,12 @@ import {
   AllocationClosed,
   AllocationClosed1,
   RebateClaimed,
-  Staking,
   SetOperator,
   StakeDelegated,
   StakeDelegatedLocked,
   StakeDelegatedWithdrawn,
   AllocationCollected,
   DelegationParametersUpdated,
-  SlasherUpdate,
-  AssetHolderUpdate,
 } from '../types/Staking/Staking'
 import {
   ParameterUpdated
@@ -47,9 +44,7 @@ import {
 import {
   createOrLoadSubgraphDeployment,
   createOrLoadIndexer,
-  joinID,
   createOrLoadDelegator,
-  createOrLoadDelegatedStake,
   createOrLoadGraphAccount,
   getCounter,
   BIGINT_ONE,
