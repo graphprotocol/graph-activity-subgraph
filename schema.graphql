@@ -70,7 +70,7 @@ type Subgraph @entity {
   "Graph account that owns this subgraph"
   owner: GraphAccount!
   "Current version"
-  currentVersion: SubgraphVersion!
+  currentVersion: SubgraphVersion
   "List of all the subgraph versions included the current one"
   versions: [SubgraphVersion!]! @derivedFrom(field: "subgraph")
   "Version counter"
