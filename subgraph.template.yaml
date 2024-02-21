@@ -153,6 +153,33 @@ dataSources:
           receipt: true
 {{/isL1}}
   - kind: ethereum/contract
+    name: SubgraphNFT
+    network: {{network}}
+    source:
+      address: "{{subgraphNFT}}"
+      abi: SubgraphNFT
+      startBlock: {{blockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/gns.ts
+      entities:
+        - Subgraph
+        - SubgraphVersion
+        - SubgraphDeployment
+        - GraphAccount
+        - NameSignal
+      abis:
+        - name: SubgraphNFT
+          file: ./node_modules/@graphprotocol/contracts/dist/abis/SubgraphNFT.json
+        - name: EpochManager
+          file: ./node_modules/@graphprotocol/contracts/dist/abis/EpochManager.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+          receipt: true
+  - kind: ethereum/contract
     name: ServiceRegistry
     network: {{network}}
     source:

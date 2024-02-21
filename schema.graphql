@@ -595,6 +595,32 @@ type SubgraphL2TransferFinalizedEvent implements SubgraphEvent & Event @entity(i
   tx_cumulativeGasUsed: BigInt!
 }
 
+type SubgraphTransferred implements SubgraphEvent & GraphAccountEvent & Event
+  @entity(immutable: true) {
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  typename: String!
+
+  subgraph: Subgraph!
+
+  "User that triggered the Event"
+  accounts: [GraphAccount!]!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
+}
+
 # Profile events (includes Indexer, Curator and Delegator events)
 
 interface GraphAccountEvent {
