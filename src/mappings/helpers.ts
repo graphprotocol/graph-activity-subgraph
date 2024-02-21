@@ -62,6 +62,16 @@ export function getCounter(): CounterEntity {
     counter.delegatorStakeDepositedEventCount = BIGINT_ZERO
     counter.delegatorStakeLockedEventCount = BIGINT_ZERO
     counter.delegatorStakeWithdrawnEventCount = BIGINT_ZERO
+    counter.delegationTransferredToL2EventCount = BIGINT_ZERO
+    counter.indexerStakeTransferredToL2EventCount = BIGINT_ZERO
+    counter.stakeDelegatedUnlockedDueToL2TransferEventCount = BIGINT_ZERO
+    counter.transferredDelegationReturnedToDelegatorEventCount = BIGINT_ZERO
+    counter.subgraphSentToL2EventCount = BIGINT_ZERO
+    counter.curatorBalanceSentToL2EventCount = BIGINT_ZERO
+    counter.subgraphReceivedFromL1EventCount = BIGINT_ZERO
+    counter.subgraphL2TransferFinalizedEventCount = BIGINT_ZERO
+    counter.curatorBalanceReceivedEventCount = BIGINT_ZERO
+    counter.curatorBalanceReturnedToBeneficiaryEventCount = BIGINT_ZERO
     // Interface counters
     counter.eventCount = BIGINT_ZERO
     counter.subgraphEventCount = BIGINT_ZERO
@@ -82,6 +92,7 @@ export function createOrLoadSubgraph(subgraphID: string, owner: Address): Subgra
     subgraph.owner = owner.toHexString()
     subgraph.versionCount = BigInt.fromI32(0)
     subgraph.initializing = false
+    subgraph.save()
   }
   return subgraph as Subgraph
 }

@@ -204,6 +204,7 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
 
   let counter = getCounter()
   counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
   counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
 
@@ -247,6 +248,7 @@ export function handleSubgraphDeprecated(event: SubgraphDeprecated): void {
 
   let counter = getCounter()
   counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
   counter.subgraphDeprecatedEventCount = counter.subgraphDeprecatedEventCount.plus(BIGINT_ONE)
   counter.save()
@@ -275,6 +277,7 @@ export function handleNameSignalEnabled(event: NameSignalEnabled): void {
 
   let counter = getCounter()
   counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
   counter.subgraphNameSignalEnabledEventCount =
     counter.subgraphNameSignalEnabledEventCount.plus(BIGINT_ONE)
@@ -555,6 +558,7 @@ export function handleSubgraphPublishedV2(event: SubgraphPublished1): void {
 
   let counter = getCounter()
   counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
   counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
   counter.newSubgraphPublishedEventCount = counter.newSubgraphPublishedEventCount.plus(BIGINT_ONE)
@@ -587,6 +591,7 @@ export function handleSubgraphDeprecatedV2(event: SubgraphDeprecated1): void {
 
   let counter = getCounter()
   counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
   counter.subgraphDeprecatedEventCount = counter.subgraphDeprecatedEventCount.plus(BIGINT_ONE)
   counter.save()
@@ -625,6 +630,7 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
 
   let counter = getCounter()
   counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
   counter.subgraphMetadataUpdatedEventCount =
     counter.subgraphMetadataUpdatedEventCount.plus(BIGINT_ONE)
@@ -797,6 +803,7 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
 
   let counter = getCounter()
   counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
   counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
   counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
   counter.subgraphVersionMetadataUpdatedEventCount =
@@ -843,6 +850,7 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
     eventEntity.save()
     counter.newSubgraphVersionPublishedEventCount =
       counter.newSubgraphVersionPublishedEventCount.plus(BIGINT_ONE)
+    counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
   }
 
   let hexHash = changetype<Bytes>(addQm(event.params.versionMetadata))
