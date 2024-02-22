@@ -596,7 +596,7 @@ type SubgraphL2TransferFinalizedEvent implements SubgraphEvent & Event @entity(i
   tx_cumulativeGasUsed: BigInt!
 }
 
-type SubgraphTransferred implements SubgraphEvent & GraphAccountEvent & Event
+type SubgraphTransferredEvent implements SubgraphEvent & GraphAccountEvent & Event
   @entity(immutable: true) {
   id: ID!
 
@@ -609,6 +609,10 @@ type SubgraphTransferred implements SubgraphEvent & GraphAccountEvent & Event
   typename: String!
 
   subgraph: Subgraph!
+
+  from: GraphAccount!
+
+  to: GraphAccount!
 
   "User that triggered the Event"
   accounts: [GraphAccount!]!

@@ -42,7 +42,7 @@ import {
   ParameterUpdatedEvent,
   SetDefaultNameEvent,
   SubgraphVersionMetadataUpdatedEvent,
-  SubgraphTransferred,
+  SubgraphTransferredEvent,
 } from '../types/schema'
 
 import { 
@@ -897,8 +897,8 @@ export function handleTransfer(event: Transfer): void {
   let oldOwner = createOrLoadGraphAccount(event.params.from.toHexString())
   let subgraphID = convertBigIntSubgraphIDToBase58(event.params.tokenId)
   let accounts = new Array<String>()
-  accounts.push(newOwner.id)
   accounts.push(oldOwner.id)
+  accounts.push(newOwner.id)
 
   // Update subgraph v2
   let subgraph = createOrLoadSubgraph(
@@ -909,7 +909,7 @@ export function handleTransfer(event: Transfer): void {
   subgraph.save()
 
   //todo
-  let otherEventEntity = new SubgraphTransferred(eventId)
+  let otherEventEntity = new SubgraphTransferredEvent(eventId)
   otherEventEntity.timestamp = event.block.timestamp
   otherEventEntity.tx_gasLimit = event.transaction.gasLimit
   otherEventEntity.tx_gasPrice = event.transaction.gasPrice
@@ -917,8 +917,10 @@ export function handleTransfer(event: Transfer): void {
   otherEventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
   otherEventEntity.blockNumber = event.block.number
   otherEventEntity.tx_hash = event.transaction.hash
-  otherEventEntity.typename = 'SubgraphTransferred'
+  otherEventEntity.typename = 'SubgraphTransferredEvent'
   otherEventEntity.subgraph = subgraph.id
+  otherEventEntity.from = oldOwner.id
+  otherEventEntity.to = newOwner.id
   otherEventEntity.accounts = accounts
   otherEventEntity.save()
 
