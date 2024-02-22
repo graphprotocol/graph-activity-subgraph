@@ -72,6 +72,7 @@ export function getCounter(): CounterEntity {
     counter.subgraphL2TransferFinalizedEventCount = BIGINT_ZERO
     counter.curatorBalanceReceivedEventCount = BIGINT_ZERO
     counter.curatorBalanceReturnedToBeneficiaryEventCount = BIGINT_ZERO
+    counter.subgraphTransferredEventCount = BIGINT_ZERO
     // Interface counters
     counter.eventCount = BIGINT_ZERO
     counter.subgraphEventCount = BIGINT_ZERO

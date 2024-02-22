@@ -41,6 +41,7 @@ type CounterEntity @entity {
   subgraphL2TransferFinalizedEventCount: BigInt!
   curatorBalanceReceivedEventCount: BigInt!
   curatorBalanceReturnedToBeneficiaryEventCount: BigInt!
+  subgraphTransferredEventCount: BigInt!
   #interface counters
   eventCount: BigInt!
   subgraphEventCount: BigInt!

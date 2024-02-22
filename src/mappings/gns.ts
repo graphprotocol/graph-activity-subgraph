@@ -921,5 +921,12 @@ export function handleTransfer(event: Transfer): void {
   otherEventEntity.subgraph = subgraph.id
   otherEventEntity.accounts = accounts
   otherEventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.subgraphTransferredEventCount = counter.subgraphTransferredEventCount.plus(BIGINT_ONE)
+  counter.save()
 }
 
