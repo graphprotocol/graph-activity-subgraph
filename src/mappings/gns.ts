@@ -21,6 +21,7 @@ import {
   SubgraphVersionUpdated,
   LegacySubgraphClaimed,
   GNS,
+  Transfer,
 } from '../types/GNS/GNS'
 
 import {
@@ -41,6 +42,7 @@ import {
   ParameterUpdatedEvent,
   SetDefaultNameEvent,
   SubgraphVersionMetadataUpdatedEvent,
+  SubgraphTransferredEvent,
 } from '../types/schema'
 
 import { 
@@ -885,3 +887,48 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
 export function handleLegacySubgraphClaimed(event: LegacySubgraphClaimed): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
 }
+
+// - event: Transfer(indexed address,indexed address,indexed uint256)
+//   handler: handleTransfer
+
+export function handleTransfer(event: Transfer): void {
+  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
+  let newOwner = createOrLoadGraphAccount(event.params.to.toHexString())
+  let oldOwner = createOrLoadGraphAccount(event.params.from.toHexString())
+  let subgraphID = convertBigIntSubgraphIDToBase58(event.params.tokenId)
+  let accounts = new Array<String>()
+  accounts.push(oldOwner.id)
+  accounts.push(newOwner.id)
+
+  // Update subgraph v2
+  let subgraph = createOrLoadSubgraph(
+    subgraphID,
+    event.transaction.from
+  )
+  subgraph.owner = newOwner.id
+  subgraph.save()
+
+  //todo
+  let otherEventEntity = new SubgraphTransferredEvent(eventId)
+  otherEventEntity.timestamp = event.block.timestamp
+  otherEventEntity.tx_gasLimit = event.transaction.gasLimit
+  otherEventEntity.tx_gasPrice = event.transaction.gasPrice
+  otherEventEntity.tx_gasUsed = event.receipt!.gasUsed
+  otherEventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
+  otherEventEntity.blockNumber = event.block.number
+  otherEventEntity.tx_hash = event.transaction.hash
+  otherEventEntity.typename = 'SubgraphTransferredEvent'
+  otherEventEntity.subgraph = subgraph.id
+  otherEventEntity.from = oldOwner.id
+  otherEventEntity.to = newOwner.id
+  otherEventEntity.accounts = accounts
+  otherEventEntity.save()
+
+  let counter = getCounter()
+  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.subgraphTransferredEventCount = counter.subgraphTransferredEventCount.plus(BIGINT_ONE)
+  counter.save()
+}
+

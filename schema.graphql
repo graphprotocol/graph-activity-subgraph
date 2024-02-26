@@ -41,6 +41,7 @@ type CounterEntity @entity {
   subgraphL2TransferFinalizedEventCount: BigInt!
   curatorBalanceReceivedEventCount: BigInt!
   curatorBalanceReturnedToBeneficiaryEventCount: BigInt!
+  subgraphTransferredEventCount: BigInt!
   #interface counters
   eventCount: BigInt!
   subgraphEventCount: BigInt!
@@ -585,6 +586,36 @@ type SubgraphL2TransferFinalizedEvent implements SubgraphEvent & Event @entity(i
   typename: String!
 
   subgraph: Subgraph!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
+}
+
+type SubgraphTransferredEvent implements SubgraphEvent & GraphAccountEvent & Event
+  @entity(immutable: true) {
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  typename: String!
+
+  subgraph: Subgraph!
+
+  from: GraphAccount!
+
+  to: GraphAccount!
+
+  "User that triggered the Event"
+  accounts: [GraphAccount!]!
 
   tx_gasLimit: BigInt!
 
