@@ -836,7 +836,7 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
     subgraphVersion.version = versionNumber as i32
     subgraphVersion.save()
 
-    let eventEntity = new NewSubgraphVersionPublishedEvent(eventId.concat('1'))
+    let eventEntity = new NewSubgraphVersionPublishedEvent(eventId.concat('-1'))
     eventEntity.timestamp = event.block.timestamp
     eventEntity.tx_gasLimit = event.transaction.gasLimit
     eventEntity.tx_gasPrice = event.transaction.gasPrice
@@ -859,7 +859,7 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
   let base58Hash = hexHash.toBase58()
   let metadataId = versionID.concat('-').concat(base58Hash)
 
-  let otherEventEntity = new SubgraphVersionMetadataUpdatedEvent(eventId.concat('0'))
+  let otherEventEntity = new SubgraphVersionMetadataUpdatedEvent(eventId.concat('-0'))
   otherEventEntity.timestamp = event.block.timestamp
   otherEventEntity.tx_gasLimit = event.transaction.gasLimit
   otherEventEntity.tx_gasPrice = event.transaction.gasPrice
