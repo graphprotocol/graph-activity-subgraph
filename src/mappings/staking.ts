@@ -35,6 +35,7 @@ import {
   DelegatorStakeWithdrawnEvent,
   AllocationCreatedEvent,
   AllocationCollectedEvent,
+  RebateCollectedEvent,
   AllocationClosedEvent,
   RebateClaimedEvent,
   SetOperatorEvent,
@@ -49,6 +50,7 @@ import {
   getCounter,
   BIGINT_ONE,
 } from './helpers'
+import { RebateCollected } from '../types/L1Staking/L1Staking'
 
 export function handleDelegationParametersUpdated(event: DelegationParametersUpdated): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
@@ -518,6 +520,39 @@ export function handleRebateClaimed(event: RebateClaimed): void {
 
   let counter = getCounter()
   counter.rebateClaimedEventCount = counter.rebateClaimedEventCount.plus(BIGINT_ONE)
+  counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
+  counter.indexerEventCount = counter.indexerEventCount.plus(BIGINT_ONE)
+  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
+  counter.save()
+}
+
+export function handleRebateCollected(event: RebateCollected): void {
+  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
+  let indexerAddress = event.params.indexer.toHexString()
+  let accounts = new Array<String>()
+  accounts.push(indexerAddress)
+
+  let eventEntity = new RebateCollectedEvent(eventId)
+  eventEntity.timestamp = event.block.timestamp
+  eventEntity.tx_gasLimit = event.transaction.gasLimit
+  eventEntity.tx_gasPrice = event.transaction.gasPrice
+  eventEntity.tx_gasUsed = event.receipt!.gasUsed
+  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
+  eventEntity.blockNumber = event.block.number
+  eventEntity.tx_hash = event.transaction.hash
+  eventEntity.typename = 'RebateCollectedEvent'
+  eventEntity.indexer = indexerAddress
+  eventEntity.accounts = accounts
+  eventEntity.allocation = event.params.allocationID.toHexString()
+  eventEntity.deployment = event.params.subgraphDeploymentID.toHexString()
+  eventEntity.collectedQueryFees = event.params.queryFees
+  eventEntity.queryFeeRebates = event.params.queryRebates
+  eventEntity.curatorQueryFees = event.params.curationFees
+  eventEntity.save()
+
+  let counter = getCounter()
+  counter.rebateCollectedEventCount = counter.rebateCollectedEventCount.plus(BIGINT_ONE)
   counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
   counter.indexerEventCount = counter.indexerEventCount.plus(BIGINT_ONE)
   counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)

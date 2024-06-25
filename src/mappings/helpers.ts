@@ -54,6 +54,7 @@ export function getCounter(): CounterEntity {
     counter.allocationCollectedEventCount = BIGINT_ZERO
     counter.allocationClosedEventCount = BIGINT_ZERO
     counter.rebateClaimedEventCount = BIGINT_ZERO
+    counter.rebateCollectedEventCount = BIGINT_ZERO
     counter.nSignalMintedEventCount = BIGINT_ZERO
     counter.nSignalBurnedEventCount = BIGINT_ZERO
     counter.grtWithdrawnEventCount = BIGINT_ZERO
