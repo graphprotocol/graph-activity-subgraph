@@ -268,6 +268,9 @@ dataSources:
         - event: RebateClaimed(indexed address,indexed bytes32,indexed address,uint256,uint256,uint256,uint256,uint256)
           handler: handleRebateClaimed
           receipt: true
+        - event: RebateCollected(address,indexed address,indexed bytes32,indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleRebateCollected
+          receipt: true
         - event: SetOperator(indexed address,indexed address,bool)
           handler: handleSetOperator
           receipt: true

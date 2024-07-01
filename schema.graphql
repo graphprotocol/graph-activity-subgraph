@@ -22,6 +22,7 @@ type CounterEntity @entity {
   allocationCollectedEventCount: BigInt!
   allocationClosedEventCount: BigInt!
   rebateClaimedEventCount: BigInt!
+  rebateCollectedEventCount: BigInt!
   nSignalMintedEventCount: BigInt!
   nSignalBurnedEventCount: BigInt!
   grtWithdrawnEventCount: BigInt!
@@ -1064,6 +1065,43 @@ type RebateClaimedEvent implements IndexerEvent & SubgraphDeploymentEvent & Grap
   indexerQueryFeeRebates: BigInt!
 
   delegatorQueryFeeRebates: BigInt!
+
+  tx_gasLimit: BigInt!
+
+  tx_gasPrice: BigInt!
+
+  tx_gasUsed: BigInt!
+
+  tx_cumulativeGasUsed: BigInt!
+}
+
+type RebateCollectedEvent implements IndexerEvent & SubgraphDeploymentEvent & GraphAccountEvent & Event
+  @entity(immutable: true) {
+  "Generic ID only for uniqueness purposes."
+  id: ID!
+
+  timestamp: BigInt!
+
+  blockNumber: BigInt!
+
+  tx_hash: Bytes!
+
+  typename: String!
+
+  indexer: Indexer!
+
+  accounts: [GraphAccount!]!
+
+  "ID of the allocation created"
+  allocation: String!
+
+  deployment: SubgraphDeployment!
+
+  collectedQueryFees: BigInt!
+
+  queryFeeRebates: BigInt!
+
+  curatorQueryFees: BigInt!
 
   tx_gasLimit: BigInt!
 
