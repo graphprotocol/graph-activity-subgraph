@@ -8,6 +8,7 @@ import {
   AllocationClosed,
   AllocationClosed1,
   RebateClaimed,
+  RebateCollected,
   SetOperator,
   StakeDelegated,
   StakeDelegatedLocked,
@@ -50,7 +51,6 @@ import {
   getCounter,
   BIGINT_ONE,
 } from './helpers'
-import { RebateCollected } from '../types/L1Staking/L1Staking'
 
 export function handleDelegationParametersUpdated(event: DelegationParametersUpdated): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
