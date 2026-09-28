@@ -330,3 +330,17 @@ test('malformed registration retains raw data and fee collection attributes the 
   assert.fieldEquals('QueryFeesCollectedEvent', activityId(fees), 'tokensCurators', '10')
   assert.fieldEquals('CounterEntity', '0', 'graphAccountEventCount', '2')
 })
+
+test('repeated reward correlation never mutates receipt data or creates duplicate earnings', () => {
+  let configuredService = addresses.subgraphService
+  addresses.subgraphService = F.SERVICE.toHexString()
+  let assignment = F.RHorizonRewardsAssigned(1)
+  let collection = rewardLog()
+  let original = collection.data.toHexString()
+  assignment.receipt!.logs = [collection]
+  R.handleHorizonRewardsAssigned(assignment)
+  R.handleHorizonRewardsAssigned(assignment)
+  assert.stringEquals(collection.data.toHexString(), original)
+  assert.entityCount('UnresolvedIndexingRewardsAssignedEvent', 0)
+  addresses.subgraphService = configuredService
+})

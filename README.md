@@ -2,7 +2,7 @@
 
 This repository contains the code for the Graph Activity Subgraph.
 
-See the [Horizon activity implementation notes](research/implementation-stages-1-3.md) for event coverage, schema/interface conventions, counters, and current build/test commands.
+See the [Horizon activity implementation notes](research/implementation-stages-1-3.md) and [dispute/payment implementation notes](research/implementation-stages-4-5.md) for event coverage, schema/interface conventions, counters, and current build/test commands.
 
 # Contributing to the repository
 

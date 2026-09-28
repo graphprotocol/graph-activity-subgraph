@@ -1,6 +1,6 @@
 # Staged event coverage plan
 
-Proposal dated 2026-09-25, incorporating the L2, counter, interface, Provision, and independent event-processing requirements. Stages 1–3 are implemented in the working tree; see [implementation notes](implementation-stages-1-3.md). Stages 4–6 remain planned. It builds on [the coverage research](event-coverage-gap.md) and [the subscription inventory](event-inventory.csv).
+Proposal dated 2026-09-25, incorporating the L2, counter, interface, Provision, and independent event-processing requirements. Stages 1–5 are implemented in the working tree; see the [stages 1–3 notes](implementation-stages-1-3.md) and [stages 4–5 notes](implementation-stages-4-5.md). Stage 6 remains optional and planned. It builds on [the coverage research](event-coverage-gap.md) and [the subscription inventory](event-inventory.csv).
 
 ## Scope and design decisions
 

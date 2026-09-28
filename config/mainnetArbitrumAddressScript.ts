@@ -34,6 +34,10 @@ export let addresses: Addresses = {
   l2GraphTokenGateway: '{{arbitrum.L2GraphTokenGateway.address}}',
   ethereumDIDRegistry: '{{arbitrum.IEthereumDIDRegistry.address}}',
   subgraphService: '{{arbitrum.SubgraphService.address}}',
+  horizonDisputeManager: '{{arbitrum.DisputeManager.address}}',
+  paymentsEscrow: '{{arbitrum.PaymentsEscrow.address}}',
+  graphTallyCollector: '{{arbitrum.GraphTallyCollector.address}}',
+  graphPayments: '{{arbitrum.GraphPayments.address}}',
   isL1: false,
 }
 
@@ -48,7 +52,14 @@ const main = (): void => {
     if (output.ethereumDIDRegistry == '') {
       output.ethereumDIDRegistry = '0xdCa7EF03e98e0DC2B855bE647C39ABe984fcF21B' // since the package doens't have it yet
     }
-    if (!output.staking || !output.subgraphService)
+    if (
+      !output.staking ||
+      !output.subgraphService ||
+      !output.horizonDisputeManager ||
+      !output.paymentsEscrow ||
+      !output.graphTallyCollector ||
+      !output.graphPayments
+    )
       throw new Error('Missing Horizon addresses for the selected chain')
     fs.writeFileSync(__dirname + '/generatedAddresses.json', JSON.stringify(output, null, 2))
   } catch (e) {

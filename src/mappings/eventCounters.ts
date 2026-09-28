@@ -553,6 +553,328 @@ export function counterFields(type: string): string[] {
       'subgraphDeploymentEventCount',
       'graphAccountEventCount',
     ]
+  if (type == 'QueryDisputeCreatedEvent')
+    return [
+      'queryDisputeCreatedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'IndexingDisputeCreatedEvent')
+    return [
+      'indexingDisputeCreatedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedIndexingDisputeCreatedEvent')
+    return [
+      'unresolvedIndexingDisputeCreatedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+    ]
+  if (type == 'HorizonQueryDisputeCreatedEvent')
+    return [
+      'horizonQueryDisputeCreatedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'HorizonIndexingDisputeCreatedEvent')
+    return [
+      'horizonIndexingDisputeCreatedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedHorizonIndexingDisputeCreatedEvent')
+    return [
+      'unresolvedHorizonIndexingDisputeCreatedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+    ]
+  if (type == 'LegacyDisputeCreatedEvent')
+    return [
+      'legacyDisputeCreatedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedLegacyDisputeCreatedEvent')
+    return [
+      'unresolvedLegacyDisputeCreatedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+    ]
+  if (type == 'DisputeAcceptedEvent')
+    return [
+      'disputeAcceptedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedDisputeAcceptedEvent')
+    return [
+      'unresolvedDisputeAcceptedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+    ]
+  if (type == 'ProvisionDisputeAcceptedEvent')
+    return [
+      'provisionDisputeAcceptedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedProvisionDisputeAcceptedEvent')
+    return [
+      'unresolvedProvisionDisputeAcceptedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+    ]
+  if (type == 'DisputeRejectedEvent')
+    return [
+      'disputeRejectedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedDisputeRejectedEvent')
+    return [
+      'unresolvedDisputeRejectedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+    ]
+  if (type == 'ProvisionDisputeRejectedEvent')
+    return [
+      'provisionDisputeRejectedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedProvisionDisputeRejectedEvent')
+    return [
+      'unresolvedProvisionDisputeRejectedEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+    ]
+  if (type == 'DisputeCancelledEvent')
+    return [
+      'disputeCancelledEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedDisputeCancelledEvent')
+    return [
+      'unresolvedDisputeCancelledEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+    ]
+  if (type == 'ProvisionDisputeCancelledEvent')
+    return [
+      'provisionDisputeCancelledEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedProvisionDisputeCancelledEvent')
+    return [
+      'unresolvedProvisionDisputeCancelledEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+    ]
+  if (type == 'DisputeDrawnEvent')
+    return [
+      'disputeDrawnEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedDisputeDrawnEvent')
+    return [
+      'unresolvedDisputeDrawnEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+    ]
+  if (type == 'ProvisionDisputeDrawnEvent')
+    return [
+      'provisionDisputeDrawnEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedProvisionDisputeDrawnEvent')
+    return [
+      'unresolvedProvisionDisputeDrawnEventCount',
+      'eventCount',
+      'indexerEventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+    ]
+  if (type == 'DisputeLinkedEvent')
+    return ['disputeLinkedEventCount', 'eventCount', 'disputeEventCount']
+  if (type == 'IndexerDisputeLinkedEvent')
+    return [
+      'indexerDisputeLinkedEventCount',
+      'eventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'indexerEventCount',
+    ]
+  if (type == 'DeploymentDisputeLinkedEvent')
+    return [
+      'deploymentDisputeLinkedEventCount',
+      'eventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'indexerEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'ProvisionDisputeLinkedEvent')
+    return [
+      'provisionDisputeLinkedEventCount',
+      'eventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'indexerEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'UnresolvedProvisionDisputeLinkedEvent')
+    return [
+      'unresolvedProvisionDisputeLinkedEventCount',
+      'eventCount',
+      'graphAccountEventCount',
+      'disputeEventCount',
+      'indexerEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+    ]
+  if (type == 'EscrowDepositedEvent')
+    return ['escrowDepositedEventCount', 'eventCount', 'graphAccountEventCount']
+  if (type == 'EscrowWithdrawnEvent')
+    return ['escrowWithdrawnEventCount', 'eventCount', 'graphAccountEventCount']
+  if (type == 'EscrowThawedEvent')
+    return ['escrowThawedEventCount', 'eventCount', 'graphAccountEventCount']
+  if (type == 'EscrowThawCancelledEvent')
+    return ['escrowThawCancelledEventCount', 'eventCount', 'graphAccountEventCount']
+  if (type == 'PayerSignerAuthorizedEvent')
+    return ['payerSignerAuthorizedEventCount', 'eventCount', 'graphAccountEventCount']
+  if (type == 'PayerSignerThawingEvent')
+    return ['payerSignerThawingEventCount', 'eventCount', 'graphAccountEventCount']
+  if (type == 'PayerSignerThawCanceledEvent')
+    return ['payerSignerThawCanceledEventCount', 'eventCount', 'graphAccountEventCount']
+  if (type == 'PayerSignerRevokedEvent')
+    return ['payerSignerRevokedEventCount', 'eventCount', 'graphAccountEventCount']
+  if (type == 'PaymentCollectedEvent')
+    return [
+      'paymentCollectedEventCount',
+      'eventCount',
+      'graphAccountEventCount',
+      'indexerEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+    ]
+  if (type == 'SubgraphPaymentCollectedEvent')
+    return [
+      'subgraphPaymentCollectedEventCount',
+      'eventCount',
+      'graphAccountEventCount',
+      'indexerEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+      'subgraphDeploymentEventCount',
+    ]
+  if (type == 'EscrowCollectedEvent')
+    return ['escrowCollectedEventCount', 'eventCount', 'graphAccountEventCount']
+  if (type == 'GraphPaymentCollectedEvent')
+    return [
+      'graphPaymentCollectedEventCount',
+      'eventCount',
+      'graphAccountEventCount',
+      'indexerEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+    ]
+  if (type == 'ServiceEscrowCollectedEvent')
+    return [
+      'serviceEscrowCollectedEventCount',
+      'eventCount',
+      'graphAccountEventCount',
+      'indexerEventCount',
+      'provisionEventCount',
+      'dataServiceEventCount',
+    ]
   throw new Error('Unknown activity type: ' + type)
 }
 
@@ -560,6 +882,55 @@ export function loadCounters(): CounterEntity {
   let counter = CounterEntity.load('0')
   if (counter == null) {
     counter = new CounterEntity('0')
+    counter.set('serviceEscrowCollectedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('queryDisputeCreatedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('indexingDisputeCreatedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('unresolvedIndexingDisputeCreatedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('horizonQueryDisputeCreatedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('horizonIndexingDisputeCreatedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set(
+      'unresolvedHorizonIndexingDisputeCreatedEventCount',
+      Value.fromBigInt(BigInt.fromI32(0)),
+    )
+    counter.set('legacyDisputeCreatedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('unresolvedLegacyDisputeCreatedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('disputeAcceptedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('unresolvedDisputeAcceptedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('provisionDisputeAcceptedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('unresolvedProvisionDisputeAcceptedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('disputeRejectedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('unresolvedDisputeRejectedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('provisionDisputeRejectedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('unresolvedProvisionDisputeRejectedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('disputeCancelledEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('unresolvedDisputeCancelledEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('provisionDisputeCancelledEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set(
+      'unresolvedProvisionDisputeCancelledEventCount',
+      Value.fromBigInt(BigInt.fromI32(0)),
+    )
+    counter.set('disputeDrawnEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('unresolvedDisputeDrawnEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('provisionDisputeDrawnEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('unresolvedProvisionDisputeDrawnEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('disputeLinkedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('indexerDisputeLinkedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('deploymentDisputeLinkedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('provisionDisputeLinkedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('unresolvedProvisionDisputeLinkedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('escrowDepositedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('escrowWithdrawnEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('escrowThawedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('escrowThawCancelledEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('payerSignerAuthorizedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('payerSignerThawingEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('payerSignerThawCanceledEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('payerSignerRevokedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('paymentCollectedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('subgraphPaymentCollectedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('escrowCollectedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('graphPaymentCollectedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
+    counter.set('disputeEventCount', Value.fromBigInt(BigInt.fromI32(0)))
     counter.set('provisionCreatedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
     counter.set('provisionIncreasedEventCount', Value.fromBigInt(BigInt.fromI32(0)))
     counter.set('provisionThawedEventCount', Value.fromBigInt(BigInt.fromI32(0)))

@@ -6,7 +6,7 @@ Implemented in the working tree on 2026-09-28. No deployment has been performed.
 
 Added 29 L2 event subscriptions: 19 HorizonStaking, 8 SubgraphService, and 2 RewardsManager signatures. The existing `SubgraphUpgraded` subscription now produces curation-movement activity on L2. Arbitrum One and Arbitrum Sepolia enable these integrations through the existing `{{^isL1}}` manifest sections; Ethereum mainnet and Sepolia retain their existing L1 subscriptions. These are the four supported environments. The Horizon and SubgraphService address books contain deployments for the two Arbitrum chains; no separate Horizon feature flag is needed.
 
-The schema now has 71 concrete activity types and 9 query interfaces. All existing interfaces remain. New `ProvisionEvent` and `DataServiceEvent` interfaces support service-specific feeds, alongside the existing indexer, delegator, account, and deployment interfaces. The 30 new concrete types each have a global counter; the two new interfaces have global counters too.
+At the completion of stages 1–3, the schema had 71 concrete activity types and 9 query interfaces. All existing interfaces remain. New `ProvisionEvent` and `DataServiceEvent` interfaces support service-specific feeds, alongside the existing indexer, delegator, account, and deployment interfaces. The 30 new concrete types each have a global counter; the two new interfaces have global counters too.
 
 - `Provision` is identified by `<indexer-address>-<verifier-address>` and relates to the global `Indexer` and a `DataService`.
 - `ProvisionDelegation` is identified by `<delegator-address>-<provision-id>`.
@@ -49,8 +49,8 @@ yarn test
 yarn lint
 ```
 
-Validation covers isolated handling of every newly subscribed signature, multi-service identities, known/missing thaw context, pool slashing/additions, allocation resizing/closure, registration decoding, POI without rewards, reward receipt correlation, and publication regressions. After every test scenario, all type/interface counters are reconciled against actual stored entity counts, including zero counts. The suite contains 49 passing tests.
+Validation covers isolated handling of every newly subscribed signature, multi-service identities, known/missing thaw context, pool slashing/additions, allocation resizing/closure, registration decoding, POI without rewards, reward receipt correlation, and publication regressions. After every test scenario, all type/interface counters are reconciled against actual stored entity counts, including zero counts. The suite contained 49 passing tests at the completion of stages 1–3; the stages 4–5 notes describe the expanded suite.
 
 Preparation/build checks cover mainnet, Sepolia, Arbitrum One, and Arbitrum Sepolia. Rendered manifest checks verify new integrations are L2-only and that activity subscriptions request receipts. Lint passes with warnings for existing unused code and the non-null assertion style used by the mappings/tests. There has been no production chain replay or live GraphQL endpoint verification.
 
-Stages 4–6 (disputes, payer/payment infrastructure, and optional network/profile activity) remain outside this implementation. Indexing start blocks remain the configured chain start blocks; choosing a shorter activity window or backfilling older records is a deployment/coverage decision, not a prerequisite for these handlers to process later events.
+Disputes and payer/payment infrastructure are now covered by the [stages 4–5 implementation](implementation-stages-4-5.md). Stage 6 (optional network/profile activity) remains outside the implementation. Indexing start blocks remain the configured chain start blocks; choosing a shorter activity window or backfilling older records is a deployment/coverage decision, not a prerequisite for these handlers to process later events.

@@ -26,7 +26,7 @@ export function hasServiceRewardCollection(
     // order prevents a different collection in a batched transaction from
     // hiding this assignment merely because it uses the same allocation.
     if (log.data.length < 32 || log.logIndex.le(event.logIndex)) continue
-    let rewardBytes = Bytes.fromUint8Array(log.data.subarray(0, 32))
+    let rewardBytes = Bytes.fromUint8Array(log.data.slice(0, 32))
     let rewards = BigInt.fromUnsignedBytes(changetype<Bytes>(rewardBytes.reverse()))
     if (!rewards.equals(amount)) continue
     if (

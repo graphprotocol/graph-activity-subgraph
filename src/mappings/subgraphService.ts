@@ -125,6 +125,17 @@ export function handleQueryFeesCollected(event: QueryFeesCollected): void {
   )
   record.tokensCollected = event.params.tokensCollected
   record.tokensCurators = event.params.tokensCurators
+  let fees = new PaymentLog(QUERY_FEES, event.logIndex)
+  fees.receiver = event.params.serviceProvider
+  fees.payer = event.params.payer
+  fees.service = event.address
+  fees.tokens = event.params.tokensCollected
+  fees.collectionId = Bytes.fromHexString(
+    '0x000000000000000000000000' + event.params.allocationId.toHexString().slice(2),
+  )
+  let payment = tallyForQueryFees(fees, paymentLogs(event, fees))
+  if (payment != null)
+    record.paymentEventId = event.transaction.hash.toHexString() + '-' + payment.logIndex.toString()
   record.payer = event.params.payer.toHexString()
   addAccount(record, record.payer)
   saveActivity(record, event)
@@ -160,3 +171,5 @@ export function handleRewardsDestinationSet(event: RewardsDestinationSet): void 
   addAccount(record, event.params.rewardsDestination.toHexString())
   saveActivity(record, event)
 }
+
+import { PaymentLog, QUERY_FEES, paymentLogs, tallyForQueryFees } from './paymentCorrelation'

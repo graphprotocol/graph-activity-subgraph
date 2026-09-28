@@ -29,6 +29,10 @@ export let addresses: Addresses = {
   l2GraphTokenGateway: '',
   ethereumDIDRegistry: '{{mainnet.IEthereumDIDRegistry.address}}',
   subgraphService: '',
+  horizonDisputeManager: '',
+  paymentsEscrow: '',
+  graphTallyCollector: '',
+  graphPayments: '',
   isL1: true,
 }
 

@@ -36,6 +36,10 @@ export let addresses: Addresses = {
   l2GraphTokenGateway: '{{arbsep.L2GraphTokenGateway.address}}',
   ethereumDIDRegistry: '{{arbsep.EthereumDIDRegistry.address}}',
   subgraphService: '{{arbsep.SubgraphService.address}}',
+  horizonDisputeManager: '{{arbsep.DisputeManager.address}}',
+  paymentsEscrow: '{{arbsep.PaymentsEscrow.address}}',
+  graphTallyCollector: '{{arbsep.GraphTallyCollector.address}}',
+  graphPayments: '{{arbsep.GraphPayments.address}}',
   isL1: false,
 }
 
@@ -52,7 +56,14 @@ const main = (): void => {
     if (output.ethereumDIDRegistry == '') {
       output.ethereumDIDRegistry = '0x0000000000000000000000000000000000000000' // to avoid crashes due to bad config
     }
-    if (!output.staking || !output.subgraphService)
+    if (
+      !output.staking ||
+      !output.subgraphService ||
+      !output.horizonDisputeManager ||
+      !output.paymentsEscrow ||
+      !output.graphTallyCollector ||
+      !output.graphPayments
+    )
       throw new Error('Missing Horizon addresses for the selected chain')
     fs.writeFileSync(__dirname + '/generatedAddresses.json', JSON.stringify(output, null, 2))
   } catch (e) {
