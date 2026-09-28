@@ -8,7 +8,7 @@ import {
   BigDecimal,
   ipfs,
   json,
-  JSONValueKind
+  JSONValueKind,
 } from '@graphprotocol/graph-ts'
 import {
   SubgraphDeployment,
@@ -21,73 +21,14 @@ import {
   DelegatedStake,
   SubgraphVersionMetadataUpdatedEvent,
   SubgraphMetadataUpdatedEvent,
-  CounterEntity,
 } from '../types/schema'
 import { jsonToString } from './utils'
 
 export let BIGINT_ZERO = BigInt.fromI32(0)
 export let BIGINT_ONE = BigInt.fromI32(1)
 
-export function getCounter(): CounterEntity {
-  let counter = CounterEntity.load('0')
-  if (counter == null) {
-    counter = new CounterEntity('0')
-    // Specific counters
-    counter.parameterUpdatedEventCount = BIGINT_ZERO
-    counter.rewardsDenylistUpdatedEventCount = BIGINT_ZERO
-    counter.newSubgraphPublishedEventCount = BIGINT_ZERO
-    counter.newSubgraphVersionPublishedEventCount = BIGINT_ZERO
-    counter.subgraphMetadataUpdatedEventCount = BIGINT_ZERO
-    counter.subgraphVersionMetadataUpdatedEventCount = BIGINT_ZERO
-    counter.subgraphDeprecatedEventCount = BIGINT_ZERO
-    counter.subgraphNameSignalEnabledEventCount = BIGINT_ZERO
-    counter.indexerServiceRegisteredEventCount = BIGINT_ZERO
-    counter.indexerServiceUnregisteredEventCount = BIGINT_ZERO
-    counter.setDefaultNameEventCount = BIGINT_ZERO
-    counter.delegationParametersUpdatedEventCount = BIGINT_ZERO
-    counter.setOperatorEventCount = BIGINT_ZERO
-    counter.indexerStakeDepositedEventCount = BIGINT_ZERO
-    counter.indexerStakeLockedEventCount = BIGINT_ZERO
-    counter.indexerStakeWithdrawnEventCount = BIGINT_ZERO
-    counter.indexerStakeSlashedEventCount = BIGINT_ZERO
-    counter.allocationCreatedEventCount = BIGINT_ZERO
-    counter.allocationCollectedEventCount = BIGINT_ZERO
-    counter.allocationClosedEventCount = BIGINT_ZERO
-    counter.rebateClaimedEventCount = BIGINT_ZERO
-    counter.rebateCollectedEventCount = BIGINT_ZERO
-    counter.nSignalMintedEventCount = BIGINT_ZERO
-    counter.nSignalBurnedEventCount = BIGINT_ZERO
-    counter.grtWithdrawnEventCount = BIGINT_ZERO
-    counter.signalMintedEventCount = BIGINT_ZERO
-    counter.signalBurnedEventCount = BIGINT_ZERO
-    counter.delegatorStakeDepositedEventCount = BIGINT_ZERO
-    counter.delegatorStakeLockedEventCount = BIGINT_ZERO
-    counter.delegatorStakeWithdrawnEventCount = BIGINT_ZERO
-    counter.delegationTransferredToL2EventCount = BIGINT_ZERO
-    counter.indexerStakeTransferredToL2EventCount = BIGINT_ZERO
-    counter.stakeDelegatedUnlockedDueToL2TransferEventCount = BIGINT_ZERO
-    counter.transferredDelegationReturnedToDelegatorEventCount = BIGINT_ZERO
-    counter.subgraphSentToL2EventCount = BIGINT_ZERO
-    counter.curatorBalanceSentToL2EventCount = BIGINT_ZERO
-    counter.subgraphReceivedFromL1EventCount = BIGINT_ZERO
-    counter.subgraphL2TransferFinalizedEventCount = BIGINT_ZERO
-    counter.curatorBalanceReceivedEventCount = BIGINT_ZERO
-    counter.curatorBalanceReturnedToBeneficiaryEventCount = BIGINT_ZERO
-    counter.subgraphTransferredEventCount = BIGINT_ZERO
-    // Interface counters
-    counter.eventCount = BIGINT_ZERO
-    counter.subgraphEventCount = BIGINT_ZERO
-    counter.subgraphDeploymentEventCount = BIGINT_ZERO
-    counter.graphAccountEventCount = BIGINT_ZERO
-    counter.indexerEventCount = BIGINT_ZERO
-    counter.curatorEventCount = BIGINT_ZERO
-    counter.delegatorEventCount = BIGINT_ZERO
-    counter.save()
-  }
-  return counter as CounterEntity
-}
-
 export function createOrLoadSubgraph(subgraphID: string, owner: Address): Subgraph {
+  createOrLoadGraphAccount(owner.toHexString())
   let subgraph = Subgraph.load(subgraphID)
   if (subgraph == null) {
     subgraph = new Subgraph(subgraphID)
@@ -111,6 +52,7 @@ export function createOrLoadSubgraphDeployment(subgraphID: string): SubgraphDepl
 }
 
 export function createOrLoadIndexer(id: string): Indexer {
+  createOrLoadGraphAccount(id)
   let indexer = Indexer.load(id)
   if (indexer == null) {
     indexer = new Indexer(id)
@@ -121,6 +63,7 @@ export function createOrLoadIndexer(id: string): Indexer {
 }
 
 export function createOrLoadDelegator(id: string): Delegator {
+  createOrLoadGraphAccount(id)
   let delegator = Delegator.load(id)
   if (delegator == null) {
     delegator = new Delegator(id)
@@ -143,6 +86,7 @@ export function createOrLoadDelegatedStake(delegator: string, indexer: string): 
   return delegatedStake as DelegatedStake
 }
 export function createOrLoadCurator(id: string): Curator {
+  createOrLoadGraphAccount(id)
   let curator = Curator.load(id)
   if (curator == null) {
     curator = new Curator(id)
@@ -243,7 +187,7 @@ function max(a: BigDecimal, b: BigDecimal): BigDecimal {
   return a > b ? a : b
 }
 
-export function convertBigIntSubgraphIDToBase58(bigIntRepresentation: BigInt): String {
+export function convertBigIntSubgraphIDToBase58(bigIntRepresentation: BigInt): string {
   // Might need to unpad the BigInt since `fromUnsignedBytes` pads one byte with a zero.
   // Although for the events where the uint256 is provided, we probably don't need to unpad.
   let hexString = bigIntRepresentation.toHexString()
@@ -258,7 +202,7 @@ export function convertBigIntSubgraphIDToBase58(bigIntRepresentation: BigInt): S
   return bytes.toBase58()
 }
 
-export function getSubgraphID(graphAccountStr: String, subgraphNumber: BigInt): BigInt {
+export function getSubgraphID(graphAccountStr: string, subgraphNumber: BigInt): BigInt {
   let subgraphNumberStr = subgraphNumber.toHexString().slice(2)
   let number = subgraphNumberStr.padStart(64, '0')
   let unhashedSubgraphID = graphAccountStr.concat(number)

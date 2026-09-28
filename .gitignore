@@ -10,3 +10,7 @@ yarn-error.log
 subgraph.yaml
 config/addresses.ts
 config/generatedAddresses.json
+
+# Matchstick build/cache output
+tests/.bin/
+tests/.latest.json

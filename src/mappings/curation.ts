@@ -1,3 +1,4 @@
+import { saveActivity } from './activity'
 import { Signalled, Burned, ParameterUpdated } from '../types/Curation/Curation'
 import { SignalMintedEvent, SignalBurnedEvent, ParameterUpdatedEvent } from '../types/schema'
 
@@ -6,7 +7,6 @@ import {
   createOrLoadCurator,
   createOrLoadGraphAccount,
   joinID,
-  getCounter,
   BIGINT_ZERO,
   BIGINT_ONE,
 } from './helpers'
@@ -22,7 +22,7 @@ export function handleSignalled(event: Signalled): void {
   let curatorID = event.params.curator.toHexString()
   let graphAccount = curatorID
   let deploymentID = event.params.subgraphDeploymentID.toHexString()
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(graphAccount)
 
   // Update the curator and his account
@@ -32,13 +32,7 @@ export function handleSignalled(event: Signalled): void {
   let signalId = joinID([curatorID, deploymentID])
 
   let eventEntity = new SignalMintedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'SignalMintedEvent'
   eventEntity.deployment = deploymentID
   eventEntity.curator = curatorID
@@ -46,15 +40,7 @@ export function handleSignalled(event: Signalled): void {
   eventEntity.signalId = signalId
   eventEntity.versionSignal = event.params.signal
   eventEntity.tokens = event.params.tokens
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.signalMintedEventCount = counter.signalMintedEventCount.plus(BIGINT_ONE)
-  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 /**
  * @dev handleRedeemed
@@ -67,7 +53,7 @@ export function handleBurned(event: Burned): void {
   let curatorID = event.params.curator.toHexString()
   let graphAccount = curatorID
   let deploymentID = event.params.subgraphDeploymentID.toHexString()
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(graphAccount)
 
   // Update the curator and his account
@@ -76,13 +62,7 @@ export function handleBurned(event: Burned): void {
   let signalId = joinID([curatorID, deploymentID])
 
   let eventEntity = new SignalBurnedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'SignalBurnedEvent'
   eventEntity.deployment = deploymentID
   eventEntity.curator = curatorID
@@ -90,15 +70,8 @@ export function handleBurned(event: Burned): void {
   eventEntity.signalId = signalId
   eventEntity.versionSignal = event.params.signal
   eventEntity.tokens = event.params.tokens
-  eventEntity.save()
+  saveActivity(eventEntity, event)
   //
-  let counter = getCounter()
-  counter.signalBurnedEventCount = counter.signalBurnedEventCount.plus(BIGINT_ONE)
-  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.save()
 }
 
 /**
@@ -109,19 +82,8 @@ export function handleBurned(event: Burned): void {
 export function handleParameterUpdated(event: ParameterUpdated): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let eventEntity = new ParameterUpdatedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'ParameterUpdatedEvent'
   eventEntity.parameter = event.params.param
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.parameterUpdatedEventCount = counter.parameterUpdatedEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }

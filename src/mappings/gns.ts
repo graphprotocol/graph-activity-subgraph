@@ -1,3 +1,5 @@
+import { addresses } from '../../config/addresses'
+import { saveActivity } from './activity'
 import { BigInt, BigDecimal, Bytes, json, DataSourceContext } from '@graphprotocol/graph-ts'
 import {
   SubgraphPublished,
@@ -43,11 +45,12 @@ import {
   SetDefaultNameEvent,
   SubgraphVersionMetadataUpdatedEvent,
   SubgraphTransferredEvent,
+  SubgraphUpgradedEvent,
 } from '../types/schema'
 
-import { 
+import {
   SubgraphVersionMetadata as SubgraphVersionMetadataTemplate,
-  SubgraphMetadata as SubgraphMetadataTemplate 
+  SubgraphMetadata as SubgraphMetadataTemplate,
 } from '../types/templates'
 
 import {
@@ -60,7 +63,6 @@ import {
   joinID,
   convertBigIntSubgraphIDToBase58,
   getSubgraphID,
-  getCounter,
   BIGINT_ONE,
 } from './helpers'
 
@@ -72,7 +74,7 @@ export function handleSetDefaultName(event: SetDefaultName): void {
   // )
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let indexerAddress = event.params.graphAccount.toHexString()
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(indexerAddress)
 
   // Creates Graph Account, if needed
@@ -80,13 +82,7 @@ export function handleSetDefaultName(event: SetDefaultName): void {
   createOrLoadIndexer(indexerAddress)
 
   let eventEntity = new SetDefaultNameEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'SetDefaultNameEvent'
   eventEntity.indexer = indexerAddress
   eventEntity.accounts = accounts
@@ -100,14 +96,7 @@ export function handleSetDefaultName(event: SetDefaultName): void {
     // should probably do a resolve name to make sure we have the same checks that in the core subgraph
     eventEntity.newDefaultName = event.params.name
   }
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.indexerEventCount = counter.indexerEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.setDefaultNameEventCount = counter.setDefaultNameEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): void {
@@ -117,7 +106,7 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   let subgraphNumber = event.params.subgraphNumber
   let subgraphID = convertBigIntSubgraphIDToBase58(getSubgraphID(graphAccountID, subgraphNumber))
   let subgraph = createOrLoadSubgraph(subgraphID, event.params.graphAccount)
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(graphAccountID)
 
   let hexHash = changetype<Bytes>(addQm(event.params.subgraphMetadata))
@@ -125,27 +114,13 @@ export function handleSubgraphMetadataUpdated(event: SubgraphMetadataUpdated): v
   let metadataId = subgraph.id.concat('-').concat(base58Hash)
 
   let eventEntity = new SubgraphMetadataUpdatedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'SubgraphMetadataUpdatedEvent'
   eventEntity.subgraph = subgraph.id
   eventEntity.accounts = accounts
   eventEntity.ipfsFileHash = base58Hash
   eventEntity.metadata = metadataId
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphMetadataUpdatedEventCount =
-    counter.subgraphMetadataUpdatedEventCount.plus(BIGINT_ONE)
-  counter.indexerEventCount = counter.indexerEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 
   let context = new DataSourceContext()
   context.setString('id', metadataId)
@@ -166,12 +141,13 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
   let subgraphNumber = event.params.subgraphNumber
   let subgraphID = convertBigIntSubgraphIDToBase58(getSubgraphID(graphAccountID, subgraphNumber))
   let versionID: string
-  let versionNumber: number
-  let accounts = new Array<String>()
+  let versionNumber: i32
+  let accounts = new Array<string>()
   accounts.push(graphAccountID)
 
   // Update subgraph
   let subgraph = createOrLoadSubgraph(subgraphID, event.params.graphAccount)
+  versionNumber = subgraph.versionCount.toI32()
   versionID = joinID([subgraphID, subgraph.versionCount.toString()])
   subgraph.currentVersion = versionID
   subgraph.versionCount = subgraph.versionCount.plus(BigInt.fromI32(1))
@@ -191,36 +167,24 @@ export function handleSubgraphPublished(event: SubgraphPublished): void {
   subgraphVersion.save()
 
   let eventEntity = new NewSubgraphPublishedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'NewSubgraphPublishedEvent'
   eventEntity.subgraph = subgraph.id
   eventEntity.version = subgraphVersion.id
   eventEntity.deployment = deployment.id
   eventEntity.accounts = accounts
 
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-
-  if (subgraph.versionCount == BigInt.fromI32(1)) {
-    let coercedEntity = changetype<NewSubgraphVersionPublishedEvent>(eventEntity)
-    coercedEntity.save()
-    counter.newSubgraphVersionPublishedEventCount =
-      counter.newSubgraphVersionPublishedEventCount.plus(BIGINT_ONE)
+  if (versionNumber == 0) {
+    saveActivity(eventEntity, event)
   } else {
-    counter.newSubgraphPublishedEventCount = counter.newSubgraphPublishedEventCount.plus(BIGINT_ONE)
-    eventEntity.save()
+    let versionEvent = new NewSubgraphVersionPublishedEvent(eventId)
+    versionEvent.typename = 'NewSubgraphVersionPublishedEvent'
+    versionEvent.subgraph = subgraph.id
+    versionEvent.version = subgraphVersion.id
+    versionEvent.deployment = deployment.id
+    versionEvent.accounts = accounts
+    saveActivity(versionEvent, event)
   }
-
-  counter.save()
 }
 /**
  * @dev handleSubgraphDeprecated
@@ -232,28 +196,15 @@ export function handleSubgraphDeprecated(event: SubgraphDeprecated): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber
   let subgraphID = convertBigIntSubgraphIDToBase58(getSubgraphID(graphAccount, subgraphNumber))
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(graphAccount)
 
   let eventEntity = new SubgraphDeprecatedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'SubgraphDeprecatedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.accounts = accounts
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.subgraphDeprecatedEventCount = counter.subgraphDeprecatedEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 export function handleNameSignalEnabled(event: NameSignalEnabled): void {
@@ -261,29 +212,15 @@ export function handleNameSignalEnabled(event: NameSignalEnabled): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber
   let subgraphID = convertBigIntSubgraphIDToBase58(getSubgraphID(graphAccount, subgraphNumber))
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(graphAccount)
 
   let eventEntity = new SubgraphNameSignalEnabledEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'SubgraphNameSignalEnabledEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.accounts = accounts
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.subgraphNameSignalEnabledEventCount =
-    counter.subgraphNameSignalEnabledEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 export function handleNSignalMinted(event: NSignalMinted): void {
@@ -292,7 +229,7 @@ export function handleNSignalMinted(event: NSignalMinted): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber
   let subgraphID = convertBigIntSubgraphIDToBase58(getSubgraphID(graphAccount, subgraphNumber))
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(graphAccount)
   accounts.push(curatorID)
 
@@ -302,13 +239,7 @@ export function handleNSignalMinted(event: NSignalMinted): void {
   let nameSignalId = joinID([curatorID, subgraphID])
 
   let eventEntity = new NSignalMintedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'NSignalMintedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
@@ -317,15 +248,7 @@ export function handleNSignalMinted(event: NSignalMinted): void {
   eventEntity.nameSignal = event.params.nSignalCreated
   eventEntity.versionSignal = event.params.vSignalCreated
   eventEntity.tokens = event.params.tokensDeposited
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.nSignalMintedEventCount = counter.nSignalMintedEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 export function handleNSignalBurned(event: NSignalBurned): void {
@@ -334,7 +257,7 @@ export function handleNSignalBurned(event: NSignalBurned): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber
   let subgraphID = convertBigIntSubgraphIDToBase58(getSubgraphID(graphAccount, subgraphNumber))
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(graphAccount)
   accounts.push(curatorID)
 
@@ -344,13 +267,7 @@ export function handleNSignalBurned(event: NSignalBurned): void {
   let nameSignalId = joinID([curatorID, subgraphID])
 
   let eventEntity = new NSignalBurnedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'NSignalBurnedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
@@ -359,15 +276,7 @@ export function handleNSignalBurned(event: NSignalBurned): void {
   eventEntity.nameSignal = event.params.nSignalBurnt
   eventEntity.versionSignal = event.params.vSignalBurnt
   eventEntity.tokens = event.params.tokensReceived
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.nSignalBurnedEventCount = counter.nSignalBurnedEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 export function handleNameSignalUpgrade(event: NameSignalUpgrade): void {
@@ -449,7 +358,7 @@ export function handleGRTWithdrawn(event: GRTWithdrawn): void {
   let graphAccount = event.params.graphAccount.toHexString()
   let subgraphNumber = event.params.subgraphNumber
   let subgraphID = convertBigIntSubgraphIDToBase58(getSubgraphID(graphAccount, subgraphNumber))
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(graphAccount)
   accounts.push(curatorID)
 
@@ -459,13 +368,7 @@ export function handleGRTWithdrawn(event: GRTWithdrawn): void {
   let nameSignalId = joinID([curatorID, subgraphID])
 
   let eventEntity = new GRTWithdrawnEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'GRTWithdrawnEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
@@ -473,15 +376,7 @@ export function handleGRTWithdrawn(event: GRTWithdrawn): void {
   eventEntity.nameSignalId = nameSignalId
   eventEntity.nameSignal = event.params.nSignalBurnt
   eventEntity.tokens = event.params.withdrawnGRT
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.grtWithdrawnEventCount = counter.grtWithdrawnEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 /**
@@ -492,21 +387,10 @@ export function handleGRTWithdrawn(event: GRTWithdrawn): void {
 export function handleParameterUpdated(event: ParameterUpdated): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let eventEntity = new ParameterUpdatedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'ParameterUpdatedEvent'
   eventEntity.parameter = event.params.param
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.parameterUpdatedEventCount = counter.parameterUpdatedEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 // - event: SubgraphPublished(indexed uint256,indexed bytes32,uint32)
@@ -518,16 +402,19 @@ export function handleSubgraphPublishedV2(event: SubgraphPublished1): void {
   let graphAccountID = event.transaction.from.toHexString()
   let subgraphID = convertBigIntSubgraphIDToBase58(bigIntID)
   let versionID: string
-  let versionNumber: number
-  let accounts = new Array<String>()
+  let versionNumber: i32
+  let accounts = new Array<string>()
   accounts.push(graphAccountID)
 
   // Update subgraph
   let subgraph = createOrLoadSubgraph(subgraphID, event.transaction.from)
 
+  versionNumber = subgraph.versionCount.toI32()
   versionID = joinID([subgraphID, subgraph.versionCount.toString()])
   subgraph.currentVersion = versionID
+  subgraph.versionCount = subgraph.versionCount.plus(BIGINT_ONE)
   subgraph.initializing = true
+  subgraph.initializingTransaction = event.transaction.hash
   subgraph.save()
 
   // Creates Graph Account, if needed
@@ -544,27 +431,13 @@ export function handleSubgraphPublishedV2(event: SubgraphPublished1): void {
   subgraphVersion.save()
 
   let eventEntity = new NewSubgraphPublishedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'NewSubgraphPublishedEvent'
   eventEntity.subgraph = subgraph.id
   eventEntity.version = subgraphVersion.id
   eventEntity.deployment = deployment.id
   eventEntity.accounts = accounts
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.newSubgraphPublishedEventCount = counter.newSubgraphPublishedEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 // - event: SubgraphDeprecated(indexed uint256,uint256)
@@ -575,28 +448,15 @@ export function handleSubgraphDeprecatedV2(event: SubgraphDeprecated1): void {
   let bigIntID = event.params.subgraphID
   let graphAccount = event.transaction.from.toHexString()
   let subgraphID = convertBigIntSubgraphIDToBase58(bigIntID)
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(graphAccount)
 
   let eventEntity = new SubgraphDeprecatedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'SubgraphDeprecatedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.accounts = accounts
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.subgraphDeprecatedEventCount = counter.subgraphDeprecatedEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 // - event: SubgraphMetadataUpdated(indexed uint256,bytes32)
@@ -608,7 +468,7 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
   let graphAccountID = event.transaction.from.toHexString()
   let subgraphID = convertBigIntSubgraphIDToBase58(bigIntID)
   let subgraph = createOrLoadSubgraph(subgraphID, event.transaction.from)
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(graphAccountID)
 
   let hexHash = changetype<Bytes>(addQm(event.params.subgraphMetadata))
@@ -616,27 +476,13 @@ export function handleSubgraphMetadataUpdatedV2(event: SubgraphMetadataUpdated1)
   let metadataId = subgraph.id.concat('-').concat(base58Hash)
 
   let eventEntity = new SubgraphMetadataUpdatedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'SubgraphMetadataUpdatedEvent'
   eventEntity.subgraph = subgraph.id
   eventEntity.accounts = accounts
   eventEntity.ipfsFileHash = base58Hash
   eventEntity.metadata = metadataId
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.subgraphMetadataUpdatedEventCount =
-    counter.subgraphMetadataUpdatedEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 
   let context = new DataSourceContext()
   context.setString('id', metadataId)
@@ -651,7 +497,7 @@ export function handleNSignalMintedV2(event: SignalMinted): void {
   let curatorID = event.params.curator.toHexString()
   let bigIntID = event.params.subgraphID
   let subgraphID = convertBigIntSubgraphIDToBase58(bigIntID)
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(curatorID)
 
   // Update the curator and his account
@@ -660,13 +506,7 @@ export function handleNSignalMintedV2(event: SignalMinted): void {
   let nameSignalId = joinID([curatorID, subgraphID])
 
   let eventEntity = new NSignalMintedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'NSignalMintedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
@@ -675,15 +515,7 @@ export function handleNSignalMintedV2(event: SignalMinted): void {
   eventEntity.nameSignal = event.params.nSignalCreated
   eventEntity.versionSignal = event.params.vSignalCreated
   eventEntity.tokens = event.params.tokensDeposited
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.nSignalMintedEventCount = counter.nSignalMintedEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 // - event: SignalBurned(indexed uint256,indexed address,uint256,uint256,uint256)
@@ -694,7 +526,7 @@ export function handleNSignalBurnedV2(event: SignalBurned): void {
   let curatorID = event.params.curator.toHexString()
   let bigIntID = event.params.subgraphID
   let subgraphID = convertBigIntSubgraphIDToBase58(bigIntID)
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(curatorID)
 
   // Update the curator and his account
@@ -703,13 +535,7 @@ export function handleNSignalBurnedV2(event: SignalBurned): void {
   let nameSignalId = joinID([curatorID, subgraphID])
 
   let eventEntity = new NSignalBurnedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'NSignalBurnedEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
@@ -718,15 +544,7 @@ export function handleNSignalBurnedV2(event: SignalBurned): void {
   eventEntity.nameSignal = event.params.nSignalBurnt
   eventEntity.versionSignal = event.params.vSignalBurnt
   eventEntity.tokens = event.params.tokensReceived
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.nSignalBurnedEventCount = counter.nSignalBurnedEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 // - event: GRTWithdrawn(indexed uint256,indexed address,uint256,uint256)
@@ -737,7 +555,7 @@ export function handleGRTWithdrawnV2(event: GRTWithdrawn1): void {
   let bigIntID = event.params.subgraphID
   let curatorID = event.params.curator.toHexString()
   let subgraphID = convertBigIntSubgraphIDToBase58(bigIntID)
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(curatorID)
 
   // Update the curator and his account
@@ -746,13 +564,7 @@ export function handleGRTWithdrawnV2(event: GRTWithdrawn1): void {
   let nameSignalId = joinID([curatorID, subgraphID])
 
   let eventEntity = new GRTWithdrawnEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
+
   eventEntity.typename = 'GRTWithdrawnEvent'
   eventEntity.subgraph = subgraphID
   eventEntity.curator = curatorID
@@ -760,24 +572,27 @@ export function handleGRTWithdrawnV2(event: GRTWithdrawn1): void {
   eventEntity.nameSignalId = nameSignalId
   eventEntity.nameSignal = event.params.nSignalBurnt
   eventEntity.tokens = event.params.withdrawnGRT
-  eventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.curatorEventCount = counter.curatorEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.grtWithdrawnEventCount = counter.grtWithdrawnEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
 
 // - event: SubgraphUpgraded(indexed uint256,uint256,uint256,indexed bytes32)
 //   handler: handleSubgraphUpgraded
 
 export function handleSubgraphUpgraded(event: SubgraphUpgraded): void {
-  let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
-  let bigIntID = event.params.subgraphID
-  let subgraphID = convertBigIntSubgraphIDToBase58(bigIntID)
+  if (addresses.isL1) return
+  let subgraphID = convertBigIntSubgraphIDToBase58(event.params.subgraphID)
+  let subgraph = createOrLoadSubgraph(subgraphID, event.transaction.from)
+  let deployment = createOrLoadSubgraphDeployment(event.params.subgraphDeploymentID.toHexString())
+  let record = new SubgraphUpgradedEvent(
+    event.transaction.hash.toHexString() + '-' + event.logIndex.toString(),
+  )
+  record.typename = 'SubgraphUpgradedEvent'
+  record.subgraph = subgraph.id
+  record.deployment = deployment.id
+  record.accounts = [event.transaction.from.toHexString()]
+  record.newVersionSignal = event.params.vSignalCreated
+  record.tokensSignalled = event.params.tokensSignalled
+  saveActivity(record, event)
 }
 
 // - event: SubgraphVersionUpdated(indexed uint256,indexed bytes32,bytes32)
@@ -793,8 +608,8 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
   let graphAccountID = event.transaction.from.toHexString()
   let subgraphID = convertBigIntSubgraphIDToBase58(bigIntID)
   let versionID: string
-  let versionNumber: number
-  let accounts = new Array<String>()
+  let versionNumber: i32
+  let accounts = new Array<string>()
   accounts.push(graphAccountID)
 
   // Update subgraph
@@ -803,22 +618,23 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
   // Create subgraph deployment, if needed. Can happen if the deployment has never been staked on
   let deployment = createOrLoadSubgraphDeployment(event.params.subgraphDeploymentID.toHexString())
 
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.subgraphDeploymentEventCount = counter.subgraphDeploymentEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.subgraphVersionMetadataUpdatedEventCount =
-    counter.subgraphVersionMetadataUpdatedEventCount.plus(BIGINT_ONE)
-
+  versionNumber = subgraph.versionCount.toI32()
   versionID = joinID([subgraphID, subgraph.versionCount.toString()])
 
-  if (subgraph.initializing) {
+  let initializingTransaction = subgraph.initializingTransaction
+  if (
+    subgraph.initializing &&
+    initializingTransaction !== null &&
+    initializingTransaction.equals(event.transaction.hash)
+  ) {
     subgraph.initializing = false
+    subgraph.initializingTransaction = null
     subgraph.save()
 
-    // attach
+    versionID = subgraph.currentVersion!
   } else {
+    subgraph.initializing = false
+    subgraph.initializingTransaction = null
     subgraph.currentVersion = versionID
     subgraph.versionCount = subgraph.versionCount.plus(BigInt.fromI32(1))
     subgraph.save()
@@ -837,22 +653,13 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
     subgraphVersion.save()
 
     let eventEntity = new NewSubgraphVersionPublishedEvent(eventId.concat('-1'))
-    eventEntity.timestamp = event.block.timestamp
-    eventEntity.tx_gasLimit = event.transaction.gasLimit
-    eventEntity.tx_gasPrice = event.transaction.gasPrice
-    eventEntity.tx_gasUsed = event.receipt!.gasUsed
-    eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-    eventEntity.blockNumber = event.block.number
-    eventEntity.tx_hash = event.transaction.hash
+
     eventEntity.typename = 'NewSubgraphVersionPublishedEvent'
     eventEntity.subgraph = subgraph.id
     eventEntity.version = subgraphVersion.id
     eventEntity.deployment = deployment.id
     eventEntity.accounts = accounts
-    eventEntity.save()
-    counter.newSubgraphVersionPublishedEventCount =
-      counter.newSubgraphVersionPublishedEventCount.plus(BIGINT_ONE)
-    counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
+    saveActivity(eventEntity, event)
   }
 
   let hexHash = changetype<Bytes>(addQm(event.params.versionMetadata))
@@ -860,21 +667,14 @@ export function handleSubgraphVersionUpdated(event: SubgraphVersionUpdated): voi
   let metadataId = versionID.concat('-').concat(base58Hash)
 
   let otherEventEntity = new SubgraphVersionMetadataUpdatedEvent(eventId.concat('-0'))
-  otherEventEntity.timestamp = event.block.timestamp
-  otherEventEntity.tx_gasLimit = event.transaction.gasLimit
-  otherEventEntity.tx_gasPrice = event.transaction.gasPrice
-  otherEventEntity.tx_gasUsed = event.receipt!.gasUsed
-  otherEventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  otherEventEntity.blockNumber = event.block.number
-  otherEventEntity.tx_hash = event.transaction.hash
+
   otherEventEntity.typename = 'SubgraphVersionMetadataUpdatedEvent'
   otherEventEntity.subgraph = subgraph.id
   otherEventEntity.deployment = deployment.id
   otherEventEntity.accounts = accounts
   otherEventEntity.ipfsFileHash = base58Hash
   otherEventEntity.metadata = metadataId
-  otherEventEntity.save()
-  counter.save()
+  saveActivity(otherEventEntity, event)
 
   let context = new DataSourceContext()
   context.setString('id', metadataId)
@@ -896,39 +696,22 @@ export function handleTransfer(event: Transfer): void {
   let newOwner = createOrLoadGraphAccount(event.params.to.toHexString())
   let oldOwner = createOrLoadGraphAccount(event.params.from.toHexString())
   let subgraphID = convertBigIntSubgraphIDToBase58(event.params.tokenId)
-  let accounts = new Array<String>()
+  let accounts = new Array<string>()
   accounts.push(oldOwner.id)
   accounts.push(newOwner.id)
 
   // Update subgraph v2
-  let subgraph = createOrLoadSubgraph(
-    subgraphID,
-    event.transaction.from
-  )
+  let subgraph = createOrLoadSubgraph(subgraphID, event.transaction.from)
   subgraph.owner = newOwner.id
   subgraph.save()
 
   //todo
   let otherEventEntity = new SubgraphTransferredEvent(eventId)
-  otherEventEntity.timestamp = event.block.timestamp
-  otherEventEntity.tx_gasLimit = event.transaction.gasLimit
-  otherEventEntity.tx_gasPrice = event.transaction.gasPrice
-  otherEventEntity.tx_gasUsed = event.receipt!.gasUsed
-  otherEventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  otherEventEntity.blockNumber = event.block.number
-  otherEventEntity.tx_hash = event.transaction.hash
+
   otherEventEntity.typename = 'SubgraphTransferredEvent'
   otherEventEntity.subgraph = subgraph.id
   otherEventEntity.from = oldOwner.id
   otherEventEntity.to = newOwner.id
   otherEventEntity.accounts = accounts
-  otherEventEntity.save()
-
-  let counter = getCounter()
-  counter.subgraphEventCount = counter.subgraphEventCount.plus(BIGINT_ONE)
-  counter.graphAccountEventCount = counter.graphAccountEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.subgraphTransferredEventCount = counter.subgraphTransferredEventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(otherEventEntity, event)
 }
-

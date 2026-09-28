@@ -1,3 +1,5 @@
 build/
 node_modules/
 src/types
+# Mustache source; rendered config/addresses.ts is valid TypeScript.
+config/addresses.template.ts

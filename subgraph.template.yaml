@@ -12,7 +12,7 @@ dataSources:
     source:
       address: '{{gns}}'
       abi: GNS
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.gns}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -93,7 +93,7 @@ dataSources:
     source:
       address: "{{gns}}"
       abi: L1GNS
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.gns}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -123,7 +123,7 @@ dataSources:
     source:
       address: "{{gns}}"
       abi: L2GNS
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.gns}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -158,7 +158,7 @@ dataSources:
     source:
       address: "{{subgraphNFT}}"
       abi: SubgraphNFT
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.subgraphNFT}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -185,7 +185,7 @@ dataSources:
     source:
       address: '{{serviceRegistry}}'
       abi: ServiceRegistry
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.serviceRegistry}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -209,7 +209,7 @@ dataSources:
     source:
       address: '{{staking}}'
       abi: Staking
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.staking}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -286,7 +286,7 @@ dataSources:
     source:
       address: '{{staking}}'
       abi: StakingExtension
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.staking}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -316,7 +316,7 @@ dataSources:
     source:
       address: "{{staking}}"
       abi: L1Staking
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.staking}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -356,7 +356,7 @@ dataSources:
     source:
       address: "{{staking}}"
       abi: L2Staking
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.staking}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -389,7 +389,7 @@ dataSources:
     source:
       address: '{{curation}}'
       abi: Curation
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.curation}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -424,7 +424,7 @@ dataSources:
   #   source:
   #     address: '{{graphToken}}'
   #     abi: GraphToken
-  #     startBlock: {{blockNumber}}
+  #     startBlock: {{startBlocks.graphToken}}
   #   mapping:
   #     kind: ethereum/events
   #     apiVersion: 0.0.7
@@ -447,7 +447,7 @@ dataSources:
     source:
       address: '{{rewardsManager}}'
       abi: RewardsManager
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.rewardsManager}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -461,10 +461,16 @@ dataSources:
         - SubgraphDeployment
       abis:
         - name: RewardsManager
-          file: ./node_modules/@graphprotocol/contracts/dist/abis/RewardsManager.json
+          file: ./abis/RewardsManagerStitched.json
       eventHandlers:
-        # - event: RewardsAssigned(indexed address,indexed address,uint256,uint256)
-        #   handler: handleRewardsAssigned
+{{^isL1}}
+        - event: RewardsAssigned(indexed address,indexed address,uint256,uint256)
+          handler: handleRewardsAssigned
+          receipt: true
+        - event: HorizonRewardsAssigned(indexed address,indexed address,uint256)
+          handler: handleHorizonRewardsAssigned
+          receipt: true
+{{/isL1}}
         - event: RewardsDenylistUpdated(indexed bytes32,uint256)
           handler: handleRewardsDenyListUpdated
           receipt: true
@@ -479,35 +485,445 @@ dataSources:
     source:
       address: '{{disputeManager}}'
       abi: DisputeManager
-      startBlock: {{blockNumber}}
+      startBlock: {{startBlocks.disputeManager}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/disputeManager.ts
       entities:
-        - TODO
+        - ParameterUpdatedEvent
+        - QueryDisputeCreatedEvent
+        - IndexingDisputeCreatedEvent
+        - UnresolvedIndexingDisputeCreatedEvent
+        - DisputeAcceptedEvent
+        - UnresolvedDisputeAcceptedEvent
+        - DisputeRejectedEvent
+        - UnresolvedDisputeRejectedEvent
+        - DisputeDrawnEvent
+        - UnresolvedDisputeDrawnEvent
+        - DisputeLinkedEvent
+        - IndexerDisputeLinkedEvent
+        - DeploymentDisputeLinkedEvent
+        - ActivityDispute
+        - ActivityAllocation
+        - GraphAccount
+        - Indexer
+        - SubgraphDeployment
+        - CounterEntity
       abis:
         - name: DisputeManager
           file: ./node_modules/@graphprotocol/contracts/dist/abis/DisputeManager.json
         - name: DisputeManagerStitched
           file: ./abis/DisputeManagerStitched.json
       eventHandlers:
-        # - event: QueryDisputeCreated(indexed bytes32,indexed address,indexed address,uint256,bytes32,bytes)
-        #   handler: handleQueryDisputeCreated
-        # - event: IndexingDisputeCreated(indexed bytes32,indexed address,indexed address,uint256,address)
-        #   handler: handleIndexingDisputeCreated
-        # - event: DisputeAccepted(indexed bytes32,indexed address,indexed address,uint256)
-        #   handler: handleDisputeAccepted
-        # - event: DisputeRejected(indexed bytes32,indexed address,indexed address,uint256)
-        #   handler: handleDisputeRejected
-        # - event: DisputeDrawn(indexed bytes32,indexed address,indexed address,uint256)
-        #   handler: handleDisputeDrawn
-        # - event: DisputeLinked(indexed bytes32,indexed bytes32)
-        #   handler: handleDisputeLinked
+{{^isL1}}
+        - event: DisputeAccepted(indexed bytes32,indexed address,indexed address,uint256)
+          handler: handleDisputeAccepted
+          receipt: true
+        - event: DisputeDrawn(indexed bytes32,indexed address,indexed address,uint256)
+          handler: handleDisputeDrawn
+          receipt: true
+        - event: DisputeLinked(indexed bytes32,indexed bytes32)
+          handler: handleDisputeLinked
+          receipt: true
+        - event: DisputeRejected(indexed bytes32,indexed address,indexed address,uint256)
+          handler: handleDisputeRejected
+          receipt: true
+        - event: IndexingDisputeCreated(indexed bytes32,indexed address,indexed address,uint256,address)
+          handler: handleIndexingDisputeCreated
+          receipt: true
+        - event: QueryDisputeCreated(indexed bytes32,indexed address,indexed address,uint256,bytes32,bytes)
+          handler: handleQueryDisputeCreated
+          receipt: true
+{{/isL1}}
         - event: ParameterUpdated(string)
           handler: handleParameterUpdated
           receipt: true
+{{^isL1}}
+  - kind: ethereum/contract
+    name: HorizonStaking
+    network: {{network}}
+    source:
+      address: '{{staking}}'
+      abi: HorizonStaking
+      startBlock: {{startBlocks.staking}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/horizonStaking.ts
+      entities:
+        - ProvisionCreatedEvent
+        - ProvisionIncreasedEvent
+        - ProvisionThawedEvent
+        - TokensDeprovisionedEvent
+        - ProvisionSlashedEvent
+        - DelegationSlashedEvent
+        - ProvisionParametersSetEvent
+        - ProvisionParametersStagedEvent
+        - DelegationFeeCutSetEvent
+        - ProvisionOperatorSetEvent
+        - TokensToDelegationPoolAddedEvent
+        - TokensDelegatedEvent
+        - TokensUndelegatedEvent
+        - DelegatedTokensWithdrawnEvent
+        - IndexerStakeDepositedEvent
+        - IndexerStakeLockedEvent
+        - IndexerStakeWithdrawnEvent
+        - DelegationThawRequestCreatedEvent
+        - ProvisionThawRequestCreatedEvent
+        - ActivityThawRequest
+        - UnresolvedThawRequestFulfilledEvent
+        - DelegationThawRequestFulfilledEvent
+        - ProvisionThawRequestFulfilledEvent
+        - GraphAccount
+        - Indexer
+        - DataService
+        - Provision
+        - CounterEntity
+        - Delegator
+        - ProvisionDelegation
+      abis:
+        - name: HorizonStaking
+          file: ./abis/HorizonStaking.json
+      eventHandlers:
+        - event: ProvisionCreated(indexed address,indexed address,uint256,uint32,uint64)
+          handler: handleProvisionCreated
+          receipt: true
+        - event: ProvisionIncreased(indexed address,indexed address,uint256)
+          handler: handleProvisionIncreased
+          receipt: true
+        - event: ProvisionThawed(indexed address,indexed address,uint256)
+          handler: handleProvisionThawed
+          receipt: true
+        - event: TokensDeprovisioned(indexed address,indexed address,uint256)
+          handler: handleTokensDeprovisioned
+          receipt: true
+        - event: ProvisionSlashed(indexed address,indexed address,uint256)
+          handler: handleProvisionSlashed
+          receipt: true
+        - event: DelegationSlashed(indexed address,indexed address,uint256)
+          handler: handleDelegationSlashed
+          receipt: true
+        - event: ProvisionParametersSet(indexed address,indexed address,uint32,uint64)
+          handler: handleProvisionParametersSet
+          receipt: true
+        - event: ProvisionParametersStaged(indexed address,indexed address,uint32,uint64)
+          handler: handleProvisionParametersStaged
+          receipt: true
+        - event: DelegationFeeCutSet(indexed address,indexed address,indexed uint8,uint256)
+          handler: handleDelegationFeeCutSet
+          receipt: true
+        - event: OperatorSet(indexed address,indexed address,indexed address,bool)
+          handler: handleOperatorSet
+          receipt: true
+        - event: TokensToDelegationPoolAdded(indexed address,indexed address,uint256)
+          handler: handleTokensToDelegationPoolAdded
+          receipt: true
+        - event: TokensDelegated(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTokensDelegated
+          receipt: true
+        - event: TokensUndelegated(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTokensUndelegated
+          receipt: true
+        - event: DelegatedTokensWithdrawn(indexed address,indexed address,indexed address,uint256)
+          handler: handleDelegatedTokensWithdrawn
+          receipt: true
+        - event: HorizonStakeDeposited(indexed address,uint256)
+          handler: handleHorizonStakeDeposited
+          receipt: true
+        - event: HorizonStakeLocked(indexed address,uint256,uint256)
+          handler: handleHorizonStakeLocked
+          receipt: true
+        - event: HorizonStakeWithdrawn(indexed address,uint256)
+          handler: handleHorizonStakeWithdrawn
+          receipt: true
+        - event: ThawRequestCreated(indexed uint8,indexed address,indexed address,address,uint256,uint64,bytes32,uint256)
+          handler: handleThawRequestCreated
+          receipt: true
+        - event: ThawRequestFulfilled(indexed uint8,indexed bytes32,uint256,uint256,uint64,bool)
+          handler: handleThawRequestFulfilled
+          receipt: true
+  - kind: ethereum/contract
+    name: SubgraphService
+    network: {{network}}
+    source:
+      address: '{{subgraphService}}'
+      abi: SubgraphService
+      startBlock: {{startBlocks.subgraphService}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/subgraphService.ts
+      entities:
+        - HorizonAllocationCreatedEvent
+        - AllocationResizedEvent
+        - HorizonAllocationClosedEvent
+        - IndexingRewardsCollectedEvent
+        - POIPresentedEvent
+        - QueryFeesCollectedEvent
+        - ServiceProviderRegisteredEvent
+        - RewardsDestinationSetEvent
+        - GraphAccount
+        - Indexer
+        - DataService
+        - Provision
+        - CounterEntity
+        - ActivityAllocation
+        - SubgraphDeployment
+      abis:
+        - name: SubgraphService
+          file: ./abis/SubgraphService.json
+      eventHandlers:
+        - event: ServiceProviderRegistered(indexed address,bytes)
+          handler: handleServiceProviderRegistered
+          receipt: true
+        - event: RewardsDestinationSet(indexed address,indexed address)
+          handler: handleRewardsDestinationSet
+          receipt: true
+        - event: AllocationCreated(indexed address,indexed address,indexed bytes32,uint256,uint256)
+          handler: handleAllocationCreated
+          receipt: true
+        - event: AllocationResized(indexed address,indexed address,indexed bytes32,uint256,uint256)
+          handler: handleAllocationResized
+          receipt: true
+        - event: AllocationClosed(indexed address,indexed address,indexed bytes32,uint256,bool)
+          handler: handleAllocationClosed
+          receipt: true
+        - event: IndexingRewardsCollected(indexed address,indexed address,indexed bytes32,uint256,uint256,uint256,bytes32,bytes,uint256)
+          handler: handleIndexingRewardsCollected
+          receipt: true
+        - event: POIPresented(indexed address,indexed address,indexed bytes32,bytes32,bytes,bytes32)
+          handler: handlePOIPresented
+          receipt: true
+        - event: QueryFeesCollected(indexed address,indexed address,indexed address,bytes32,uint256,uint256)
+          handler: handleQueryFeesCollected
+          receipt: true
+  - kind: ethereum/contract
+    name: HorizonDisputeManager
+    network: {{network}}
+    source:
+      address: '{{horizonDisputeManager}}'
+      abi: HorizonDisputeManager
+      startBlock: {{startBlocks.horizonDisputeManager}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/horizonDisputeManager.ts
+      entities:
+        - QueryDisputeCreatedEvent
+        - IndexingDisputeCreatedEvent
+        - UnresolvedIndexingDisputeCreatedEvent
+        - HorizonQueryDisputeCreatedEvent
+        - HorizonIndexingDisputeCreatedEvent
+        - UnresolvedHorizonIndexingDisputeCreatedEvent
+        - LegacyDisputeCreatedEvent
+        - UnresolvedLegacyDisputeCreatedEvent
+        - DisputeAcceptedEvent
+        - UnresolvedDisputeAcceptedEvent
+        - ProvisionDisputeAcceptedEvent
+        - UnresolvedProvisionDisputeAcceptedEvent
+        - DisputeRejectedEvent
+        - UnresolvedDisputeRejectedEvent
+        - ProvisionDisputeRejectedEvent
+        - UnresolvedProvisionDisputeRejectedEvent
+        - DisputeCancelledEvent
+        - UnresolvedDisputeCancelledEvent
+        - ProvisionDisputeCancelledEvent
+        - UnresolvedProvisionDisputeCancelledEvent
+        - DisputeDrawnEvent
+        - UnresolvedDisputeDrawnEvent
+        - ProvisionDisputeDrawnEvent
+        - UnresolvedProvisionDisputeDrawnEvent
+        - DisputeLinkedEvent
+        - IndexerDisputeLinkedEvent
+        - DeploymentDisputeLinkedEvent
+        - ProvisionDisputeLinkedEvent
+        - UnresolvedProvisionDisputeLinkedEvent
+        - ActivityDispute
+        - ActivityAllocation
+        - GraphAccount
+        - Indexer
+        - Provision
+        - DataService
+        - CounterEntity
+        - SubgraphDeployment
+      abis:
+        - name: HorizonDisputeManager
+          file: ./abis/HorizonDisputeManager.json
+      eventHandlers:
+        - event: DisputeAccepted(indexed bytes32,indexed address,indexed address,uint256)
+          handler: handleDisputeAccepted
+          receipt: true
+        - event: DisputeCancelled(indexed bytes32,indexed address,indexed address,uint256)
+          handler: handleDisputeCancelled
+          receipt: true
+        - event: DisputeDrawn(indexed bytes32,indexed address,indexed address,uint256)
+          handler: handleDisputeDrawn
+          receipt: true
+        - event: DisputeLinked(indexed bytes32,indexed bytes32)
+          handler: handleDisputeLinked
+          receipt: true
+        - event: DisputeRejected(indexed bytes32,indexed address,indexed address,uint256)
+          handler: handleDisputeRejected
+          receipt: true
+        - event: IndexingDisputeCreated(indexed bytes32,indexed address,indexed address,uint256,address,bytes32,uint256,uint256,uint256)
+          handler: handleIndexingDisputeCreated
+          receipt: true
+        - event: LegacyDisputeCreated(indexed bytes32,indexed address,indexed address,address,uint256,uint256)
+          handler: handleLegacyDisputeCreated
+          receipt: true
+        - event: QueryDisputeCreated(indexed bytes32,indexed address,indexed address,uint256,bytes32,bytes,uint256,uint256)
+          handler: handleQueryDisputeCreated
+          receipt: true
+  - kind: ethereum/contract
+    name: PaymentsEscrow
+    network: {{network}}
+    source:
+      address: '{{paymentsEscrow}}'
+      abi: PaymentsEscrow
+      startBlock: {{startBlocks.paymentsEscrow}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/paymentsEscrow.ts
+      entities:
+        - EscrowDepositedEvent
+        - EscrowWithdrawnEvent
+        - EscrowThawedEvent
+        - EscrowThawCancelledEvent
+        - PayerSignerAuthorizedEvent
+        - PayerSignerThawingEvent
+        - PayerSignerThawCanceledEvent
+        - PayerSignerRevokedEvent
+        - PaymentCollectedEvent
+        - SubgraphPaymentCollectedEvent
+        - EscrowCollectedEvent
+        - ServiceEscrowCollectedEvent
+        - GraphPaymentCollectedEvent
+        - GraphAccount
+        - Indexer
+        - Provision
+        - DataService
+        - CounterEntity
+        - SubgraphDeployment
+      abis:
+        - name: PaymentsEscrow
+          file: ./abis/PaymentsEscrow.json
+      eventHandlers:
+        - event: CancelThaw(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleCancelThaw
+          receipt: true
+        - event: Deposit(indexed address,indexed address,indexed address,uint256)
+          handler: handleDeposit
+          receipt: true
+        - event: EscrowCollected(indexed uint8,indexed address,indexed address,address,uint256,address)
+          handler: handleEscrowCollected
+          receipt: true
+        - event: Thaw(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleThaw
+          receipt: true
+        - event: Withdraw(indexed address,indexed address,indexed address,uint256)
+          handler: handleWithdraw
+          receipt: true
+  - kind: ethereum/contract
+    name: GraphTallyCollector
+    network: {{network}}
+    source:
+      address: '{{graphTallyCollector}}'
+      abi: GraphTallyCollector
+      startBlock: {{startBlocks.graphTallyCollector}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/graphTallyCollector.ts
+      entities:
+        - EscrowDepositedEvent
+        - EscrowWithdrawnEvent
+        - EscrowThawedEvent
+        - EscrowThawCancelledEvent
+        - PayerSignerAuthorizedEvent
+        - PayerSignerThawingEvent
+        - PayerSignerThawCanceledEvent
+        - PayerSignerRevokedEvent
+        - PaymentCollectedEvent
+        - SubgraphPaymentCollectedEvent
+        - EscrowCollectedEvent
+        - ServiceEscrowCollectedEvent
+        - GraphPaymentCollectedEvent
+        - GraphAccount
+        - Indexer
+        - Provision
+        - DataService
+        - CounterEntity
+        - SubgraphDeployment
+      abis:
+        - name: GraphTallyCollector
+          file: ./abis/GraphTallyCollector.json
+      eventHandlers:
+        - event: PaymentCollected(uint8,indexed bytes32,indexed address,address,indexed address,uint256)
+          handler: handlePaymentCollected
+          receipt: true
+        - event: SignerAuthorized(indexed address,indexed address)
+          handler: handleSignerAuthorized
+          receipt: true
+        - event: SignerRevoked(indexed address,indexed address)
+          handler: handleSignerRevoked
+          receipt: true
+        - event: SignerThawCanceled(indexed address,indexed address,uint256)
+          handler: handleSignerThawCanceled
+          receipt: true
+        - event: SignerThawing(indexed address,indexed address,uint256)
+          handler: handleSignerThawing
+          receipt: true
+  - kind: ethereum/contract
+    name: GraphPayments
+    network: {{network}}
+    source:
+      address: '{{graphPayments}}'
+      abi: GraphPayments
+      startBlock: {{startBlocks.graphPayments}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/graphPayments.ts
+      entities:
+        - EscrowDepositedEvent
+        - EscrowWithdrawnEvent
+        - EscrowThawedEvent
+        - EscrowThawCancelledEvent
+        - PayerSignerAuthorizedEvent
+        - PayerSignerThawingEvent
+        - PayerSignerThawCanceledEvent
+        - PayerSignerRevokedEvent
+        - PaymentCollectedEvent
+        - SubgraphPaymentCollectedEvent
+        - EscrowCollectedEvent
+        - ServiceEscrowCollectedEvent
+        - GraphPaymentCollectedEvent
+        - GraphAccount
+        - Indexer
+        - Provision
+        - DataService
+        - CounterEntity
+        - SubgraphDeployment
+      abis:
+        - name: GraphPayments
+          file: ./abis/GraphPayments.json
+      eventHandlers:
+        - event: GraphPaymentCollected(indexed uint8,indexed address,address,indexed address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleGraphPaymentCollected
+          receipt: true
+        - event: GraphPaymentCollected(indexed uint8,indexed address,address,indexed address,uint256,uint256,uint256,uint256,uint256,address)
+          handler: handleGraphPaymentCollectedWithDestination
+          receipt: true
+{{/isL1}}
 templates:
   - name: SubgraphMetadata
     kind: file/ipfs

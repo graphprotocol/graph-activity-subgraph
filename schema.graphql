@@ -1,4 +1,82 @@
-type CounterEntity @entity {
+type CounterEntity @entity(immutable: false) {
+  serviceEscrowCollectedEventCount: BigInt!
+  queryDisputeCreatedEventCount: BigInt!
+  indexingDisputeCreatedEventCount: BigInt!
+  unresolvedIndexingDisputeCreatedEventCount: BigInt!
+  horizonQueryDisputeCreatedEventCount: BigInt!
+  horizonIndexingDisputeCreatedEventCount: BigInt!
+  unresolvedHorizonIndexingDisputeCreatedEventCount: BigInt!
+  legacyDisputeCreatedEventCount: BigInt!
+  unresolvedLegacyDisputeCreatedEventCount: BigInt!
+  disputeAcceptedEventCount: BigInt!
+  unresolvedDisputeAcceptedEventCount: BigInt!
+  provisionDisputeAcceptedEventCount: BigInt!
+  unresolvedProvisionDisputeAcceptedEventCount: BigInt!
+  disputeRejectedEventCount: BigInt!
+  unresolvedDisputeRejectedEventCount: BigInt!
+  provisionDisputeRejectedEventCount: BigInt!
+  unresolvedProvisionDisputeRejectedEventCount: BigInt!
+  disputeCancelledEventCount: BigInt!
+  unresolvedDisputeCancelledEventCount: BigInt!
+  provisionDisputeCancelledEventCount: BigInt!
+  unresolvedProvisionDisputeCancelledEventCount: BigInt!
+  disputeDrawnEventCount: BigInt!
+  unresolvedDisputeDrawnEventCount: BigInt!
+  provisionDisputeDrawnEventCount: BigInt!
+  unresolvedProvisionDisputeDrawnEventCount: BigInt!
+  disputeLinkedEventCount: BigInt!
+  indexerDisputeLinkedEventCount: BigInt!
+  deploymentDisputeLinkedEventCount: BigInt!
+  provisionDisputeLinkedEventCount: BigInt!
+  unresolvedProvisionDisputeLinkedEventCount: BigInt!
+  escrowDepositedEventCount: BigInt!
+  escrowWithdrawnEventCount: BigInt!
+  escrowThawedEventCount: BigInt!
+  escrowThawCancelledEventCount: BigInt!
+  payerSignerAuthorizedEventCount: BigInt!
+  payerSignerThawingEventCount: BigInt!
+  payerSignerThawCanceledEventCount: BigInt!
+  payerSignerRevokedEventCount: BigInt!
+  paymentCollectedEventCount: BigInt!
+  subgraphPaymentCollectedEventCount: BigInt!
+  escrowCollectedEventCount: BigInt!
+  graphPaymentCollectedEventCount: BigInt!
+  disputeEventCount: BigInt!
+
+  # Horizon activity type and interface counters
+  provisionCreatedEventCount: BigInt!
+  provisionIncreasedEventCount: BigInt!
+  provisionThawedEventCount: BigInt!
+  tokensDeprovisionedEventCount: BigInt!
+  provisionSlashedEventCount: BigInt!
+  delegationSlashedEventCount: BigInt!
+  provisionParametersSetEventCount: BigInt!
+  provisionParametersStagedEventCount: BigInt!
+  delegationFeeCutSetEventCount: BigInt!
+  provisionOperatorSetEventCount: BigInt!
+  tokensToDelegationPoolAddedEventCount: BigInt!
+  tokensDelegatedEventCount: BigInt!
+  tokensUndelegatedEventCount: BigInt!
+  delegatedTokensWithdrawnEventCount: BigInt!
+  provisionThawRequestCreatedEventCount: BigInt!
+  delegationThawRequestCreatedEventCount: BigInt!
+  provisionThawRequestFulfilledEventCount: BigInt!
+  delegationThawRequestFulfilledEventCount: BigInt!
+  unresolvedThawRequestFulfilledEventCount: BigInt!
+  serviceProviderRegisteredEventCount: BigInt!
+  rewardsDestinationSetEventCount: BigInt!
+  horizonAllocationCreatedEventCount: BigInt!
+  allocationResizedEventCount: BigInt!
+  horizonAllocationClosedEventCount: BigInt!
+  indexingRewardsCollectedEventCount: BigInt!
+  poiPresentedEventCount: BigInt!
+  queryFeesCollectedEventCount: BigInt!
+  indexingRewardsAssignedEventCount: BigInt!
+  unresolvedIndexingRewardsAssignedEventCount: BigInt!
+  subgraphUpgradedEventCount: BigInt!
+  provisionEventCount: BigInt!
+  dataServiceEventCount: BigInt!
+
   id: ID!
   #specific counters
   parameterUpdatedEventCount: BigInt!
@@ -53,7 +131,7 @@ type CounterEntity @entity {
   delegatorEventCount: BigInt!
 }
 
-type GraphAccount @entity {
+type GraphAccount @entity(immutable: false) {
   "Graph account ID"
   id: ID!
 
@@ -66,7 +144,7 @@ type GraphAccount @entity {
   delegator: Delegator @derivedFrom(field: "account")
 }
 
-type Subgraph @entity {
+type Subgraph @entity(immutable: false) {
   "Subgraph ID - which is derived from the Organization/Individual graph accountID"
   id: ID!
   "Graph account that owns this subgraph"
@@ -79,11 +157,12 @@ type Subgraph @entity {
   versionCount: BigInt!
   "Auxiliary field to workaround some limitations"
   initializing: Boolean!
+  initializingTransaction: Bytes
 
   events: [SubgraphEvent!]! @derivedFrom(field: "subgraph")
 }
 
-type SubgraphVersion @entity {
+type SubgraphVersion @entity(immutable: false) {
   "Concatenation of subgraph, subgraph deployment, and version ID"
   id: ID!
   "Subgraph of this version"
@@ -94,7 +173,7 @@ type SubgraphVersion @entity {
   version: Int!
 }
 
-type SubgraphDeployment @entity {
+type SubgraphDeployment @entity(immutable: false) {
   "Subgraph Deployment ID. The IPFS hash with Qm removed to fit into 32 bytes"
   id: ID!
   "IPFS hash of the subgraph manifest"
@@ -103,7 +182,8 @@ type SubgraphDeployment @entity {
   versions: [SubgraphVersion!]! @derivedFrom(field: "subgraphDeployment")
 }
 
-type Indexer @entity {
+type Indexer @entity(immutable: false) {
+  provisions: [Provision!]! @derivedFrom(field: "indexer")
   "Eth address of Indexer"
   id: ID!
   "Graph account of this indexer"
@@ -118,7 +198,7 @@ type Indexer @entity {
   delegators: [DelegatedStake!]! @derivedFrom(field: "indexer")
 }
 
-type Allocation @entity {
+type Allocation @entity(immutable: false) {
   "Channel Address"
   id: ID!
   "Indexer of this allocation"
@@ -131,7 +211,8 @@ type Allocation @entity {
   subgraphDeployment: SubgraphDeployment!
 }
 
-type Delegator @entity {
+type Delegator @entity(immutable: false) {
+  provisionDelegations: [ProvisionDelegation!]! @derivedFrom(field: "delegator")
   "Delegator address"
   id: ID!
   "Graph account of the delegator"
@@ -140,7 +221,7 @@ type Delegator @entity {
   stakes: [DelegatedStake!]! @derivedFrom(field: "delegator")
 }
 
-type DelegatedStake @entity {
+type DelegatedStake @entity(immutable: false) {
   "Concatenation of Delegator address and Indexer address"
   id: ID!
   "Index the stake is delegated to"
@@ -149,14 +230,14 @@ type DelegatedStake @entity {
   delegator: Delegator!
 }
 
-type Curator @entity {
+type Curator @entity(immutable: false) {
   "Eth address of the Curator"
   id: ID!
   "Graph account of this curator"
   account: GraphAccount!
 }
 
-type Dispute @entity {
+type Dispute @entity(immutable: false) {
   "Dispute ID"
   id: ID!
   "Subgraph deployment being disputed"
@@ -181,6 +262,12 @@ interface Event {
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   tx_gasLimit: BigInt!
 
   tx_gasPrice: BigInt!
@@ -203,6 +290,12 @@ type ParameterUpdatedEvent implements Event @entity(immutable: true) {
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   parameter: String!
 
@@ -229,6 +322,12 @@ interface SubgraphEvent {
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   #epoch: Epoch #Probably re-add epoch later
 
   subgraph: Subgraph!
@@ -253,6 +352,12 @@ interface SubgraphDeploymentEvent {
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   #epoch: Epoch #Probably re-add epoch later
 
@@ -280,6 +385,12 @@ type RewardsDenylistUpdatedEvent implements SubgraphDeploymentEvent & Event
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   deployment: SubgraphDeployment!
 
   deniedAt: Int!
@@ -305,6 +416,12 @@ type NewSubgraphPublishedEvent implements SubgraphEvent & SubgraphDeploymentEven
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   subgraph: Subgraph!
 
@@ -337,6 +454,12 @@ type NewSubgraphVersionPublishedEvent implements SubgraphEvent & SubgraphDeploym
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   subgraph: Subgraph!
 
   version: SubgraphVersion!
@@ -367,6 +490,12 @@ type SubgraphMetadataUpdatedEvent implements SubgraphEvent & GraphAccountEvent &
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   subgraph: Subgraph!
 
@@ -422,6 +551,12 @@ type SubgraphVersionMetadataUpdatedEvent implements SubgraphEvent & SubgraphDepl
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   subgraph: Subgraph!
 
   deployment: SubgraphDeployment!
@@ -468,6 +603,12 @@ type SubgraphDeprecatedEvent implements SubgraphEvent & GraphAccountEvent & Even
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   subgraph: Subgraph!
 
   "User that triggered the Event"
@@ -495,6 +636,12 @@ type SubgraphNameSignalEnabledEvent implements SubgraphEvent & GraphAccountEvent
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   subgraph: Subgraph!
 
   "User that triggered the Event"
@@ -520,6 +667,12 @@ type SubgraphSentToL2Event implements SubgraphEvent & GraphAccountEvent & Event
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   subgraph: Subgraph!
 
@@ -552,6 +705,12 @@ type SubgraphReceivedFromL1Event implements SubgraphEvent & GraphAccountEvent & 
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   subgraph: Subgraph!
 
@@ -586,6 +745,12 @@ type SubgraphL2TransferFinalizedEvent implements SubgraphEvent & Event @entity(i
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   subgraph: Subgraph!
 
   tx_gasLimit: BigInt!
@@ -608,6 +773,12 @@ type SubgraphTransferredEvent implements SubgraphEvent & GraphAccountEvent & Eve
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   subgraph: Subgraph!
 
@@ -641,6 +812,12 @@ interface GraphAccountEvent {
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   #epoch: Epoch #Probably re-add epoch later
 
   accounts: [GraphAccount!]!
@@ -668,6 +845,12 @@ interface IndexerEvent {
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   #epoch: Epoch #Probably re-add epoch later
 
   indexer: Indexer!
@@ -693,6 +876,12 @@ type IndexerServiceRegisteredEvent implements IndexerEvent & GraphAccountEvent &
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -724,6 +913,12 @@ type IndexerServiceUnregisteredEvent implements IndexerEvent & GraphAccountEvent
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   indexer: Indexer!
 
   accounts: [GraphAccount!]!
@@ -749,6 +944,12 @@ type SetDefaultNameEvent implements IndexerEvent & GraphAccountEvent & Event
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -777,6 +978,12 @@ type DelegationParametersUpdatedEvent implements IndexerEvent & GraphAccountEven
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -809,6 +1016,12 @@ type SetOperatorEvent implements IndexerEvent & GraphAccountEvent & Event @entit
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   indexer: Indexer!
 
   accounts: [GraphAccount!]!
@@ -828,6 +1041,8 @@ type SetOperatorEvent implements IndexerEvent & GraphAccountEvent & Event @entit
 
 type IndexerStakeDepositedEvent implements IndexerEvent & GraphAccountEvent & Event
   @entity(immutable: true) {
+  "True for HorizonStake events; false for the legacy Stake events"
+  horizon: Boolean!
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -838,6 +1053,12 @@ type IndexerStakeDepositedEvent implements IndexerEvent & GraphAccountEvent & Ev
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -856,6 +1077,8 @@ type IndexerStakeDepositedEvent implements IndexerEvent & GraphAccountEvent & Ev
 
 type IndexerStakeLockedEvent implements IndexerEvent & GraphAccountEvent & Event
   @entity(immutable: true) {
+  "True for HorizonStake events; false for the legacy Stake events"
+  horizon: Boolean!
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -866,6 +1089,12 @@ type IndexerStakeLockedEvent implements IndexerEvent & GraphAccountEvent & Event
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -886,6 +1115,8 @@ type IndexerStakeLockedEvent implements IndexerEvent & GraphAccountEvent & Event
 
 type IndexerStakeWithdrawnEvent implements IndexerEvent & GraphAccountEvent & Event
   @entity(immutable: true) {
+  "True for HorizonStake events; false for the legacy Stake events"
+  horizon: Boolean!
   "Generic ID only for uniqueness purposes."
   id: ID!
 
@@ -896,6 +1127,12 @@ type IndexerStakeWithdrawnEvent implements IndexerEvent & GraphAccountEvent & Ev
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -925,6 +1162,12 @@ type IndexerStakeSlashedEvent implements IndexerEvent & GraphAccountEvent & Even
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   indexer: Indexer!
 
   accounts: [GraphAccount!]!
@@ -953,6 +1196,12 @@ type AllocationCreatedEvent implements IndexerEvent & SubgraphDeploymentEvent & 
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -986,6 +1235,12 @@ type AllocationCollectedEvent implements IndexerEvent & SubgraphDeploymentEvent 
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -1022,6 +1277,12 @@ type AllocationClosedEvent implements IndexerEvent & SubgraphDeploymentEvent & G
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   indexer: Indexer!
 
   accounts: [GraphAccount!]!
@@ -1052,6 +1313,12 @@ type RebateClaimedEvent implements IndexerEvent & SubgraphDeploymentEvent & Grap
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -1087,6 +1354,12 @@ type RebateCollectedEvent implements IndexerEvent & SubgraphDeploymentEvent & Gr
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -1125,6 +1398,12 @@ type IndexerStakeTransferredToL2Event implements IndexerEvent & GraphAccountEven
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   indexer: Indexer!
 
   l1Indexer: Indexer!
@@ -1158,6 +1437,12 @@ interface CuratorEvent {
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   #epoch: Epoch #Probably re-add epoch later
 
   curator: Curator!
@@ -1183,6 +1468,12 @@ type NSignalMintedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEv
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   subgraph: Subgraph!
 
@@ -1220,6 +1511,12 @@ type NSignalBurnedEvent implements SubgraphEvent & CuratorEvent & GraphAccountEv
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   subgraph: Subgraph!
 
@@ -1259,6 +1556,12 @@ type GRTWithdrawnEvent implements SubgraphEvent & CuratorEvent & GraphAccountEve
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   subgraph: Subgraph!
 
   curator: Curator!
@@ -1295,6 +1598,12 @@ type SignalMintedEvent implements CuratorEvent & SubgraphDeploymentEvent & Graph
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   deployment: SubgraphDeployment!
 
   curator: Curator!
@@ -1329,6 +1638,12 @@ type SignalBurnedEvent implements CuratorEvent & SubgraphDeploymentEvent & Graph
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   deployment: SubgraphDeployment!
 
@@ -1366,6 +1681,12 @@ type CuratorBalanceSentToL2Event implements CuratorEvent & GraphAccountEvent & E
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   curator: Curator!
 
   l1CuratorAccount: GraphAccount!
@@ -1397,6 +1718,12 @@ type CuratorBalanceReceivedEvent implements CuratorEvent & GraphAccountEvent & E
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   curator: Curator!
 
@@ -1430,6 +1757,12 @@ type CuratorBalanceReturnedToBeneficiaryEvent implements CuratorEvent & GraphAcc
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   curator: Curator!
 
   l1Subgraph: Subgraph!
@@ -1461,6 +1794,12 @@ interface DelegatorEvent {
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   #epoch: Epoch #Probably re-add epoch later
 
   delegator: Delegator!
@@ -1486,6 +1825,12 @@ type DelegatorStakeDepositedEvent implements DelegatorEvent & IndexerEvent & Gra
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -1518,6 +1863,12 @@ type DelegatorStakeLockedEvent implements DelegatorEvent & IndexerEvent & GraphA
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -1553,6 +1904,12 @@ type DelegatorStakeWithdrawnEvent implements DelegatorEvent & IndexerEvent & Gra
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   indexer: Indexer!
 
   delegator: Delegator!
@@ -1582,6 +1939,12 @@ type DelegationTransferredToL2Event implements DelegatorEvent & IndexerEvent & G
   tx_hash: Bytes!
 
   typename: String!
+
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
 
   indexer: Indexer!
 
@@ -1621,6 +1984,12 @@ type StakeDelegatedUnlockedDueToL2TransferEvent implements DelegatorEvent & Inde
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   indexer: Indexer!
 
   delegator: Delegator!
@@ -1649,6 +2018,12 @@ type TransferredDelegationReturnedToDelegatorEvent implements DelegatorEvent & I
 
   typename: String!
 
+  "Contract that emitted the underlying log"
+  contractAddress: Bytes!
+
+  "Log index within the block"
+  logIndex: BigInt!
+
   indexer: Indexer!
 
   delegator: Delegator!
@@ -1664,4 +2039,1810 @@ type TransferredDelegationReturnedToDelegatorEvent implements DelegatorEvent & I
   tx_gasUsed: BigInt!
 
   tx_cumulativeGasUsed: BigInt!
+}
+
+# Lightweight identity/context entities. No financial-state reconstruction is required.
+type DataService @entity(immutable: false) {
+  id: ID!
+  provisions: [Provision!]! @derivedFrom(field: "dataService")
+  events: [DataServiceEvent!]! @derivedFrom(field: "dataService")
+}
+
+type Provision @entity(immutable: false) {
+  "Indexer address followed by verifier/data-service address"
+  id: ID!
+  indexer: Indexer!
+  dataService: DataService!
+  events: [ProvisionEvent!]! @derivedFrom(field: "provision")
+  delegations: [ProvisionDelegation!]! @derivedFrom(field: "provision")
+}
+
+type ProvisionDelegation @entity(immutable: false) {
+  "Delegator address followed by provision ID"
+  id: ID!
+  delegator: Delegator!
+  provision: Provision!
+}
+
+type ActivityAllocation @entity(immutable: false) {
+  "Allocation address; context only, not allocation accounting"
+  id: ID!
+  indexer: Indexer!
+  deployment: SubgraphDeployment!
+  provision: Provision
+}
+
+type ActivityThawRequest @entity(immutable: false) {
+  "Staking contract address, request type and request ID"
+  id: ID!
+  requestId: Bytes!
+  requestType: Int!
+  owner: GraphAccount!
+  indexer: Indexer!
+  provision: Provision!
+  dataService: DataService!
+}
+
+interface ProvisionEvent {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  provision: Provision!
+}
+
+interface DataServiceEvent {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  dataService: DataService!
+}
+
+type ProvisionCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  tokens: BigInt!
+  maxVerifierCut: Int!
+  thawingPeriodSeconds: BigInt!
+}
+
+type ProvisionIncreasedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  tokens: BigInt!
+}
+
+type ProvisionThawedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  tokens: BigInt!
+}
+
+type TokensDeprovisionedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  tokens: BigInt!
+}
+
+type ProvisionSlashedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  tokens: BigInt!
+}
+
+type DelegationSlashedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  tokens: BigInt!
+}
+
+type ProvisionParametersSetEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  maxVerifierCut: Int!
+  thawingPeriodSeconds: BigInt!
+}
+
+type ProvisionParametersStagedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  maxVerifierCut: Int!
+  thawingPeriodSeconds: BigInt!
+}
+
+type DelegationFeeCutSetEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  paymentType: Int!
+  "Raw parts-per-million share for delegators, not the legacy indexer cut"
+  delegatorFeeCut: BigInt!
+}
+
+type ProvisionOperatorSetEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  operator: Bytes!
+  allowed: Boolean!
+}
+
+type TokensToDelegationPoolAddedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  tokens: BigInt!
+}
+
+type TokensDelegatedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent & DelegatorEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  delegator: Delegator!
+  tokenAmount: BigInt!
+  shareAmount: BigInt!
+}
+
+type TokensUndelegatedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent & DelegatorEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  delegator: Delegator!
+  tokenAmount: BigInt!
+  shareAmount: BigInt!
+}
+
+type DelegatedTokensWithdrawnEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent & DelegatorEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  delegator: Delegator!
+  tokenAmount: BigInt!
+}
+
+type ProvisionThawRequestCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  requestId: Bytes!
+  requestType: Int!
+  owner: GraphAccount!
+  shares: BigInt!
+  thawingUntilTimestamp: BigInt!
+  nonce: BigInt!
+}
+
+type DelegationThawRequestCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent & DelegatorEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  delegator: Delegator!
+  requestId: Bytes!
+  requestType: Int!
+  owner: GraphAccount!
+  shares: BigInt!
+  thawingUntilTimestamp: BigInt!
+  nonce: BigInt!
+}
+
+type ProvisionThawRequestFulfilledEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  requestId: Bytes!
+  requestType: Int!
+  shares: BigInt!
+  tokens: BigInt!
+  thawingUntilTimestamp: BigInt!
+  valid: Boolean!
+  owner: GraphAccount!
+}
+
+type DelegationThawRequestFulfilledEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent & DelegatorEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  delegator: Delegator!
+  requestId: Bytes!
+  requestType: Int!
+  shares: BigInt!
+  tokens: BigInt!
+  thawingUntilTimestamp: BigInt!
+  valid: Boolean!
+  owner: GraphAccount!
+}
+
+"Fulfillment retained when request identity context was not indexed. No fabricated account or provision."
+type UnresolvedThawRequestFulfilledEvent implements Event @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  requestId: Bytes!
+  requestType: Int!
+  shares: BigInt!
+  tokens: BigInt!
+  thawingUntilTimestamp: BigInt!
+  valid: Boolean!
+}
+
+"Raw registration data is always retained; decoded fields are optional."
+type ServiceProviderRegisteredEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  data: Bytes!
+  url: String
+  geoHash: String
+  rewardsDestination: Bytes
+}
+
+type RewardsDestinationSetEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  rewardsDestination: Bytes!
+}
+
+type HorizonAllocationCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  allocation: String!
+  allocatedAmount: BigInt!
+  currentEpoch: BigInt!
+}
+
+type AllocationResizedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  allocation: String!
+  oldTokens: BigInt!
+  newTokens: BigInt!
+}
+
+type HorizonAllocationClosedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  allocation: String!
+  tokens: BigInt!
+  forceClosed: Boolean!
+}
+
+type IndexingRewardsCollectedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  allocation: String!
+  tokensRewards: BigInt!
+  tokensIndexerRewards: BigInt!
+  tokensDelegationRewards: BigInt!
+  poi: Bytes!
+  poiMetadata: Bytes!
+  currentEpoch: BigInt!
+}
+
+"Raw rewards condition is preserved, including deferred and unknown conditions."
+type POIPresentedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  allocation: String!
+  poi: Bytes!
+  poiMetadata: Bytes!
+  condition: Bytes!
+}
+
+type QueryFeesCollectedEvent implements Event & IndexerEvent & GraphAccountEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  allocation: String!
+  "Canonical tally payment record ID from the same receipt, when matched."
+  paymentEventId: String
+  payer: GraphAccount!
+  tokensCollected: BigInt!
+  tokensCurators: BigInt!
+}
+
+"Legacy/transition reward assignment enriched with an allocation deployment."
+type IndexingRewardsAssignedEvent implements Event & IndexerEvent & GraphAccountEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  allocation: String!
+  amount: BigInt!
+  epoch: BigInt
+  horizon: Boolean!
+  deployment: SubgraphDeployment!
+}
+
+"Reward assignment preserved when the allocation deployment is not available."
+type UnresolvedIndexingRewardsAssignedEvent implements Event & IndexerEvent & GraphAccountEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  allocation: String!
+  amount: BigInt!
+  epoch: BigInt
+  horizon: Boolean!
+}
+
+type SubgraphUpgradedEvent implements Event & SubgraphEvent & SubgraphDeploymentEvent & GraphAccountEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  subgraph: Subgraph!
+  deployment: SubgraphDeployment!
+  accounts: [GraphAccount!]!
+  newVersionSignal: BigInt!
+  tokensSignalled: BigInt!
+}
+
+"Observed dispute context, keyed by manager address and dispute ID; never a reconstructed position."
+type ActivityDispute @entity(immutable: false) {
+  id: ID!
+  manager: Bytes!
+  disputeId: Bytes!
+  indexer: Indexer
+  fisherman: GraphAccount
+  deployment: SubgraphDeployment
+  provision: Provision
+  dataService: DataService
+  allocation: String
+  kind: String
+  linkedDispute: ActivityDispute
+  events: [DisputeEvent!]! @derivedFrom(field: "dispute")
+}
+
+interface DisputeEvent {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  dispute: ActivityDispute!
+}
+
+type QueryDisputeCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  tokenAmount: BigInt!
+  attestation: Bytes!
+}
+
+type IndexingDisputeCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  allocation: String!
+  tokenAmount: BigInt!
+}
+
+type UnresolvedIndexingDisputeCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  allocation: String!
+  tokenAmount: BigInt!
+}
+
+type HorizonQueryDisputeCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  tokenAmount: BigInt!
+  attestation: Bytes!
+  "Trailing query-dispute values in wire order; the inspected emitter and ABI disagree on their semantic order."
+  queryContextValues: [BigInt!]!
+}
+
+type HorizonIndexingDisputeCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  allocation: String!
+  tokenAmount: BigInt!
+  poi: Bytes!
+  disputedBlockNumber: BigInt!
+  stakeSnapshot: BigInt!
+  cancellableAt: BigInt!
+}
+
+type UnresolvedHorizonIndexingDisputeCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  provision: Provision!
+  dataService: DataService!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  allocation: String!
+  tokenAmount: BigInt!
+  poi: Bytes!
+  disputedBlockNumber: BigInt!
+  stakeSnapshot: BigInt!
+  cancellableAt: BigInt!
+}
+
+type LegacyDisputeCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  allocation: String!
+  tokensSlash: BigInt!
+  tokensRewards: BigInt!
+}
+
+type UnresolvedLegacyDisputeCreatedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  allocation: String!
+  tokensSlash: BigInt!
+  tokensRewards: BigInt!
+}
+
+type DisputeAcceptedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type UnresolvedDisputeAcceptedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type ProvisionDisputeAcceptedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type UnresolvedProvisionDisputeAcceptedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  provision: Provision!
+  dataService: DataService!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type DisputeRejectedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type UnresolvedDisputeRejectedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type ProvisionDisputeRejectedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type UnresolvedProvisionDisputeRejectedEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  provision: Provision!
+  dataService: DataService!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type DisputeCancelledEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type UnresolvedDisputeCancelledEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type ProvisionDisputeCancelledEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type UnresolvedProvisionDisputeCancelledEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  provision: Provision!
+  dataService: DataService!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type DisputeDrawnEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type UnresolvedDisputeDrawnEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type ProvisionDisputeDrawnEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type UnresolvedProvisionDisputeDrawnEvent implements Event & IndexerEvent & GraphAccountEvent & DisputeEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  indexer: Indexer!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  provision: Provision!
+  dataService: DataService!
+  fisherman: GraphAccount!
+  horizon: Boolean!
+  "Raw outcome tokens: may include a returned deposit; not an inferred reward or slash."
+  tokenAmount: BigInt!
+  "Related slash record IDs in this transaction; decision and loss remain separate facts."
+  slashEventIds: [String!]!
+}
+
+type DisputeLinkedEvent implements Event & DisputeEvent @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  relatedDispute: ActivityDispute!
+  horizon: Boolean!
+}
+
+type IndexerDisputeLinkedEvent implements Event & GraphAccountEvent & DisputeEvent & IndexerEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  indexer: Indexer!
+  relatedDispute: ActivityDispute!
+  horizon: Boolean!
+}
+
+type DeploymentDisputeLinkedEvent implements Event & GraphAccountEvent & DisputeEvent & IndexerEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  indexer: Indexer!
+  deployment: SubgraphDeployment!
+  relatedDispute: ActivityDispute!
+  horizon: Boolean!
+}
+
+type ProvisionDisputeLinkedEvent implements Event & GraphAccountEvent & DisputeEvent & IndexerEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  indexer: Indexer!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  relatedDispute: ActivityDispute!
+  horizon: Boolean!
+}
+
+type UnresolvedProvisionDisputeLinkedEvent implements Event & GraphAccountEvent & DisputeEvent & IndexerEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  dispute: ActivityDispute!
+  indexer: Indexer!
+  provision: Provision!
+  dataService: DataService!
+  relatedDispute: ActivityDispute!
+  horizon: Boolean!
+}
+
+type EscrowDepositedEvent implements Event & GraphAccountEvent @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  payer: GraphAccount!
+  collector: Bytes!
+  receiver: GraphAccount!
+  tokenAmount: BigInt!
+}
+
+type EscrowWithdrawnEvent implements Event & GraphAccountEvent @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  payer: GraphAccount!
+  collector: Bytes!
+  receiver: GraphAccount!
+  tokenAmount: BigInt!
+}
+
+type EscrowThawedEvent implements Event & GraphAccountEvent @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  payer: GraphAccount!
+  collector: Bytes!
+  receiver: GraphAccount!
+  tokenAmount: BigInt!
+  thawEndTimestamp: BigInt!
+}
+
+type EscrowThawCancelledEvent implements Event & GraphAccountEvent @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  payer: GraphAccount!
+  collector: Bytes!
+  receiver: GraphAccount!
+  tokensThawing: BigInt!
+  thawEndTimestamp: BigInt!
+}
+
+type PayerSignerAuthorizedEvent implements Event & GraphAccountEvent @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  payer: GraphAccount!
+  signer: GraphAccount!
+}
+
+type PayerSignerThawingEvent implements Event & GraphAccountEvent @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  payer: GraphAccount!
+  signer: GraphAccount!
+  thawEndTimestamp: BigInt!
+}
+
+type PayerSignerThawCanceledEvent implements Event & GraphAccountEvent @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  payer: GraphAccount!
+  signer: GraphAccount!
+  thawEndTimestamp: BigInt!
+}
+
+type PayerSignerRevokedEvent implements Event & GraphAccountEvent @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  payer: GraphAccount!
+  signer: GraphAccount!
+}
+
+type PaymentCollectedEvent implements Event & GraphAccountEvent & IndexerEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  indexer: Indexer!
+  provision: Provision!
+  dataService: DataService!
+  paymentType: Int!
+  tokenAmount: BigInt!
+  receiver: GraphAccount!
+  "Immediate token source reported by GraphPayments, which may be the escrow contract."
+  paymentSource: GraphAccount
+  tokensProtocol: BigInt
+  tokensDataService: BigInt
+  tokensDelegationPool: BigInt
+  tokensReceiver: BigInt
+  receiverDestination: Bytes
+  graphPaymentLogIndex: BigInt
+  escrowLogIndex: BigInt
+  tallyLogIndex: BigInt
+  payer: GraphAccount!
+  collector: Bytes!
+  collectionId: Bytes!
+  allocation: String
+}
+
+type SubgraphPaymentCollectedEvent implements Event & GraphAccountEvent & IndexerEvent & ProvisionEvent & DataServiceEvent & SubgraphDeploymentEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  indexer: Indexer!
+  provision: Provision!
+  dataService: DataService!
+  deployment: SubgraphDeployment!
+  paymentType: Int!
+  tokenAmount: BigInt!
+  receiver: GraphAccount!
+  "Immediate token source reported by GraphPayments, which may be the escrow contract."
+  paymentSource: GraphAccount
+  tokensProtocol: BigInt
+  tokensDataService: BigInt
+  tokensDelegationPool: BigInt
+  tokensReceiver: BigInt
+  receiverDestination: Bytes
+  graphPaymentLogIndex: BigInt
+  escrowLogIndex: BigInt
+  tallyLogIndex: BigInt
+  payer: GraphAccount!
+  collector: Bytes!
+  collectionId: Bytes!
+  allocation: String
+}
+
+"Fallback collection when no matching tally log exists. Optional split fields come from the receipt."
+type EscrowCollectedEvent implements Event & GraphAccountEvent @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  paymentType: Int!
+  tokenAmount: BigInt!
+  receiver: GraphAccount!
+  "Immediate token source reported by GraphPayments, which may be the escrow contract."
+  paymentSource: GraphAccount
+  tokensProtocol: BigInt
+  tokensDataService: BigInt
+  tokensDelegationPool: BigInt
+  tokensReceiver: BigInt
+  receiverDestination: Bytes
+  graphPaymentLogIndex: BigInt
+  escrowLogIndex: BigInt
+  tallyLogIndex: BigInt
+  payer: GraphAccount!
+  collector: Bytes!
+}
+
+"Fallback distribution when no matching escrow collection exists. paymentSource is not assumed to be an end user."
+type GraphPaymentCollectedEvent implements Event & GraphAccountEvent & IndexerEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  indexer: Indexer!
+  provision: Provision!
+  dataService: DataService!
+  paymentType: Int!
+  tokenAmount: BigInt!
+  receiver: GraphAccount!
+  "Immediate token source reported by GraphPayments, which may be the escrow contract."
+  paymentSource: GraphAccount
+  tokensProtocol: BigInt
+  tokensDataService: BigInt
+  tokensDelegationPool: BigInt
+  tokensReceiver: BigInt
+  receiverDestination: Bytes
+  graphPaymentLogIndex: BigInt
+  escrowLogIndex: BigInt
+  tallyLogIndex: BigInt
+}
+
+type ServiceEscrowCollectedEvent implements Event & GraphAccountEvent & IndexerEvent & ProvisionEvent & DataServiceEvent
+  @entity(immutable: true) {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  tx_hash: Bytes!
+  typename: String!
+  contractAddress: Bytes!
+  logIndex: BigInt!
+  tx_gasLimit: BigInt!
+  tx_gasPrice: BigInt!
+  tx_gasUsed: BigInt!
+  tx_cumulativeGasUsed: BigInt!
+  accounts: [GraphAccount!]!
+  indexer: Indexer!
+  provision: Provision!
+  dataService: DataService!
+  paymentType: Int!
+  tokenAmount: BigInt!
+  receiver: GraphAccount!
+  "Immediate token source reported by GraphPayments, which may be the escrow contract."
+  paymentSource: GraphAccount
+  tokensProtocol: BigInt
+  tokensDataService: BigInt
+  tokensDelegationPool: BigInt
+  tokensReceiver: BigInt
+  receiverDestination: Bytes
+  graphPaymentLogIndex: BigInt
+  escrowLogIndex: BigInt
+  tallyLogIndex: BigInt
+  payer: GraphAccount!
+  collector: Bytes!
 }

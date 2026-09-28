@@ -1,0 +1,1151 @@
+[
+  {
+      "type": "function",
+      "name": "acceptDispute",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          },
+          {
+              "name": "tokensSlash",
+              "type": "uint256",
+              "internalType": "uint256"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "acceptDisputeConflict",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          },
+          {
+              "name": "tokensSlash",
+              "type": "uint256",
+              "internalType": "uint256"
+          },
+          {
+              "name": "acceptDisputeInConflict",
+              "type": "bool",
+              "internalType": "bool"
+          },
+          {
+              "name": "tokensSlashRelated",
+              "type": "uint256",
+              "internalType": "uint256"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "areConflictingAttestations",
+      "inputs": [
+          {
+              "name": "attestation1",
+              "type": "tuple",
+              "internalType": "struct IAttestation.State",
+              "components": [
+                  {
+                      "name": "requestCID",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "responseCID",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "subgraphDeploymentId",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "r",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "s",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "v",
+                      "type": "uint8",
+                      "internalType": "uint8"
+                  }
+              ]
+          },
+          {
+              "name": "attestation2",
+              "type": "tuple",
+              "internalType": "struct IAttestation.State",
+              "components": [
+                  {
+                      "name": "requestCID",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "responseCID",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "subgraphDeploymentId",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "r",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "s",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "v",
+                      "type": "uint8",
+                      "internalType": "uint8"
+                  }
+              ]
+          }
+      ],
+      "outputs": [
+          {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+          }
+      ],
+      "stateMutability": "pure"
+  },
+  {
+      "type": "function",
+      "name": "cancelDispute",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "createAndAcceptLegacyDispute",
+      "inputs": [
+          {
+              "name": "allocationId",
+              "type": "address",
+              "internalType": "address"
+          },
+          {
+              "name": "fisherman",
+              "type": "address",
+              "internalType": "address"
+          },
+          {
+              "name": "tokensSlash",
+              "type": "uint256",
+              "internalType": "uint256"
+          },
+          {
+              "name": "tokensRewards",
+              "type": "uint256",
+              "internalType": "uint256"
+          }
+      ],
+      "outputs": [
+          {
+              "name": "",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "createIndexingDispute",
+      "inputs": [
+          {
+              "name": "allocationId",
+              "type": "address",
+              "internalType": "address"
+          },
+          {
+              "name": "poi",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          },
+          {
+              "name": "blockNumber",
+              "type": "uint256",
+              "internalType": "uint256"
+          }
+      ],
+      "outputs": [
+          {
+              "name": "",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "createQueryDispute",
+      "inputs": [
+          {
+              "name": "attestationData",
+              "type": "bytes",
+              "internalType": "bytes"
+          }
+      ],
+      "outputs": [
+          {
+              "name": "",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "createQueryDisputeConflict",
+      "inputs": [
+          {
+              "name": "attestationData1",
+              "type": "bytes",
+              "internalType": "bytes"
+          },
+          {
+              "name": "attestationData2",
+              "type": "bytes",
+              "internalType": "bytes"
+          }
+      ],
+      "outputs": [
+          {
+              "name": "",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          },
+          {
+              "name": "",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "drawDispute",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "encodeReceipt",
+      "inputs": [
+          {
+              "name": "receipt",
+              "type": "tuple",
+              "internalType": "struct IAttestation.Receipt",
+              "components": [
+                  {
+                      "name": "requestCID",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "responseCID",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "subgraphDeploymentId",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  }
+              ]
+          }
+      ],
+      "outputs": [
+          {
+              "name": "",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ],
+      "stateMutability": "view"
+  },
+  {
+      "type": "function",
+      "name": "getAttestationIndexer",
+      "inputs": [
+          {
+              "name": "attestation",
+              "type": "tuple",
+              "internalType": "struct IAttestation.State",
+              "components": [
+                  {
+                      "name": "requestCID",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "responseCID",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "subgraphDeploymentId",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "r",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "s",
+                      "type": "bytes32",
+                      "internalType": "bytes32"
+                  },
+                  {
+                      "name": "v",
+                      "type": "uint8",
+                      "internalType": "uint8"
+                  }
+              ]
+          }
+      ],
+      "outputs": [
+          {
+              "name": "",
+              "type": "address",
+              "internalType": "address"
+          }
+      ],
+      "stateMutability": "view"
+  },
+  {
+      "type": "function",
+      "name": "getDisputePeriod",
+      "inputs": [],
+      "outputs": [
+          {
+              "name": "",
+              "type": "uint64",
+              "internalType": "uint64"
+          }
+      ],
+      "stateMutability": "view"
+  },
+  {
+      "type": "function",
+      "name": "getFishermanRewardCut",
+      "inputs": [],
+      "outputs": [
+          {
+              "name": "",
+              "type": "uint32",
+              "internalType": "uint32"
+          }
+      ],
+      "stateMutability": "view"
+  },
+  {
+      "type": "function",
+      "name": "getStakeSnapshot",
+      "inputs": [
+          {
+              "name": "indexer",
+              "type": "address",
+              "internalType": "address"
+          }
+      ],
+      "outputs": [
+          {
+              "name": "",
+              "type": "uint256",
+              "internalType": "uint256"
+          }
+      ],
+      "stateMutability": "view"
+  },
+  {
+      "type": "function",
+      "name": "initialize",
+      "inputs": [
+          {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address"
+          },
+          {
+              "name": "arbitrator",
+              "type": "address",
+              "internalType": "address"
+          },
+          {
+              "name": "disputePeriod",
+              "type": "uint64",
+              "internalType": "uint64"
+          },
+          {
+              "name": "disputeDeposit",
+              "type": "uint256",
+              "internalType": "uint256"
+          },
+          {
+              "name": "fishermanRewardCut_",
+              "type": "uint32",
+              "internalType": "uint32"
+          },
+          {
+              "name": "maxSlashingCut_",
+              "type": "uint32",
+              "internalType": "uint32"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "isDisputeCreated",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ],
+      "outputs": [
+          {
+              "name": "",
+              "type": "bool",
+              "internalType": "bool"
+          }
+      ],
+      "stateMutability": "view"
+  },
+  {
+      "type": "function",
+      "name": "rejectDispute",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "setArbitrator",
+      "inputs": [
+          {
+              "name": "arbitrator",
+              "type": "address",
+              "internalType": "address"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "setDisputeDeposit",
+      "inputs": [
+          {
+              "name": "disputeDeposit",
+              "type": "uint256",
+              "internalType": "uint256"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "setDisputePeriod",
+      "inputs": [
+          {
+              "name": "disputePeriod",
+              "type": "uint64",
+              "internalType": "uint64"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "setFishermanRewardCut",
+      "inputs": [
+          {
+              "name": "fishermanRewardCut_",
+              "type": "uint32",
+              "internalType": "uint32"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "setMaxSlashingCut",
+      "inputs": [
+          {
+              "name": "maxSlashingCut_",
+              "type": "uint32",
+              "internalType": "uint32"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "function",
+      "name": "setSubgraphService",
+      "inputs": [
+          {
+              "name": "subgraphService",
+              "type": "address",
+              "internalType": "address"
+          }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+  },
+  {
+      "type": "event",
+      "name": "ArbitratorSet",
+      "inputs": [
+          {
+              "name": "arbitrator",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "DisputeAccepted",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "indexed": true,
+              "internalType": "bytes32"
+          },
+          {
+              "name": "indexer",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "fisherman",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "tokens",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "DisputeCancelled",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "indexed": true,
+              "internalType": "bytes32"
+          },
+          {
+              "name": "indexer",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "fisherman",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "tokens",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "DisputeDepositSet",
+      "inputs": [
+          {
+              "name": "disputeDeposit",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "DisputeDrawn",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "indexed": true,
+              "internalType": "bytes32"
+          },
+          {
+              "name": "indexer",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "fisherman",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "tokens",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "DisputeLinked",
+      "inputs": [
+          {
+              "name": "disputeId1",
+              "type": "bytes32",
+              "indexed": true,
+              "internalType": "bytes32"
+          },
+          {
+              "name": "disputeId2",
+              "type": "bytes32",
+              "indexed": true,
+              "internalType": "bytes32"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "DisputePeriodSet",
+      "inputs": [
+          {
+              "name": "disputePeriod",
+              "type": "uint64",
+              "indexed": false,
+              "internalType": "uint64"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "DisputeRejected",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "indexed": true,
+              "internalType": "bytes32"
+          },
+          {
+              "name": "indexer",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "fisherman",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "tokens",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "FishermanRewardCutSet",
+      "inputs": [
+          {
+              "name": "fishermanRewardCut",
+              "type": "uint32",
+              "indexed": false,
+              "internalType": "uint32"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "IndexingDisputeCreated",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "indexed": true,
+              "internalType": "bytes32"
+          },
+          {
+              "name": "indexer",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "fisherman",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "tokens",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          },
+          {
+              "name": "allocationId",
+              "type": "address",
+              "indexed": false,
+              "internalType": "address"
+          },
+          {
+              "name": "poi",
+              "type": "bytes32",
+              "indexed": false,
+              "internalType": "bytes32"
+          },
+          {
+              "name": "blockNumber",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          },
+          {
+              "name": "stakeSnapshot",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          },
+          {
+              "name": "cancellableAt",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "LegacyDisputeCreated",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "indexed": true,
+              "internalType": "bytes32"
+          },
+          {
+              "name": "indexer",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "fisherman",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "allocationId",
+              "type": "address",
+              "indexed": false,
+              "internalType": "address"
+          },
+          {
+              "name": "tokensSlash",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          },
+          {
+              "name": "tokensRewards",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "MaxSlashingCutSet",
+      "inputs": [
+          {
+              "name": "maxSlashingCut",
+              "type": "uint32",
+              "indexed": false,
+              "internalType": "uint32"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "QueryDisputeCreated",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "indexed": true,
+              "internalType": "bytes32"
+          },
+          {
+              "name": "indexer",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "fisherman",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          },
+          {
+              "name": "tokens",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          },
+          {
+              "name": "subgraphDeploymentId",
+              "type": "bytes32",
+              "indexed": false,
+              "internalType": "bytes32"
+          },
+          {
+              "name": "attestation",
+              "type": "bytes",
+              "indexed": false,
+              "internalType": "bytes"
+          },
+          {
+              "name": "stakeSnapshot",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          },
+          {
+              "name": "cancellableAt",
+              "type": "uint256",
+              "indexed": false,
+              "internalType": "uint256"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "event",
+      "name": "SubgraphServiceSet",
+      "inputs": [
+          {
+              "name": "subgraphService",
+              "type": "address",
+              "indexed": true,
+              "internalType": "address"
+          }
+      ],
+      "anonymous": false
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerDisputeAlreadyCreated",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerDisputeInConflict",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerDisputeNotInConflict",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerDisputeNotPending",
+      "inputs": [
+          {
+              "name": "status",
+              "type": "uint8",
+              "internalType": "enum IDisputeManager.DisputeStatus"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerDisputePeriodNotFinished",
+      "inputs": []
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerDisputePeriodZero",
+      "inputs": []
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerIndexerNotFound",
+      "inputs": [
+          {
+              "name": "allocationId",
+              "type": "address",
+              "internalType": "address"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerInvalidDispute",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerInvalidDisputeDeposit",
+      "inputs": [
+          {
+              "name": "disputeDeposit",
+              "type": "uint256",
+              "internalType": "uint256"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerInvalidFishermanReward",
+      "inputs": [
+          {
+              "name": "cut",
+              "type": "uint32",
+              "internalType": "uint32"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerInvalidMaxSlashingCut",
+      "inputs": [
+          {
+              "name": "maxSlashingCut",
+              "type": "uint32",
+              "internalType": "uint32"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerInvalidTokensSlash",
+      "inputs": [
+          {
+              "name": "tokensSlash",
+              "type": "uint256",
+              "internalType": "uint256"
+          },
+          {
+              "name": "maxTokensSlash",
+              "type": "uint256",
+              "internalType": "uint256"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerInvalidZeroAddress",
+      "inputs": []
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerMustAcceptRelatedDispute",
+      "inputs": [
+          {
+              "name": "disputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          },
+          {
+              "name": "relatedDisputeId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerNonConflictingAttestations",
+      "inputs": [
+          {
+              "name": "requestCID1",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          },
+          {
+              "name": "responseCID1",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          },
+          {
+              "name": "subgraphDeploymentId1",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          },
+          {
+              "name": "requestCID2",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          },
+          {
+              "name": "responseCID2",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          },
+          {
+              "name": "subgraphDeploymentId2",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerNonMatchingSubgraphDeployment",
+      "inputs": [
+          {
+              "name": "subgraphDeploymentId1",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          },
+          {
+              "name": "subgraphDeploymentId2",
+              "type": "bytes32",
+              "internalType": "bytes32"
+          }
+      ]
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerNotArbitrator",
+      "inputs": []
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerNotFisherman",
+      "inputs": []
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerSubgraphServiceNotSet",
+      "inputs": []
+  },
+  {
+      "type": "error",
+      "name": "DisputeManagerZeroTokens",
+      "inputs": []
+  }
+]

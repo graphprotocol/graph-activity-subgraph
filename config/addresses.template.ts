@@ -19,6 +19,11 @@ export class Addresses {
   l1GraphTokenGateway: string
   l2GraphTokenGateway: string
   ethereumDIDRegistry: string
+  subgraphService: string
+  horizonDisputeManager: string
+  paymentsEscrow: string
+  graphTallyCollector: string
+  graphPayments: string
   isL1: boolean
 }
 
@@ -43,5 +48,10 @@ export let addresses: Addresses = {
   l1GraphTokenGateway: '{{l1GraphTokenGateway}}',
   l2GraphTokenGateway: '{{l2GraphTokenGateway}}',
   ethereumDIDRegistry: '{{ethereumDIDRegistry}}',
+  subgraphService: '{{subgraphService}}',
+  horizonDisputeManager: '{{horizonDisputeManager}}',
+  paymentsEscrow: '{{paymentsEscrow}}',
+  graphTallyCollector: '{{graphTallyCollector}}',
+  graphPayments: '{{graphPayments}}',
   isL1: {{isL1}},
 }
