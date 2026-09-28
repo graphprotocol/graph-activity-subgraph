@@ -7,6 +7,7 @@ const horizonAddresses = require('@graphprotocol/address-book/horizon/addresses.
 const serviceAddresses = require('@graphprotocol/address-book/subgraph-service/addresses.json')
 const networkAddresses = { '42161': { ...horizonAddresses['42161'], ...serviceAddresses['42161'] } }
 import { Addresses } from './addresses.template'
+import { populateStartBlocks } from './startBlocks'
 
 // mustache doesn't like numbered object keys
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,6 +62,7 @@ const main = (): void => {
       !output.graphPayments
     )
       throw new Error('Missing Horizon addresses for the selected chain')
+    populateStartBlocks(output, [horizonAddresses['42161'], serviceAddresses['42161']])
     fs.writeFileSync(__dirname + '/generatedAddresses.json', JSON.stringify(output, null, 2))
   } catch (e) {
     throw e

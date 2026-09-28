@@ -9,6 +9,7 @@ const networkAddresses = {
   '421614': { ...horizonAddresses['421614'], ...serviceAddresses['421614'] },
 }
 import { Addresses } from './addresses.template'
+import { populateStartBlocks } from './startBlocks'
 
 // mustache doesn't like numbered object keys
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,6 +66,7 @@ const main = (): void => {
       !output.graphPayments
     )
       throw new Error('Missing Horizon addresses for the selected chain')
+    populateStartBlocks(output, [horizonAddresses['421614'], serviceAddresses['421614']])
     fs.writeFileSync(__dirname + '/generatedAddresses.json', JSON.stringify(output, null, 2))
   } catch (e) {
     throw e

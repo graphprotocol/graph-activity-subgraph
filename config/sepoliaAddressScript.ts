@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as mustache from 'mustache'
 import * as networkAddresses from '@graphprotocol/contracts/addresses.json'
 import { Addresses } from './addresses.template'
+import { populateStartBlocks } from './startBlocks'
 
 // mustache doesn't like numbered object keys
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,9 +51,10 @@ const main = (): void => {
     if (output.ethereumDIDRegistry == '') {
       output.ethereumDIDRegistry = '0x0000000000000000000000000000000000000000' // to avoid crashes due to bad config
     }
+    populateStartBlocks(output, [networkAddresses['11155111']])
     fs.writeFileSync(__dirname + '/generatedAddresses.json', JSON.stringify(output, null, 2))
   } catch (e) {
-    console.log(`Error saving artifacts: ${e.message}`)
+    throw e
   }
 }
 

@@ -33,7 +33,8 @@
     "lint-fix": "eslint . --fix",
     "prettier": "prettier '**/*.ts'",
     "prettier-write": "prettier --write '**/*.ts'",
-    "test": "yarn check:events && graph test -v 0.6.0",
+    "test": "yarn check:events && yarn test:config && graph test -v 0.6.0",
+    "test:config": "node config/tests/startBlocks.test.cjs",
     "generate:events": "node scripts/generate-event-counters.cjs",
     "check:events": "node scripts/generate-event-counters.cjs --check",
     "prebuild": "yarn check:events"

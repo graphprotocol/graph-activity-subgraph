@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as mustache from 'mustache'
 import * as networkAddresses from '@graphprotocol/contracts/addresses.json'
 import { Addresses } from './addresses.template'
+import { populateStartBlocks } from './startBlocks'
 
 // mustache doesn't like numbered object keys
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -44,9 +45,10 @@ const main = (): void => {
     output.bridgeBlockNumber = '16083315' // Bridge deployment block on L1
     output.tokenLockManager = '0xFCf78AC094288D7200cfdB367A8CD07108dFa128'
     output.useTokenLockManager = true
+    populateStartBlocks(output, [networkAddresses['1']])
     fs.writeFileSync(__dirname + '/generatedAddresses.json', JSON.stringify(output, null, 2))
   } catch (e) {
-    console.log(`Error saving artifacts: ${e.message}`)
+    throw e
   }
 }
 

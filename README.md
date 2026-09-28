@@ -21,6 +21,22 @@ The existing `isL1` setting selects L1/L2 sources. Horizon and SubgraphService a
 is enabled on the two Arbitrum networks. L1 addresses come from `@graphprotocol/contracts`;
 L2 addresses come from `@graphprotocol/address-book`.
 
+Indexing covers the full history of every supported event. Address preparation fills
+`startBlocks.<contract>` in `config/generatedAddresses.json` from the emitting address's
+creation metadata: `proxyDeployment.blockNumber` for proxies, or `deployment.blockNumber`
+for contracts without a proxy. Every manifest source uses its corresponding value;
+legacy and Horizon sources on the same staking proxy share its creation block.
+
+When creation metadata is unavailable, preparation retains the existing early chain
+start block. Implementation upgrade blocks are never used as a substitute. The installed
+address books currently lack creation blocks for the active sources, so those sources
+still use the chain fallbacks. Populating creation metadata in the address books will
+automatically select exact blocks on the next prepare. `startBlockSources` in the generated
+JSON records whether each value came from creation metadata or the chain fallback.
+
+`yarn test:config` validates start-block selection and both L1/L2 manifest branches;
+it also runs as part of `yarn test`.
+
 
 The setup for each branch is:
 
