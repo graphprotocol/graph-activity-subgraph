@@ -28,6 +28,7 @@ export let addresses: Addresses = {
   l1GraphTokenGateway: '{{mainnet.L1GraphTokenGateway.address}}',
   l2GraphTokenGateway: '',
   ethereumDIDRegistry: '{{mainnet.IEthereumDIDRegistry.address}}',
+  subgraphService: '',
   isL1: true,
 }
 

@@ -28,6 +28,7 @@ export let addresses: Addresses = {
   l1GraphTokenGateway: '{{sepolia.L1GraphTokenGateway.address}}',
   l2GraphTokenGateway: '',
   ethereumDIDRegistry: '{{sepolia.EthereumDIDRegistry.address}}',
+  subgraphService: '',
   isL1: true,
 }
 

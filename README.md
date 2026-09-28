@@ -2,6 +2,8 @@
 
 This repository contains the code for the Graph Activity Subgraph.
 
+See the [Horizon activity implementation notes](research/implementation-stages-1-3.md) for event coverage, schema/interface conventions, counters, and current build/test commands.
+
 # Contributing to the repository
 
 Contributions are always welcome! Likely you will want to create a PR against `mainnet-staging`. If you are unsure you can always reach out to us on discord.
@@ -10,13 +12,14 @@ Contributions are always welcome! Likely you will want to create a PR against `m
 Please submit bugs as an issue in this repository.
 ## Maintaining the repository
 
-This repository has three different configurations for the `testnet`, `mainnet`, and
-`mainnet-staging` subgraphs. These can be seen in the npm scripts.
+This repository supports Ethereum mainnet, Sepolia, Arbitrum One, and Arbitrum Sepolia.
+Use `yarn prepare:mainnet`, `yarn prepare:sepolia`, `yarn prepare:arbitrum`, or
+`yarn prepare:arbitrum-sepolia` to render the Mustache manifest and generate mapping types,
+then run `yarn build`.
 
-We are using `mustache` to configure two different `subgraph.yaml` manifests. Each manifest
-will have different contract addresses populated depending on whether we are using rinkeby or
-mainnet. Ensure the npm package for `@graphprotocol/contracts` is set to the newest rinkeby
-or mainnet package, [which you can find here](https://www.npmjs.com/package/@graphprotocol/contracts).
+The existing `isL1` setting selects L1/L2 sources. Horizon and SubgraphService activity
+is enabled on the two Arbitrum networks. L1 addresses come from `@graphprotocol/contracts`;
+L2 addresses come from `@graphprotocol/address-book`.
 
 
 The setup for each branch is:

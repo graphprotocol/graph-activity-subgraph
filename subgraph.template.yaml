@@ -461,10 +461,16 @@ dataSources:
         - SubgraphDeployment
       abis:
         - name: RewardsManager
-          file: ./node_modules/@graphprotocol/contracts/dist/abis/RewardsManager.json
+          file: ./abis/RewardsManagerStitched.json
       eventHandlers:
-        # - event: RewardsAssigned(indexed address,indexed address,uint256,uint256)
-        #   handler: handleRewardsAssigned
+{{^isL1}}
+        - event: RewardsAssigned(indexed address,indexed address,uint256,uint256)
+          handler: handleRewardsAssigned
+          receipt: true
+        - event: HorizonRewardsAssigned(indexed address,indexed address,uint256)
+          handler: handleHorizonRewardsAssigned
+          receipt: true
+{{/isL1}}
         - event: RewardsDenylistUpdated(indexed bytes32,uint256)
           handler: handleRewardsDenyListUpdated
           receipt: true
@@ -508,6 +514,168 @@ dataSources:
         - event: ParameterUpdated(string)
           handler: handleParameterUpdated
           receipt: true
+{{^isL1}}
+  - kind: ethereum/contract
+    name: HorizonStaking
+    network: {{network}}
+    source:
+      address: '{{staking}}'
+      abi: HorizonStaking
+      startBlock: {{blockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/horizonStaking.ts
+      entities:
+        - ProvisionCreatedEvent
+        - ProvisionIncreasedEvent
+        - ProvisionThawedEvent
+        - TokensDeprovisionedEvent
+        - ProvisionSlashedEvent
+        - DelegationSlashedEvent
+        - ProvisionParametersSetEvent
+        - ProvisionParametersStagedEvent
+        - DelegationFeeCutSetEvent
+        - ProvisionOperatorSetEvent
+        - TokensToDelegationPoolAddedEvent
+        - TokensDelegatedEvent
+        - TokensUndelegatedEvent
+        - DelegatedTokensWithdrawnEvent
+        - IndexerStakeDepositedEvent
+        - IndexerStakeLockedEvent
+        - IndexerStakeWithdrawnEvent
+        - DelegationThawRequestCreatedEvent
+        - ProvisionThawRequestCreatedEvent
+        - ActivityThawRequest
+        - UnresolvedThawRequestFulfilledEvent
+        - DelegationThawRequestFulfilledEvent
+        - ProvisionThawRequestFulfilledEvent
+        - GraphAccount
+        - Indexer
+        - DataService
+        - Provision
+        - CounterEntity
+        - Delegator
+        - ProvisionDelegation
+      abis:
+        - name: HorizonStaking
+          file: ./abis/HorizonStaking.json
+      eventHandlers:
+        - event: ProvisionCreated(indexed address,indexed address,uint256,uint32,uint64)
+          handler: handleProvisionCreated
+          receipt: true
+        - event: ProvisionIncreased(indexed address,indexed address,uint256)
+          handler: handleProvisionIncreased
+          receipt: true
+        - event: ProvisionThawed(indexed address,indexed address,uint256)
+          handler: handleProvisionThawed
+          receipt: true
+        - event: TokensDeprovisioned(indexed address,indexed address,uint256)
+          handler: handleTokensDeprovisioned
+          receipt: true
+        - event: ProvisionSlashed(indexed address,indexed address,uint256)
+          handler: handleProvisionSlashed
+          receipt: true
+        - event: DelegationSlashed(indexed address,indexed address,uint256)
+          handler: handleDelegationSlashed
+          receipt: true
+        - event: ProvisionParametersSet(indexed address,indexed address,uint32,uint64)
+          handler: handleProvisionParametersSet
+          receipt: true
+        - event: ProvisionParametersStaged(indexed address,indexed address,uint32,uint64)
+          handler: handleProvisionParametersStaged
+          receipt: true
+        - event: DelegationFeeCutSet(indexed address,indexed address,indexed uint8,uint256)
+          handler: handleDelegationFeeCutSet
+          receipt: true
+        - event: OperatorSet(indexed address,indexed address,indexed address,bool)
+          handler: handleOperatorSet
+          receipt: true
+        - event: TokensToDelegationPoolAdded(indexed address,indexed address,uint256)
+          handler: handleTokensToDelegationPoolAdded
+          receipt: true
+        - event: TokensDelegated(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTokensDelegated
+          receipt: true
+        - event: TokensUndelegated(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTokensUndelegated
+          receipt: true
+        - event: DelegatedTokensWithdrawn(indexed address,indexed address,indexed address,uint256)
+          handler: handleDelegatedTokensWithdrawn
+          receipt: true
+        - event: HorizonStakeDeposited(indexed address,uint256)
+          handler: handleHorizonStakeDeposited
+          receipt: true
+        - event: HorizonStakeLocked(indexed address,uint256,uint256)
+          handler: handleHorizonStakeLocked
+          receipt: true
+        - event: HorizonStakeWithdrawn(indexed address,uint256)
+          handler: handleHorizonStakeWithdrawn
+          receipt: true
+        - event: ThawRequestCreated(indexed uint8,indexed address,indexed address,address,uint256,uint64,bytes32,uint256)
+          handler: handleThawRequestCreated
+          receipt: true
+        - event: ThawRequestFulfilled(indexed uint8,indexed bytes32,uint256,uint256,uint64,bool)
+          handler: handleThawRequestFulfilled
+          receipt: true
+  - kind: ethereum/contract
+    name: SubgraphService
+    network: {{network}}
+    source:
+      address: '{{subgraphService}}'
+      abi: SubgraphService
+      startBlock: {{blockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/subgraphService.ts
+      entities:
+        - HorizonAllocationCreatedEvent
+        - AllocationResizedEvent
+        - HorizonAllocationClosedEvent
+        - IndexingRewardsCollectedEvent
+        - POIPresentedEvent
+        - QueryFeesCollectedEvent
+        - ServiceProviderRegisteredEvent
+        - RewardsDestinationSetEvent
+        - GraphAccount
+        - Indexer
+        - DataService
+        - Provision
+        - CounterEntity
+        - ActivityAllocation
+        - SubgraphDeployment
+      abis:
+        - name: SubgraphService
+          file: ./abis/SubgraphService.json
+      eventHandlers:
+        - event: ServiceProviderRegistered(indexed address,bytes)
+          handler: handleServiceProviderRegistered
+          receipt: true
+        - event: RewardsDestinationSet(indexed address,indexed address)
+          handler: handleRewardsDestinationSet
+          receipt: true
+        - event: AllocationCreated(indexed address,indexed address,indexed bytes32,uint256,uint256)
+          handler: handleAllocationCreated
+          receipt: true
+        - event: AllocationResized(indexed address,indexed address,indexed bytes32,uint256,uint256)
+          handler: handleAllocationResized
+          receipt: true
+        - event: AllocationClosed(indexed address,indexed address,indexed bytes32,uint256,bool)
+          handler: handleAllocationClosed
+          receipt: true
+        - event: IndexingRewardsCollected(indexed address,indexed address,indexed bytes32,uint256,uint256,uint256,bytes32,bytes,uint256)
+          handler: handleIndexingRewardsCollected
+          receipt: true
+        - event: POIPresented(indexed address,indexed address,indexed bytes32,bytes32,bytes,bytes32)
+          handler: handlePOIPresented
+          receipt: true
+        - event: QueryFeesCollected(indexed address,indexed address,indexed address,bytes32,uint256,uint256)
+          handler: handleQueryFeesCollected
+          receipt: true
+{{/isL1}}
 templates:
   - name: SubgraphMetadata
     kind: file/ipfs

@@ -1,3 +1,4 @@
+import { saveActivity } from './activity'
 import { Address, BigDecimal, BigInt, ByteArray } from '@graphprotocol/graph-ts'
 import {
   Indexer,
@@ -17,11 +18,7 @@ import {
   DisputeManager,
 } from '../types/DisputeManager/DisputeManager'
 import { DisputeManagerStitched } from '../types/DisputeManager/DisputeManagerStitched'
-import {
-  getCounter,
-  BIGINT_ZERO,
-  BIGINT_ONE,
-} from './helpers'
+import { BIGINT_ZERO, BIGINT_ONE } from './helpers'
 
 // This handles  Single query and Conflicting disputes
 export function handleQueryDisputeCreated(event: QueryDisputeCreated): void {
@@ -115,26 +112,26 @@ export function handleDisputeAccepted(event: DisputeAccepted): void {
 // Note - it is impossible to call reject on a conflicting dispute, it is either draw or accept
 // This is because if you accept 1 in a conflict, the other is rejected
 export function handleDisputeRejected(event: DisputeRejected): void {
-//   let id = event.params.disputeID.toHexString()
-//   let dispute = Dispute.load(id)
-//   dispute.status = 'Rejected'
-//   dispute.closedAt = event.block.timestamp.toI32()
-//   dispute.save()
-// }
-//
-// export function handleDisputeDrawn(event: DisputeDrawn): void {
-//   let id = event.params.disputeID.toHexString()
-//   let dispute = Dispute.load(id)
-//   dispute.status = 'Draw'
-//   dispute.closedAt = event.block.timestamp.toI32()
-//   dispute.save()
-//
-//   if (dispute.linkedDispute != null) {
-//     let linkedDispute = Dispute.load(dispute.linkedDispute)
-//     linkedDispute.status = 'Draw'
-//     linkedDispute.closedAt = event.block.timestamp.toI32()
-//     linkedDispute.save()
-//   }
+  //   let id = event.params.disputeID.toHexString()
+  //   let dispute = Dispute.load(id)
+  //   dispute.status = 'Rejected'
+  //   dispute.closedAt = event.block.timestamp.toI32()
+  //   dispute.save()
+  // }
+  //
+  // export function handleDisputeDrawn(event: DisputeDrawn): void {
+  //   let id = event.params.disputeID.toHexString()
+  //   let dispute = Dispute.load(id)
+  //   dispute.status = 'Draw'
+  //   dispute.closedAt = event.block.timestamp.toI32()
+  //   dispute.save()
+  //
+  //   if (dispute.linkedDispute != null) {
+  //     let linkedDispute = Dispute.load(dispute.linkedDispute)
+  //     linkedDispute.status = 'Draw'
+  //     linkedDispute.closedAt = event.block.timestamp.toI32()
+  //     linkedDispute.save()
+  //   }
 }
 
 export function handleDisputeLinked(event: DisputeLinked): void {
@@ -159,19 +156,8 @@ export function handleDisputeLinked(event: DisputeLinked): void {
 export function handleParameterUpdated(event: ParameterUpdated): void {
   let eventId = event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString())
   let eventEntity = new ParameterUpdatedEvent(eventId)
-  eventEntity.timestamp = event.block.timestamp
-  eventEntity.tx_gasLimit = event.transaction.gasLimit
-  eventEntity.tx_gasPrice = event.transaction.gasPrice
-  eventEntity.tx_gasUsed = event.receipt!.gasUsed
-  eventEntity.tx_cumulativeGasUsed = event.receipt!.cumulativeGasUsed
-  eventEntity.blockNumber = event.block.number
-  eventEntity.tx_hash = event.transaction.hash
-  eventEntity.typename = "ParameterUpdatedEvent"
+
+  eventEntity.typename = 'ParameterUpdatedEvent'
   eventEntity.parameter = event.params.param
-  eventEntity.save()
-  
-  let counter = getCounter()
-  counter.parameterUpdatedEventCount = counter.parameterUpdatedEventCount.plus(BIGINT_ONE)
-  counter.eventCount = counter.eventCount.plus(BIGINT_ONE)
-  counter.save()
+  saveActivity(eventEntity, event)
 }
